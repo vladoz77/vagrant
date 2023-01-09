@@ -1,0 +1,28 @@
+Vagrant.configure("2") do |config|
+  # General configuration
+  config.vm.box = "generic/ubuntu2010"
+  #config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.ssh.insert_key = false
+  # Config VM provider
+  config.vm.provider "virtualbox" do |vb|
+     vb.memory = 2048
+     vb.linked_clone = true
+       
+  end
+  # VM provision
+  #config.vm.provision "ansible" do |ansible|
+  #  ansible.playbook = "playbook.yml"
+  #file upload into vm
+  #config.vm.provision "file", source: "./docker", destination: "$HOME/vagrant/docker/"
+  #end
+  
+  #Config servers
+  #srv1
+  config.vm.define "postgres" do |postgres|
+    postgres.vm.hostname = "postgres"
+    postgres.vm.network "public_network"
+  end
+
+ 
+
+end
