@@ -10,9 +10,9 @@ Vagrant.configure("2") do |config|
      vb.cpus = 1
   end
   # VM provision
-  #config.vm.provision "ansible" do |ansible|
-  #  ansible.playbook = "playbook.yml"
-  #end
+  config.vm.provision "ansible" do |ansible|
+   ansible.playbook = "playbook.yaml"
+  end
   
   #Config servers
   

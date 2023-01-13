@@ -1,0 +1,23 @@
+- name: base_provision
+  hosts: all
+  become: true
+  vars:
+    user: vlad
+    password: '8231'
+  tasks:
+  
+    - name: create user
+      ansible.builtin.user:
+        name: "{{ user }}"
+        groups: sudo
+        password: "{{ password | password_hash('sha512') }}"
+        shell: /bin/bash
+        state: present
+        
+
+    - name: add ssh keys
+      authorized_key:
+        user: "{{ user }}"
+        state: present
+        key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
+
