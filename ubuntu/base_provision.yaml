@@ -1,23 +1,33 @@
 - name: base_provision
   hosts: all
   become: true
-  vars:
-    user: vlad
-    password: '8231'
   tasks:
   
     - name: create user
       ansible.builtin.user:
-        name: "{{ user }}"
-        groups: sudo
-        password: "{{ password | password_hash('sha512') }}"
-        shell: /bin/bash
+        name: "{{ item.name }}"
+        groups: "{{ item.groups }}"
+        password: "{{ item.password | password_hash('sha512') }}"
+        shell: "{{ item.shell | default('/bin/bash') }}" 
         state: present
+      loop: "{{ user }}"
         
 
     - name: add ssh keys
       authorized_key:
-        user: "{{ user }}"
+        user: "{{ item.name }}"
         state: present
-        key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
+        key: "{{ lookup('file', '/home/{{ item.name }}/.ssh/id_rsa.pub') }}"
+      loop: "{{ user }}"
 
+    - name: update package
+      ansible.builtin.apt:
+        name: '*'
+        state: latest
+        update_cache: true
+        
+           
+        
+        
+        
+          
