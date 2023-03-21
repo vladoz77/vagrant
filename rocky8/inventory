@@ -1,1 +1,5 @@
-.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory
+[node]
+192.168.56.11 new_hostname=node-1
+192.168.56.12 new_hostname=node-2
+[master]
+192.168.56.13 new_hostname=master-1
