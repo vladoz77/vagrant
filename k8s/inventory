@@ -1,0 +1,5 @@
+[node]
+192.168.59.11 new_hostname=node1
+192.168.59.12 new_hostname=node2
+[master]
+192.168.59.13 new_hostname=master1
