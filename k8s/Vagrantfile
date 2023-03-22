@@ -2,10 +2,10 @@ Vagrant.configure("2") do |config|
     config.vm.box = "generic/ubuntu2010"
     config.ssh.insert_key = false
     config.vm.provider "virtualbox" do |vb|
-        vb.memory = 512
+        vb.memory = 1800
         vb.linked_clone = true
     end
-    N = 3
+    N = 2
     
     # VM config
     (1..N).each do |i|

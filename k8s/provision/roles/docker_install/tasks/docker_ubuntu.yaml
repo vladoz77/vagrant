@@ -1,0 +1,19 @@
+---
+# install docker on ubuntu
+- name: add gpg key
+  ansible.builtin.apt_key:
+    url: "{{ url }}"
+    state: present
+    validate_certs: no
+
+- name: add repo
+  ansible.builtin.apt_repository:
+    repo:  "{{ repo }}"
+    state: present
+          
+- name: install docker soft
+  ansible.builtin.apt:
+    name: "{{ docker_soft }}"
+    state: present
+    update_cache: true
+  notify: service started
