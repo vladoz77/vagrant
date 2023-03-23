@@ -2,15 +2,6 @@
 - name: install dependence
   hosts: all
   become: true
-  # vars:
-  #   soft:
-  #     - curl
-  #     - ca-certificates
-  #     - gnupg
-  #     - apt-transport-https
-  #   modules:
-  #     - overlay
-  #     - br_netfilter
   tasks:
     - name: install req software
       ansible.builtin.apt:
@@ -64,11 +55,6 @@
 - name: install kubeadm, kubelet on all node
   hosts: all
   become: true
-  # vars:
-  #   version: '1.20.1-00'
-  #   kube_soft_all:
-  #      - kubelet={{ version }}
-  #      - kubeadm={{ version }}
   tasks:
     - name: add k8s apt key
       ansible.builtin.apt_key:
@@ -86,12 +72,16 @@
         name: "{{ kube_soft_all }}"
         state: present
         update_cache: true
+      notify: start service
     
-    - name: start and enable service kubelet
-      ansible.builtin.service:
+   
+  handlers:
+     - name: start service
+       ansible.builtin.service:
         name: kubelet
         state: started
         enabled: true
+    
 
   tags: kube_all_setup
 
@@ -120,7 +110,7 @@
 
     - name: cluster init
       ansible.builtin.shell:
-        kubeadm init --apiserver-advertise-address=192.168.59.12 --pod-network-cidr=10.244.0.0/16
+        kubeadm init --apiserver-advertise-address=192.168.59.12 --pod-network-cidr={{ cidr_network }}
       when: isrunning.rc != 0
 
   tags: kube_cluster_setup

@@ -3,3 +3,4 @@ name: vlad
 password: '8231'
 soft_for_master:
   - kubectl
+cidr_network: 10.244.0.0/16
