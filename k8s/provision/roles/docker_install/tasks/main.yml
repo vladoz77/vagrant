@@ -13,7 +13,7 @@
     name: "{{ name }}"
     groups: "{{ docker_group }}"
     append: true
-  
+  notify: service restarted
 
 
    

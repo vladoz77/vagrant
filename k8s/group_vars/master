@@ -1,9 +1,5 @@
 ---
 name: vlad
 password: '8231'
-soft:
-  - curl
-  - ca-certificates
-  - gnupg
-  - lsb-release
-  - apt-transport-https
+soft_for_master:
+  - kubectl

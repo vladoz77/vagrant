@@ -1,0 +1,17 @@
+#For dependences
+soft_dependences:
+   - curl
+   - ca-certificates
+   - gnupg
+   - apt-transport-https
+modules:
+   - overlay
+   - br_netfilter
+
+#For k8s
+version: '1.20.1-00'
+kube_soft_all:
+   - kubelet={{ version }}
+   - kubeadm={{ version }}
+k8s_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+k8s_repo: deb https://apt.kubernetes.io/ kubernetes-xenial main

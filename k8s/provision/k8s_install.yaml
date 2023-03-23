@@ -2,15 +2,19 @@
 - name: install dependence
   hosts: all
   become: true
-  vars:
-    soft:
-      - curl
-      - ca-certificates
-      - apt-transport-https
+  # vars:
+  #   soft:
+  #     - curl
+  #     - ca-certificates
+  #     - gnupg
+  #     - apt-transport-https
+  #   modules:
+  #     - overlay
+  #     - br_netfilter
   tasks:
     - name: install req software
       ansible.builtin.apt:
-        name: "{{ soft }}"
+        name: "{{ soft_dependences }}"
         state: present
         update_cache: true
 
@@ -28,25 +32,52 @@
         regexp: swap
         state: absent
     
-    
-  tags: install dependences
+    - name: Configure persistent loading of modules
+      ansible.builtin.blockinfile:
+         create: true
+         path: /etc/modules-load.d/k8s.conf
+         block: |
+             overlay
+             br_netfilter
+
+    - name: load module
+      community.general.modprobe:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ modules }}"
+
+    - name: set proc parametr
+      ansible.builtin.blockinfile:
+        path: /etc/sysctl.d/k8s.conf
+        create: true
+        block: |
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.bridge.bridge-nf-call-iptables = 1
+          net.ipv4.ip_forward = 1
+
+    - name: reload syctl parametrs
+      ansible.builtin.shell:
+        sysctl --system
+        
+  tags: install_dependences
       
 - name: install kubeadm, kubelet on all node
   hosts: all
   become: true
-  vars:
-    kube_soft_all:
-       - kubelet=1.20.1-00
-       - kubeadm=1.20.1-00
+  # vars:
+  #   version: '1.20.1-00'
+  #   kube_soft_all:
+  #      - kubelet={{ version }}
+  #      - kubeadm={{ version }}
   tasks:
     - name: add k8s apt key
       ansible.builtin.apt_key:
-        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        url: "{{ k8s_url }}"
         state: present
         
     - name: add k8s repo
       ansible.builtin.apt_repository:
-        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        repo: "{{ k8s_repo }}"
         state: present
         filename: 'kubernetes'
     
@@ -61,19 +92,21 @@
         name: kubelet
         state: started
         enabled: true
-  tags: kube_all_install
+
+  tags: kube_all_setup
 
 - name: install kubectl on master node
   hosts: master
   become: true
-  vars:
-    soft_for_master: kubectl
+  # vars:
+  #   soft_for_master: kubectl
   tasks:
-    - name: install kubectl=1.20.1-00
+    - name: install kubectl
       ansible.builtin.apt:
         name: "{{ soft_for_master }}"
         state: present
-  tags: kube_master_install
+
+  tags: kube_master_setup
   
 - name: install cluster
   ignore_errors: true
@@ -89,7 +122,8 @@
       ansible.builtin.shell:
         kubeadm init --apiserver-advertise-address=192.168.59.12 --pod-network-cidr=10.244.0.0/16
       when: isrunning.rc != 0
-  tags: install_cluster
+
+  tags: kube_cluster_setup
       
 - name: config cluster
   ignore_errors: true
@@ -99,7 +133,8 @@
       ansible.builtin.file:
         path: /home/vlad/.kube
         state: directory
-        mode: 0755
+        owner: vlad
+        group: vlad
 
     - name: copy conf to .kube directory
       ansible.builtin.copy:
@@ -107,17 +142,27 @@
         dest: /home/vlad/.kube/config
         remote_src: true
         owner: vlad
-
-    - name: check if pod network exist
-      become: false
+        group: vlad
+    
+    - name: export env
       ansible.builtin.shell:
-        kubectl get pod --all-namespaces
-      register: network_exist
+       echo export KUBECONFIG=$HOME/.kube/config
+    
+    - name: restart kubelet
+      ansible.builtin.service:
+        name: kubelet
+        state: restarted
+        enabled: true
+    # - name: check if pod network exist
+    #   become: false
+    #   ansible.builtin.shell:
+    #     kubectl get pod --all-namespaces
+    #   register: network_exist
 
     - name: install pod network
       become: false
       ansible.builtin.shell:
-         kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml
+         kubectl create -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
   tags: config_cluster
 
 - name: get token
