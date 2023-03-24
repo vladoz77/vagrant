@@ -5,20 +5,27 @@ Vagrant.configure("2") do |config|
         vb.memory = 1800
         vb.linked_clone = true
     end
-    N = 2
+    config.vm.provision "ansible" do |ansible|
+        ansible.limit = "all"
+        ansible.playbook = "./provision/base_provision.yaml"
+        
+
+    end    
+    Node = 1
+    Master = 1
     
-    # VM config
-    (1..N).each do |i|
-        config.vm.define "srv#{i}" do |srv|
-           srv.vm.hostname = "rocky#{i}"
-           srv.vm.network "private_network", ip: "192.168.59.#{10+i}"
-           if i == N
-              srv.vm.provision "ansible" do |baseprovision|
-                 baseprovision.limit = "all"
-                 baseprovision.playbook = "./provision/base_provision.yaml"
-                 baseprovision.inventory_path = "inventory"
-              end
-           end
+    # VM config node
+    (1..Node).each do |node_id|
+        config.vm.define "node#{node_id}" do |node|
+           node.vm.hostname = "node#{node_id}"
+           node.vm.network "private_network", ip: "192.168.59.#{10+node_id}"
+           
         end
     end
+    (1..Master).each do |master_id|
+        config.vm.define  "master#{master_id}" do |master|
+          master.vm.hostname = "master#{master_id}"
+          master.vm.network "private_network", ip: "192.168.59.#{20+master_id}"
+        end
+    end    
 end

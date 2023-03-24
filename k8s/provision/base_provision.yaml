@@ -1,10 +1,13 @@
 - name: base_provision
   hosts: all
   become: true
+  vars:
+    name: vlad
+    password: '8231'
   tasks:
-    - name: update hostname
-      ansible.builtin.hostname:
-        name: "{{ new_hostname }}"
+    # - name: update hostname
+    #   ansible.builtin.hostname:
+    #     name: "{{ new_hostname }}"
   
     - name: create user
       ansible.builtin.user:
@@ -20,5 +23,12 @@
         user: "{{ name }}"
         state: present
         key: "{{ lookup('file', '/home/{{ name }}/.ssh/id_rsa.pub') }}"
+
+    - name: update file /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{hostvars[item].ansible_facts.eth1.ipv4.address}} {{hostvars[item].ansible_hostname}}"
+      loop: "{{groups['all']}}"
+
 
    
