@@ -20,11 +20,13 @@
         key: "{{ lookup('file', '/home/{{ item.name }}/.ssh/id_rsa.pub') }}"
       loop: "{{ user }}"
 
-    - name: update package
-      ansible.builtin.apt:
-        name: '*'
-        state: latest
-        update_cache: true
+    - name: update file /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{hostvars[item].ansible_facts.eth1.ipv4.address}} {{hostvars[item].ansible_hostname}}"
+      loop: "{{groups['all']}}"
+
+    
         
            
         

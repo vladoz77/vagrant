@@ -110,7 +110,7 @@
 
     - name: cluster init
       ansible.builtin.shell:
-        kubeadm init --apiserver-advertise-address=192.168.59.12 --pod-network-cidr={{ cidr_network }}
+        kubeadm init --apiserver-advertise-address={{ master_address }} --pod-network-cidr={{ cidr_network }}
       when: isrunning.rc != 0
 
   tags: kube_cluster_setup
@@ -121,18 +121,18 @@
   tasks:
     - name: create .kube directory
       ansible.builtin.file:
-        path: /home/vlad/.kube
+        path: "{{ home_kube_dir }}"
         state: directory
-        owner: vlad
-        group: vlad
+        owner: "{{ name }}"
+        group: "{{ name }}"
 
     - name: copy conf to .kube directory
       ansible.builtin.copy:
-        src: /etc/kubernetes/admin.conf
-        dest: /home/vlad/.kube/config
+        src: "{{ base_kube_conf_dir }}"
+        dest: "{{ home_kube_dir }}"/config
         remote_src: true
-        owner: vlad
-        group: vlad
+        owner: "{{ name }}"
+        group: "{{ name }}"
     
     - name: export env
       ansible.builtin.shell:
@@ -152,7 +152,7 @@
     - name: install pod network
       become: false
       ansible.builtin.shell:
-         kubectl create -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+         kubectl create -f {{ network_setup }}
   tags: config_cluster
 
 - name: get token
@@ -173,7 +173,7 @@
   become: true
   tasks:
     - ansible.builtin.shell:
-        "{{hostvars['192.168.59.12']['join_command']}}"
+        "{{hostvars[groups['master'] | join(',')]['join_command']}}"
       
   tags: config_node
           
