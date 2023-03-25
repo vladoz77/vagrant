@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
         
 
     end    
-    Node = 1
+    Node = 2
     Master = 1
     
     # VM config node
