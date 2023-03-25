@@ -129,7 +129,7 @@
     - name: copy conf to .kube directory
       ansible.builtin.copy:
         src: "{{ base_kube_conf_dir }}"
-        dest: "{{ home_kube_dir }}"/config
+        dest: /home/{{ name }}/.kube/config
         remote_src: true
         owner: "{{ name }}"
         group: "{{ name }}"
