@@ -11,9 +11,9 @@ modules:
 #For k8s
 version: '1.26.0-00'
 kube_soft_all:
-   - kubelet=1.26.0-00
-   - kubeadm=1.26.0-00
-   - kubectl=1.26.0-00
+   - kubelet={{ version }}
+   - kubeadm={{ version }}
+   - kubectl={{ version }}
 
 docker_soft:
    - containerd.io
