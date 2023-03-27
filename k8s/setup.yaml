@@ -1,11 +1,12 @@
 ---
-- hosts: node
+- hosts: all
   become: true
   # vars: 
   #   master_ad: "{{groups['master'] | join(',')}}" 
   tasks:
     - ansible.builtin.debug:
+         var: groups
         # var: master_ad
-        msg: "{{hostvars[groups['master'] | join(',')].ansible_hostname}}"
+        # msg: "{{hostvars[groups['master'] | join(',')].ansible_hostname}}"
       #loop: "{{groups['master']}}"
      
