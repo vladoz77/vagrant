@@ -85,18 +85,7 @@
 
   tags: kube_all_setup
 
-- name: install kubectl on master node
-  hosts: master
-  become: true
-  # vars:
-  #   soft_for_master: kubectl
-  tasks:
-    - name: install kubectl
-      ansible.builtin.apt:
-        name: "{{ soft_for_master }}"
-        state: present
 
-  tags: kube_master_setup
   
 - name: install cluster
   ignore_errors: true
