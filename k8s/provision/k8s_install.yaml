@@ -8,10 +8,52 @@
         name: "{{ soft_dependences }}"
         state: present
         update_cache: true
+        
+    - name: add k8s apt key
+      ansible.builtin.apt_key:
+        url: "{{ k8s_url }}"
+        state: present
+        
+    - name: add k8s repo
+      ansible.builtin.apt_repository:
+        repo: "{{ k8s_repo }}"
+        state: present
+        filename: 'kubernetes'
+    
+    - name: install soft
+      ansible.builtin.apt:
+        name: "{{ kube_soft_all }}"
+        state: present
+        update_cache: true
+      notify: start service
+      
+    - name: add url for containerd
+      ansible.builtin.apt_key:
+        url: "{{ docker_url }}"
+        state: present
+        validate_certs: no
 
-    - name: install docker
-      ansible.builtin.include_role:
-        name: docker_install
+    - name: add repo
+      ansible.builtin.apt_repository:
+        repo:  "{{ docker_repo }}"
+        state: present
+
+    - name: install contaonerd soft
+      ansible.builtin.apt:
+        name: "{{ docker_soft }}"
+        state: present
+        update_cache: true
+
+    - name: update containerd to 1.7
+      ansible.builtin.unarchive:
+        src: "{{ containerd_url }}"
+        dest: /usr/
+        remote_src: yes
+
+    - name: update config containerd
+      ansible.builtin.shell:
+        containerd config default | sudo tee /etc/containerd/config.toml
+      notify: restart containerd
         
     - name: disable swap 
       ansible.builtin.shell:
@@ -49,31 +91,6 @@
     - name: reload syctl parametrs
       ansible.builtin.shell:
         sysctl --system
-        
-  tags: install_dependences
-      
-- name: install kubeadm, kubelet on all node
-  hosts: all
-  become: true
-  tasks:
-    - name: add k8s apt key
-      ansible.builtin.apt_key:
-        url: "{{ k8s_url }}"
-        state: present
-        
-    - name: add k8s repo
-      ansible.builtin.apt_repository:
-        repo: "{{ k8s_repo }}"
-        state: present
-        filename: 'kubernetes'
-    
-    - name: install soft
-      ansible.builtin.apt:
-        name: "{{ kube_soft_all }}"
-        state: present
-        update_cache: true
-      notify: start service
-    
    
   handlers:
      - name: start service
@@ -81,16 +98,25 @@
         name: kubelet
         state: started
         enabled: true
-    
 
-  tags: kube_all_setup
+     - name: restart containerd
+       ansible.builtin.service:
+        name: containerd
+        state: restarted
+        enabled: true
+
+  tags: base_setup
 
 
   
-- name: install cluster
+- name: config master
   ignore_errors: true
   hosts: master
   tasks:
+    - name: import k8s images
+      ansible.builtin.shell:
+        kubeadm config images pull
+
     - name: check if cluster are running
       ansible.builtin.shell:
         ps -aux | grep kube-api | grep -v grep
@@ -102,12 +128,6 @@
         kubeadm init --apiserver-advertise-address={{ master_address }} --pod-network-cidr={{ cidr_network }}
       when: isrunning.rc != 0
 
-  tags: kube_cluster_setup
-      
-- name: config cluster
-  ignore_errors: true
-  hosts: master
-  tasks:
     - name: create .kube directory
       ansible.builtin.file:
         path: "{{ home_kube_dir }}"
@@ -118,33 +138,37 @@
     - name: copy conf to .kube directory
       ansible.builtin.copy:
         src: "{{ base_kube_conf_dir }}"
-        dest: "{{ home_kube_dir }}"/config
+        dest: /home/{{ name }}/.kube/config
         remote_src: true
         owner: "{{ name }}"
         group: "{{ name }}"
     
     - name: export env
-      ansible.builtin.shell:
-       echo export KUBECONFIG=$HOME/.kube/config
+      ansible.builtin.shell:  export KUBECONFIG=$HOME/.kube/config
+      
     
     - name: restart kubelet
       ansible.builtin.service:
         name: kubelet
         state: restarted
         enabled: true
-    # - name: check if pod network exist
-    #   become: false
-    #   ansible.builtin.shell:
-    #     kubectl get pod --all-namespaces
-    #   register: network_exist
+    
+    - name: check if pod network exist
+      become: false
+      ansible.builtin.shell: kubectl get namespaces kube-flannel
+      register: network_exist
 
+      
     - name: install pod network
       become: false
       ansible.builtin.shell:
          kubectl create -f {{ network_setup }}
-  tags: config_cluster
+      when: network_exist.rc != 0
+      
 
-- name: get token
+  tags: config_master
+
+- name: node config
   ignore_errors: true
   hosts: master
   tasks:
@@ -164,7 +188,7 @@
     - ansible.builtin.shell:
         "{{hostvars[groups['master'] | join(',')]['join_command']}}"
       
-  tags: config_node
+  
           
          
       
