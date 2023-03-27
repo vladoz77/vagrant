@@ -143,8 +143,15 @@
         owner: "{{ name }}"
         group: "{{ name }}"
     
-    - name: export env
-      ansible.builtin.shell:  export KUBECONFIG=$HOME/.kube/config
+    - name: edit .bashrc for autocomplite kubectl
+      ansible.builtin.blockinfile:
+        dest: /home/{{ name }}/.bashrc
+        block: |
+           source <(kubectl completion bash)
+           alias k=kubectl
+           complete -o default -F __start_kubectl k
+           export KUBECONFIG=$HOME/.kube/config
+     
       
     
     - name: restart kubelet
