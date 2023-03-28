@@ -1,3 +1,4 @@
 ---
 name: vlad
 password: '8231'
+node_add: "{{hostvars[groups['master'] | join(',')]['join_command']}}"
