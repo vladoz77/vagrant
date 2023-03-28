@@ -8,7 +8,7 @@
     # - name: update hostname
     #   ansible.builtin.hostname:
     #     name: "{{ new_hostname }}"
-  
+      
     - name: create user
       ansible.builtin.user:
         name: "{{ name }}"
