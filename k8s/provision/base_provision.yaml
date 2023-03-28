@@ -5,9 +5,6 @@
     name: vlad
     password: '8231'
   tasks:
-    # - name: update hostname
-    #   ansible.builtin.hostname:
-    #     name: "{{ new_hostname }}"
       
     - name: create user
       ansible.builtin.user:
