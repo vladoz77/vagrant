@@ -143,9 +143,14 @@
         owner: "{{ name }}"
         group: "{{ name }}"
     
-    - name: export env
-      ansible.builtin.shell:  export KUBECONFIG=$HOME/.kube/config
-      
+    - name: bashrc edit
+      ansible.builtin.blockinfile:  
+        dest: /home/{{ name }}/.bashrc
+        block: |
+          export KUBECONFIG=$HOME/.kube/config
+          source <(kubectl completion bash)
+          alias k=kubectl
+          complete -o default -F __start_kubectl k
     
     - name: restart kubelet
       ansible.builtin.service:
@@ -185,8 +190,13 @@
   hosts: node
   become: true
   tasks:
-    - ansible.builtin.shell:
-        "{{hostvars[groups['master'] | join(',')]['join_command']}}"
+    - name: add node 
+      ansible.builtin.shell: "{{ node_add }}"
+
+   
+        
+         
+
       
   
           
