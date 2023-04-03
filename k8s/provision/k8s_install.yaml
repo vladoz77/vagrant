@@ -147,7 +147,6 @@
       ansible.builtin.blockinfile:  
         dest: /home/{{ name }}/.bashrc
         block: |
-          export KUBECONFIG=$HOME/.kube/config
           source <(kubectl completion bash)
           alias k=kubectl
           complete -o default -F __start_kubectl k
@@ -192,6 +191,8 @@
   tasks:
     - name: add node 
       ansible.builtin.shell: "{{ node_add }}"
+
+    
 
    
         

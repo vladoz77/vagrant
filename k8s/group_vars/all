@@ -1,4 +1,5 @@
 #For dependences
+home_kube_dir: /home/{{ name }}/.kube
 soft_dependences:
    - curl
    - ca-certificates
@@ -18,6 +19,9 @@ kube_soft_all:
 
 docker_soft:
    - containerd.io
+   - docker-ce
+   - docker-ce-cli
+
 #repo
 k8s_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
 k8s_repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
