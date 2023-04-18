@@ -1,12 +1,13 @@
 ---
-- hosts: all
+- name: config node
+  hosts: node
+  
   become: true
-  # vars: 
-  #   master_ad: "{{groups['master'] | join(',')}}" 
   tasks:
-    - ansible.builtin.debug:
-         var: groups
-        # var: master_ad
-        # msg: "{{hostvars[groups['master'] | join(',')].ansible_hostname}}"
-      #loop: "{{groups['master']}}"
-     
+    
+
+    - name: copy config
+      ansible.builtin.copy:
+        src: /home/{{ name }}/.kube/config
+        dest: "{{home_kube_dir}}"
+      delegate_to: master

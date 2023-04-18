@@ -7,5 +7,8 @@ cidr_network: 10.244.0.0/16
 master_address: "{{ansible_facts.eth1.ipv4.address}}"
 network_setup: https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
 # network_setup: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/calico.yaml
+network_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
 
 base_kube_conf_dir: /etc/kubernetes/admin.conf
+custom_resource_temlate_dir: /home/vlad/vagrant.d/k8s/provision/custom-resources.j2
+custom_resource_dir: /tmp/custom-resources.yaml
