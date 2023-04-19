@@ -5,6 +5,10 @@ soft_dependences:
    - ca-certificates
    - gnupg
    - apt-transport-https
+   - nfs-common
+   - nfs-kernel-server
+   - ipvsadm
+
 
 modules:
    - overlay

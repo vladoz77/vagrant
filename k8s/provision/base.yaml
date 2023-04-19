@@ -90,12 +90,27 @@
     - name: reload syctl parametrs
       ansible.builtin.shell:
         sysctl --system
-   
+
+    - name: bashrc edit
+      ansible.builtin.blockinfile:  
+        dest: /home/{{ name }}/.bashrc
+        block: |
+          source <(kubectl completion bash)
+          alias k=kubectl
+          complete -o default -F __start_kubectl k
+      notify: restart service
+
   handlers:
      - name: start service
        ansible.builtin.service:
         name: kubelet
         state: started
+        enabled: true
+
+     - name: restart service
+       ansible.builtin.service:
+        name: kubelet
+        state: restarted
         enabled: true
 
      - name: restart containerd
