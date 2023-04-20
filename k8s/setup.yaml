@@ -5,6 +5,5 @@
   become: true
   tasks:
     - ansible.builtin.debug:
-        var: hostvars[groups.master.0].ansible_facts.eth1.ipv4.address
-
+        var: playbook_dir
    

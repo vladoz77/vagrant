@@ -8,7 +8,7 @@ network_setup: https://raw.githubusercontent.com/flannel-io/flannel/master/Docum
 network_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
 
 base_kube_conf_dir: /etc/kubernetes/admin.conf
-custom_resource_temlate_dir: /home/vlad/vagrant.d/k8s/provision/custom-resources.j2
+custom_resource_temlate_dir: "{{playbook_dir}}/custom-resources.j2"
 custom_resource_dir: /tmp/custom-resources.yaml
-kubeadm_temlate: /home/vlad/vagrant.d/k8s/provision/kubeadm-config.j2
+kubeadm_temlate: "{{playbook_dir}}/kubeadm-config.j2"
 kubeadm_config: /tmp/kubeadm-config.yaml

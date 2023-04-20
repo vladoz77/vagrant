@@ -40,10 +40,10 @@
         group: "{{ name }}"
     
       
-    - name: copy template for calico network
-      ansible.builtin.template:
-        src: "{{ custom_resource_temlate_dir }}"
-        dest: "{{ custom_resource_dir }}"
+    # - name: copy template for calico network
+    #   ansible.builtin.template:
+    #     src: "{{ custom_resource_temlate_dir }}"
+    #     dest: "{{ custom_resource_dir }}"
 
     - name: check if pod network exist
       become: false
@@ -52,6 +52,11 @@
 
     - name: install calico 
       block:
+        - name: copy template for calico network
+          ansible.builtin.template:
+             src: "{{ custom_resource_temlate_dir }}"
+             dest: "{{ custom_resource_dir }}"
+
         - name: install network operator
           ansible.builtin.shell:
             kubectl create -f "{{ network_operator }}"
