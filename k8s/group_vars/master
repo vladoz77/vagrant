@@ -1,9 +1,8 @@
 ---
-name: vlad
-password: '8231'
 
-cidr_network: 10.244.0.0/16
-master_address: "{{ansible_facts.eth1.ipv4.address}}"
+
+podSubnet: 10.244.0.0/16
+serviceSubnet: 10.243.0.0/12
 network_setup: https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
 # network_setup: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/calico.yaml
 network_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
@@ -11,3 +10,5 @@ network_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1
 base_kube_conf_dir: /etc/kubernetes/admin.conf
 custom_resource_temlate_dir: /home/vlad/vagrant.d/k8s/provision/custom-resources.j2
 custom_resource_dir: /tmp/custom-resources.yaml
+kubeadm_temlate: /home/vlad/vagrant.d/k8s/provision/kubeadm-config.j2
+kubeadm_config: /tmp/kubeadm-config.yaml

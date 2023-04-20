@@ -1,13 +1,10 @@
 ---
 - name: config node
-  hosts: node
+  hosts: all
   
   become: true
   tasks:
-    
+    - ansible.builtin.debug:
+        var: hostvars[groups.master.0].ansible_facts.eth1.ipv4.address
 
-    - name: copy config
-      ansible.builtin.copy:
-        src: /home/{{ name }}/.kube/config
-        dest: "{{home_kube_dir}}"
-      delegate_to: master
+   
