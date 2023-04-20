@@ -1,8 +1,7 @@
 ---
 name: vlad
 password: '8231'
-soft_for_master:
-  - kubectl
+
 cidr_network: 10.244.0.0/16
 master_address: "{{ansible_facts.eth1.ipv4.address}}"
 network_setup: https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml

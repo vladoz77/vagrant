@@ -2,6 +2,10 @@
   hosts: all
   become: true
   tasks:
+    - name: set timezone
+      community.general.timezone:
+        name: Europe/Moscow
+        
     - name: install req software
       ansible.builtin.apt:
         name: "{{ soft_dependences }}"

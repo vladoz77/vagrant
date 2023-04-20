@@ -1,4 +1,6 @@
 #For dependences
+name: vlad
+password: '8231'
 home_kube_dir: /home/{{ name }}/.kube
 soft_dependences:
    - curl
