@@ -1,6 +1,6 @@
 ---
-
-
+master_name: master1
+kubernetesVersion: '1.27.0'
 podSubnet: 10.244.0.0/16
 serviceSubnet: 10.243.0.0/12
 network_setup: https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml

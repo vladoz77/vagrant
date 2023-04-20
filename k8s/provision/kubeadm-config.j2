@@ -9,12 +9,12 @@ bootstrapTokens:
   - authentication
 kind: InitConfiguration
 localAPIEndpoint:
-  advertiseAddress: {{ hostvars[groups.master.0].ansible_facts.eth1.ipv4.address }}
+  advertiseAddress: {{ ansible_facts.eth1.ipv4.address }}
   bindPort: 6443
 nodeRegistration:
   criSocket: unix:///var/run/containerd/containerd.sock
   imagePullPolicy: IfNotPresent
-  name: node
+  name: {{ ansible_hostname }}
   taints: null
 ---
 apiServer:
@@ -29,11 +29,11 @@ etcd:
     dataDir: /var/lib/etcd
 imageRepository: registry.k8s.io
 kind: ClusterConfiguration
-kubernetesVersion: {{ version }}
+kubernetesVersion: {{ kubernetesVersion}}
 networking:
   dnsDomain: cluster.local
   serviceSubnet: {{ serviceSubnet }}
-  podSubnet: {{ podSubnet}}
+  podSubnet: {{ podSubnet }}
 ---
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration

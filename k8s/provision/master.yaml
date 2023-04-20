@@ -12,9 +12,16 @@
       register: isrunning
       ignore_errors: true
 
-    - name: cluster init
-      ansible.builtin.shell:
-        kubeadm init --apiserver-advertise-address={{ master_address }} --pod-network-cidr={{ cidr_network }}
+    - name: init cluster
+      block:
+       - name: copy template kubeadm
+         ansible.builtin.template:
+          src: "{{ kubeadm_temlate }}"
+          dest: "{{ kubeadm_config }}"
+        
+       - name: kubeadm init
+         ansible.builtin.shell:
+           kubeadm init --config "{{ kubeadm_config }}"
       when: isrunning.rc != 0
 
     - name: create .kube directory

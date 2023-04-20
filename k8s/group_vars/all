@@ -17,7 +17,7 @@ modules:
    - br_netfilter
 
 #For k8s
-# version: '1.26.0-00'
+version: '1.27.0-00'
 kube_soft_all:
    - kubelet
    - kubeadm
@@ -25,8 +25,7 @@ kube_soft_all:
 
 docker_soft:
    - containerd.io
-   - docker-ce
-   - docker-ce-cli
+ 
 
 #repo
 k8s_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
