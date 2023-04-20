@@ -15,7 +15,5 @@
   hosts: node
   become: true
   tasks:
-    - ansible.builtin.shell:
-        "{{hostvars[groups['master'] | join(',')]['join_command']}}"
-      
-  
+    - name: add node 
+      ansible.builtin.shell: "{{ node_add }}"

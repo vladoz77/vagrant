@@ -1,23 +1,32 @@
 #For dependences
+name: vlad
+password: '8231'
+home_kube_dir: /home/{{ name }}/.kube
 soft_dependences:
    - curl
    - ca-certificates
    - gnupg
    - apt-transport-https
+   - nfs-common
+   - nfs-kernel-server
+   - ipvsadm
+
 
 modules:
    - overlay
    - br_netfilter
 
 #For k8s
-version: '1.26.0-00'
+version: '1.27.0-00'
 kube_soft_all:
-   - kubelet={{ version }}
-   - kubeadm={{ version }}
-   - kubectl={{ version }}
+   - kubelet
+   - kubeadm
+   - kubectl
 
 docker_soft:
    - containerd.io
+ 
+
 #repo
 k8s_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
 k8s_repo: deb https://apt.kubernetes.io/ kubernetes-xenial main

@@ -1,12 +1,10 @@
 ---
-- hosts: all
+- name: config node
+  hosts: all
+  
   become: true
-  # vars: 
-  #   master_ad: "{{groups['master'] | join(',')}}" 
   tasks:
     - ansible.builtin.debug:
-         var: groups
-        # var: master_ad
-        # msg: "{{hostvars[groups['master'] | join(',')].ansible_hostname}}"
-      #loop: "{{groups['master']}}"
-     
+        var: hostvars[groups.master.0].ansible_facts.eth1.ipv4.address
+
+   

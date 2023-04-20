@@ -5,6 +5,9 @@
     name: vlad
     password: '8231'
   tasks:
+    - name: set timezone
+      community.general.timezone:
+        name: Europe/Moscow
       
     - name: create user
       ansible.builtin.user:
