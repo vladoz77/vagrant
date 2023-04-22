@@ -12,6 +12,10 @@
         state: present
         update_cache: true
         
+    - name: Install kubernetes python package
+      ansible.builtin.pip:
+        name:  "{{ pip_modules }}"
+
     - name: add k8s apt key
       ansible.builtin.apt_key:
         url: "{{ k8s_url }}"

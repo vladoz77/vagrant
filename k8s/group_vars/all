@@ -10,8 +10,10 @@ soft_dependences:
    - nfs-common
    - nfs-kernel-server
    - ipvsadm
+   - python3-pip
 
-
+pip_modules:
+   - kubernetes
 modules:
    - overlay
    - br_netfilter

@@ -1,9 +1,15 @@
 ---
 - name: config node
-  hosts: all
+  hosts: master
   
-  become: true
+  become: false
   tasks:
+    - name: Get an existing Pods in the kubernetes cluster
+      ansible.builtin.shell:
+        kubectl get namespace calico-system
+        
+      register: service
+
     - ansible.builtin.debug:
-        var: playbook_dir
-   
+        var: service
+     
