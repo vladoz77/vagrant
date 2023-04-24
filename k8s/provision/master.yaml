@@ -65,6 +65,10 @@
       become: false
       when: network_exist.rc != 0
 
+    - name: untainde control-plane node
+      ansible.builtin.shell:
+        kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+
     - name: check if localdns exist
       ansible.builtin.shell:
          kubectl get pod -n kube-system 

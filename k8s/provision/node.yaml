@@ -2,6 +2,7 @@
   ignore_errors: true
   hosts: master
   tasks:
+    
     - name: get token for joinnig pod
       ansible.builtin.shell:
         kubeadm token create --print-join-command
