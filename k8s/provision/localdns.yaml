@@ -1,0 +1,25 @@
+---
+- name: install local dns
+  hosts: master
+  become: false
+  tasks: 
+     - name: check if localdns exist
+       ansible.builtin.shell:
+         kubectl get pod -n kube-system 
+       register: pod_output
+     
+     - name: install localdns
+       block:
+         - name: get kube-dns ip
+           kubernetes.core.k8s:
+              api_version: v1
+              kind: service
+              name: kube-dns
+              namespace: kube-system
+           register: kube_dns
+
+         - name: create localdns
+           kubernetes.core.k8s:
+             template: "{{ localdns_config }}"
+             state: present
+       when: "'node-local-dns' not in pod_output.stdout_lines | join(',')"

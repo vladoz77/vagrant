@@ -6,10 +6,14 @@
   tasks:
     - name: Get an existing Pods in the kubernetes cluster
       ansible.builtin.shell:
-        kubectl get namespace calico-system
+        kubectl get pod -n kube-system 
         
-      register: service
+      register: pod_output
 
     - ansible.builtin.debug:
-        var: service
-     
+        msg: ok
+      when: "'node-local-dns' in pod_output.stdout_lines | join(',')"
+      
+        
+
+      

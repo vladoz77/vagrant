@@ -12,3 +12,4 @@ custom_resource_temlate_dir: "{{playbook_dir}}/custom-resources.j2"
 # custom_resource_dir: /tmp/custom-resources.yaml
 kubeadm_temlate: "{{playbook_dir}}/kubeadm-config.j2"
 kubeadm_config: /tmp/kubeadm-config.yaml
+localdns_config: "{{playbook_dir}}/localdns.j2"

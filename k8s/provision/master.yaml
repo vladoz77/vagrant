@@ -62,9 +62,32 @@
           kubernetes.core.k8s:
              template: "{{ custom_resource_temlate_dir }}"
              state: present
-              
       become: false
       when: network_exist.rc != 0
+
+    - name: check if localdns exist
+      ansible.builtin.shell:
+         kubectl get pod -n kube-system 
+      register: pod_output
+      become: false
+     
+    - name: install localdns
+      block:
+         - name: get kube-dns ip
+           kubernetes.core.k8s:
+              api_version: v1
+              kind: service
+              name: kube-dns
+              namespace: kube-system
+           register: kube_dns
+
+         - name: create localdns
+           kubernetes.core.k8s:
+             template: "{{ localdns_config }}"
+             state: present
+      when: "'node-local-dns' not in pod_output.stdout_lines | join(',')"
+      become: false
+
 
 
 
