@@ -30,6 +30,7 @@ etcd:
 imageRepository: registry.k8s.io
 kind: ClusterConfiguration
 kubernetesVersion: {{ kubernetesVersion}}
+controlPlaneEndpoint: {{ vip_address }}
 networking:
   dnsDomain: cluster.local
   serviceSubnet: {{ serviceSubnet }}

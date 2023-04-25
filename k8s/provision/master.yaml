@@ -11,6 +11,11 @@
 
     - name: init cluster
       block:
+      #  - name: add kube-vip 
+      #    ansible.builtin.template:
+      #     src: "{{ kube_vip_template }}"
+      #     dest: /etc/kubernetes/manifests/kube-vip.yaml
+       
        - name: import k8s images
          ansible.builtin.shell:
             kubeadm config images pull
@@ -22,7 +27,11 @@
         
        - name: kubeadm init
          ansible.builtin.shell:
-           kubeadm init --config "{{ kubeadm_config }}"
+           kubeadm init --config "{{ kubeadm_config }}" 
+
+      #  - name: kubeadm init
+      #    ansible.builtin.shell:
+      #      kubeadm init --pod-network-cidr={{  }} --control-plane-endpoint={{ vip_address }} --apiserver-advertise-address={{ ansible_facts.eth1.ipv4.address }}
       when: isrunning.rc != 0
 
     - name: create .kube directory
@@ -65,9 +74,7 @@
       become: false
       when: network_exist.rc != 0
 
-    - name: untainde control-plane node
-      ansible.builtin.shell:
-        kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+   
 
     - name: check if localdns exist
       ansible.builtin.shell:

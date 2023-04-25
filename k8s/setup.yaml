@@ -4,15 +4,9 @@
   
   become: false
   tasks:
-    - name: Get an existing Pods in the kubernetes cluster
-      ansible.builtin.shell:
-        kubectl get pod -n kube-system 
-        
-      register: pod_output
-
+  
     - ansible.builtin.debug:
-        msg: ok
-      when: "'node-local-dns' in pod_output.stdout_lines | join(',')"
+        var: ansible_facts
       
         
 
