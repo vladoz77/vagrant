@@ -1,4 +1,5 @@
 apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
 bootstrapTokens:
 - groups:
   - system:bootstrappers:kubeadm:default-node-token
@@ -7,7 +8,6 @@ bootstrapTokens:
   usages:
   - signing
   - authentication
-kind: InitConfiguration
 localAPIEndpoint:
   advertiseAddress: {{ ansible_facts.eth1.ipv4.address }}
   bindPort: 6443
@@ -16,26 +16,44 @@ nodeRegistration:
   imagePullPolicy: IfNotPresent
   name: {{ ansible_hostname }}
   taints: null
+    # - effect: NoSchedule
+    #   key: node-role.kubernetes.io/master
+
 ---
-apiServer:
-  timeoutForControlPlane: 4m0s
 apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
 certificatesDir: /etc/kubernetes/pki
 clusterName: kubernetes
-controllerManager: {}
-dns: {}
 etcd:
   local:
     dataDir: /var/lib/etcd
-imageRepository: registry.k8s.io
-kind: ClusterConfiguration
+imageRepository: registry.aliyuncs.com/google_containers
+apiServer:
+  timeoutForControlPlane: 4m0s
 kubernetesVersion: {{ kubernetesVersion}}
-controlPlaneEndpoint: {{ vip_address }}
+#controlPlaneEndpoint: 192.168.59.100:7443
 networking:
   dnsDomain: cluster.local
   serviceSubnet: {{ serviceSubnet }}
   podSubnet: {{ podSubnet }}
+
 ---
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
 mode: ipvs
+ipvs:
+  strictARP: True
+
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+clusterDNS:
+- 169.254.20.10
+# systemReserved:
+#   memory: 512Mi
+#   cpu: 500m
+#   ephemeral-storage: 2Gi
+# Default: "10Mi"
+containerLogMaxSize: 1Mi
+# Default: 5
+containerLogMaxFiles: 3

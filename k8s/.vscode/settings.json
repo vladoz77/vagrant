@@ -6,7 +6,8 @@
             "file:///home/vlad/vagrant.d/k8s/provision/master%201.yaml",
             "file:///mnt/c/Users/vladi/vagrant/k8s/localdns.yaml",
             "file:///home/vlad/vagrant.d/k8s/localdns.yaml",
-            "file:///home/vlad/vagrant.d/k8s/provision/localdns.yaml"
+            "file:///home/vlad/vagrant.d/k8s/provision/localdns.yaml",
+            "file:///home/vlad/vagrant.d/k8s/ha-master.yaml"
         ]
     }
 }

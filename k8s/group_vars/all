@@ -38,4 +38,8 @@ containerd_url: https://github.com/containerd/containerd/releases/download/v1.7.
 
 #kube vip ip
 vip_address: 192.168.59.100
-kube_vip_template: "{{playbook_dir}}/kube-vip.j2"
+vip_port: 7443
+ha_soft:
+   - keepalived
+   - haproxy
+

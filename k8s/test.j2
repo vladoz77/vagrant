@@ -1,0 +1,7 @@
+{% if inventory_hostname == groups['node'][0] %}
+i am node1
+{%elif inventory_hostname == groups['node'][1] %}
+i am node 2
+{% else %}
+i am not node
+{%endif%}

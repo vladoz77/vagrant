@@ -1,12 +1,16 @@
 ---
 - name: config node
-  hosts: master
+  hosts: node
   
   become: false
   tasks:
+    - ansible.builtin.template:
+        src: "{{ playbook_dir }}/haproxy.j2"
+        dest: ~/haproxy.conf
   
-    - ansible.builtin.debug:
-        var: ansible_facts
+
+      
+      
       
         
 
