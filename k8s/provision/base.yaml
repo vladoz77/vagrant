@@ -16,7 +16,7 @@
       ansible.builtin.apt:
         name: "{{ soft_dependences }}"
         state: present
-        update_cache: true
+       
         
     - name: Install kubernetes python package
       ansible.builtin.pip:
