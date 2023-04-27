@@ -5,14 +5,14 @@ vrrp_script chk_haproxy {
 }
 
 vrrp_instance VI_1 {
-  interface {{ ansible_facts.interfaces[1] }}           # interface to monitor
-  {% if inventory_hostname == groups['node'][0] %}
+  interface eth1         # interface to monitor
+  {% if inventory_hostname == groups['master'][0] %}
   state MASTER                # MASTER on master, BACKUP on slaves
   {% else %}
   state BACKUP
   {%endif%}
   virtual_router_id 51
-  {% if inventory_hostname == groups['node'][0] %}
+  {% if inventory_hostname == groups['master'][0] %}
   priority 101                # 101 on master, 100 on slaves
   {% else %}
   priority 100

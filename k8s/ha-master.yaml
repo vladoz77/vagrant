@@ -1,32 +1,48 @@
 ---
 - name: ha install
   become: true
-  hosts: node
+  hosts: master
   tasks:
     - name: install soft for HA
       ansible.builtin.apt:
         name: "{{ha_soft}}"
         state: present
-      notify: restart_service
+      notify: enable_service
     
     - name: copy config haproxy
       ansible.builtin.template:
         src: "{{ playbook_dir }}/haproxy.j2"
         dest: /etc/haproxy/haproxy.cfg
+      register: haproxy_conf
+      notify: restart_haproxy  
      
 
     - name: copy config keepalived
       ansible.builtin.template:
         src: "{{ playbook_dir }}/keepalived.j2"
         dest: /etc/keepalived/keepalived.conf
+      register: keepalived_conf
+      notify: restart_keepalived
      
   handlers: 
-    - name: restart_service
+    - name: enable_service
       ansible.builtin.service:
         name: "{{item}}"
         enabled: true
-        state: restarted
+        state: started
       loop: "{{ha_soft}}"
+
+    - name: restart_keepalived
+      ansible.builtin.service:
+        name: keepalived
+        state: restarted
+      when: keepalived_conf.changed
+
+    - name: restart_haproxy
+      ansible.builtin.service:
+        name: haproxy
+        state: restarted
+      when:  haproxy_conf.changed
         
     
 

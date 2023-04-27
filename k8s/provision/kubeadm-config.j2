@@ -31,7 +31,7 @@ imageRepository: registry.aliyuncs.com/google_containers
 apiServer:
   timeoutForControlPlane: 4m0s
 kubernetesVersion: {{ kubernetesVersion}}
-#controlPlaneEndpoint: 192.168.59.100:7443
+controlPlaneEndpoint: {{vip_address}}
 networking:
   dnsDomain: cluster.local
   serviceSubnet: {{ serviceSubnet }}
