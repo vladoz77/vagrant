@@ -5,7 +5,13 @@
     - name: set timezone
       community.general.timezone:
         name: Europe/Moscow
-        
+
+    - name: Disable ufw
+      service:
+         name: ufw
+         state: stopped
+         enabled: no     
+   
     - name: install req software
       ansible.builtin.apt:
         name: "{{ soft_dependences }}"
@@ -32,6 +38,7 @@
         name: "{{ kube_soft_all }}"
         state: present
         update_cache: true
+        allow_downgrade: true
       notify: start service
       
     - name: add url for containerd
@@ -56,7 +63,7 @@
         src: "{{ containerd_url }}"
         dest: /usr/
         remote_src: yes
-
+   
     - name: update config containerd
       ansible.builtin.shell:
         containerd config default | sudo tee /etc/containerd/config.toml

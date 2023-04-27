@@ -21,7 +21,7 @@ frontend main
 
 backend app
     balance     roundrobin
-{% for server in groups['node']%}
+{% for server in groups['master']%}
     server {{ hostvars[server].ansible_hostname}} {{ hostvars[server].ansible_facts.eth1.ipv4.address}}:6443 check
 {% endfor %}
     # server control1 192.168.218.171:6443 check
