@@ -19,11 +19,11 @@ modules:
    - br_netfilter
 
 #For k8s
-version: '1.27.0-00'
+kubernetesVersion: '1.26.3'
 kube_soft_all:
-   - kubelet
-   - kubeadm
-   - kubectl
+   - kubelet={{ kubernetesVersion }}-00
+   - kubeadm={{ kubernetesVersion }}-00
+   - kubectl={{ kubernetesVersion }}-00
 
 docker_soft:
    - containerd.io
