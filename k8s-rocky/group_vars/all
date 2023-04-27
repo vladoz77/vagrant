@@ -1,0 +1,30 @@
+#User data
+user: vlad
+password: '8231'
+
+#Repo data
+
+#Req soft
+soft_for_install:
+      - curl
+      - iproute-tc
+      - vim
+      - git
+      - bash-completion
+      - nfs-utils
+      - python3
+      - tar
+      - rsyslog
+      - containerd.io
+      - kubectl
+      - kubelet
+      - kubeadm
+      - ipvsadm
+      - python3-pip
+#Req modules
+modules:
+  - overlay
+  - br_netfilter
+#Req pip module
+pip_modules:
+   - kubernetes

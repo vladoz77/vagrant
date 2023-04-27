@@ -30,7 +30,11 @@ imageRepository: "registry.k8s.io"
 apiServer:
   timeoutForControlPlane: 4m0s
 kubernetesVersion: {{ kubernetesVersion}}
+<<<<<<< HEAD
 controlPlaneEndpoint: {{ vip_address }}
+=======
+#controlPlaneEndpoint: 
+>>>>>>> f1170de4daae864259fcfd969a480136a40e580d
 networking:
   dnsDomain: cluster.local
   serviceSubnet: {{ serviceSubnet }}

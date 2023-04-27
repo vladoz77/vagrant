@@ -19,11 +19,11 @@ modules:
    - br_netfilter
 
 #For k8s
-version: '1.27.0-00'
+kubernetesVersion: '1.26.3'
 kube_soft_all:
-   - kubelet
-   - kubeadm
-   - kubectl
+   - kubelet={{ kubernetesVersion }}-00
+   - kubeadm={{ kubernetesVersion }}-00
+   - kubectl={{ kubernetesVersion }}-00
 
 docker_soft:
    - containerd.io
@@ -36,10 +36,5 @@ docker_url: https://download.docker.com/linux/{{ ansible_facts.distribution | lo
 docker_repo: deb https://download.docker.com/linux/{{ ansible_facts.distribution | lower }} {{ ansible_facts.distribution_release }} stable
 containerd_url: https://github.com/containerd/containerd/releases/download/v1.7.0/containerd-1.7.0-linux-amd64.tar.gz
 
-#kube vip ip
-vip_address: 192.168.59.100
-vip_port: 7443
-ha_soft:
-   - keepalived
-   - haproxy
+
 
