@@ -6,6 +6,7 @@ password: '8231'
 
 #Req soft
 soft_for_install:
+      - nano
       - curl
       - iproute-tc
       - vim
@@ -13,14 +14,13 @@ soft_for_install:
       - bash-completion
       - nfs-utils
       - python3
-      - tar
-      - rsyslog
-      - containerd.io
+      # - containerd.io
       - kubectl
       - kubelet
       - kubeadm
       - ipvsadm
       - python3-pip
+      - cri-o
 #Req modules
 modules:
   - overlay
