@@ -11,6 +11,7 @@
 # Init cluster
     - name: init cluster
       block:
+
       #  - name: add kube-vip 
       #    ansible.builtin.template:
       #     src: "{{ kube_vip_template }}"
@@ -54,12 +55,13 @@
        
         - name: apply network operator
           ansible.builtin.shell:
-            kubectl create -f {{network_operator}}
+            kubectl apply -f "{{flannel}}"
         
-        - name: install calico network
-          kubernetes.core.k8s:
-             template: "{{ custom_resource }}"
-             state: present
+        # - name: install calico network
+        #   kubernetes.core.k8s:
+        #      template: "{{ calico }}"
+        #      state: present
+      
       become: false
       when: network_exist.rc != 0
 
@@ -85,6 +87,7 @@
            kubernetes.core.k8s:
              template: "{{ localdns_config }}"
              state: present
+      
       when: "'node-local-dns' not in pod_output.stdout_lines | join(',')"
       become: false
 

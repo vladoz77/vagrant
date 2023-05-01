@@ -35,7 +35,7 @@ extraArgs:
     service-cluster-ip-range: {{ serviceSubnet }}
     service-node-port-range: 30000-32767
 #kubernetesVersion: 
-# controlPlaneEndpoint: {{ vip_address }}
+#controlPlaneEndpoint: {{ vip_address }}
 networking:
   dnsDomain: cluster.local
   serviceSubnet: {{ serviceSubnet }}
