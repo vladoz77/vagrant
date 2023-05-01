@@ -5,6 +5,7 @@ password: '8231'
 #Repo data
 
 #Req soft
+# kubernetesVersion: '1.26.3'
 soft_for_install:
       - nano
       - curl
@@ -14,13 +15,13 @@ soft_for_install:
       - bash-completion
       - nfs-utils
       - python3
-      # - containerd.io
+      - containerd.io
       - kubectl
       - kubelet
       - kubeadm
       - ipvsadm
       - python3-pip
-      - cri-o
+      # - cri-o
 #Req modules
 modules:
   - overlay

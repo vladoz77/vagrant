@@ -1,0 +1,1 @@
+{"dependencies":[["vagrant-hostmanager",["= 1.8.9"]],["rake",[">= 0"]],["virtualbox_WSL2",["= 0.1.3"]]],"checksum":"297a6cd33258302e8eba9a7600656bf59ba556b79b9ecb8f799754fb12c5d347","vagrant_version":"2.3.4"}

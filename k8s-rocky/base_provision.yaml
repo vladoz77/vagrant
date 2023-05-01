@@ -29,3 +29,5 @@
         path: /etc/hosts
         line: "{{hostvars[item].ansible_facts.eth1.ipv4.address}} {{hostvars[item].ansible_hostname}}"
       loop: "{{groups['all']}}"
+
+    
