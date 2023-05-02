@@ -103,11 +103,6 @@
       notify: restart service
 
   handlers:
-     - name: start service
-       ansible.builtin.service:
-        name: kubelet
-        state: started
-        enabled: true
 
      - name: restart service
        ansible.builtin.service:
