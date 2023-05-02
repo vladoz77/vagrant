@@ -11,17 +11,7 @@
          name: ufw
          state: stopped
          enabled: no     
-   
-    - name: install req software
-      ansible.builtin.apt:
-        name: "{{ soft_dependences }}"
-        state: present
-       
-        
-    - name: Install kubernetes python package
-      ansible.builtin.pip:
-        name:  "{{ pip_modules }}"
-
+    
     - name: add k8s apt key
       ansible.builtin.apt_key:
         url: "{{ k8s_url }}"
@@ -33,14 +23,6 @@
         state: present
         filename: 'kubernetes'
     
-    - name: install soft
-      ansible.builtin.apt:
-        name: "{{ kube_soft_all }}"
-        state: present
-        update_cache: true
-        allow_downgrade: true
-      notify: start service
-      
     - name: add url for containerd
       ansible.builtin.apt_key:
         url: "{{ docker_url }}"
@@ -51,13 +33,18 @@
       ansible.builtin.apt_repository:
         repo:  "{{ docker_repo }}"
         state: present
-
-    - name: install contaonerd soft
+    
+    - name: install req software
       ansible.builtin.apt:
-        name: "{{ docker_soft }}"
+        name: "{{ soft_dependences }}"
         state: present
-        update_cache: true
+       
+        
+    - name: Install kubernetes python package
+      ansible.builtin.pip:
+        name:  "{{ pip_modules }}"
 
+    
     - name: update containerd to 1.7
       ansible.builtin.unarchive:
         src: "{{ containerd_url }}"
@@ -116,11 +103,6 @@
       notify: restart service
 
   handlers:
-     - name: start service
-       ansible.builtin.service:
-        name: kubelet
-        state: started
-        enabled: true
 
      - name: restart service
        ansible.builtin.service:

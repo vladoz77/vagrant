@@ -1,7 +1,9 @@
 #For dependences
+ansible_python_interpreter: /usr/bin/python3
 name: vlad
 password: '8231'
 home_kube_dir: /home/{{ name }}/.kube
+kubernetesVersion: '1.27.1'
 soft_dependences:
    - curl
    - ca-certificates
@@ -11,23 +13,16 @@ soft_dependences:
    - nfs-kernel-server
    - ipvsadm
    - python3-pip
+   - kubelet={{ kubernetesVersion }}-00
+   - kubeadm={{ kubernetesVersion }}-00
+   - kubectl={{ kubernetesVersion }}-00
+   - containerd.io
 
 pip_modules:
    - kubernetes
 modules:
    - overlay
    - br_netfilter
-
-#For k8s
-kubernetesVersion: '1.26.3'
-kube_soft_all:
-   - kubelet={{ kubernetesVersion }}-00
-   - kubeadm={{ kubernetesVersion }}-00
-   - kubectl={{ kubernetesVersion }}-00
-
-docker_soft:
-   - containerd.io
- 
 
 #repo
 k8s_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
