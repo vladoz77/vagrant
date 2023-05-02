@@ -16,6 +16,10 @@
       #     src: "{{ kube_vip_template }}"
       #     dest: /etc/kubernetes/manifests/kube-vip.yaml
        
+       - name: k8s image pull
+         ansible.builtin.shell:
+          sudo kubeadm config images pull
+
        - name: copy template kubeadm
          ansible.builtin.template:
           src: "{{ kubeadm_temlate }}"
@@ -25,9 +29,7 @@
          ansible.builtin.shell:
            kubeadm init --config "{{ kubeadm_config }}" 
 
-      #  - name: kubeadm init
-      #    ansible.builtin.shell:
-      #      kubeadm init --pod-network-cidr={{  }} --control-plane-endpoint={{ vip_address }} --apiserver-advertise-address={{ ansible_facts.eth1.ipv4.address }}
+     
       when: isrunning.rc != 0
 
     - name: create .kube directory
@@ -44,7 +46,7 @@
         remote_src: true
         owner: "{{ name }}"
        
-# Add network plugin    
+# Add network plugin or calico-system   
     - name: check if pod network exist
       become: false
       ansible.builtin.shell: kubectl get namespaces calico-system
@@ -63,9 +65,9 @@
             src: ~/network_operator.yaml
             state: present
         
-        - name: install calico network
+        - name: install  network plugin
           kubernetes.core.k8s:
-            template: "{{ custom_resource }}"
+            template: "{{ calico }}"
             state: present
       
       become: false
@@ -92,6 +94,7 @@
            kubernetes.core.k8s:
              template: "{{ localdns_config }}"
              state: present
+      
       when: "'node-local-dns' not in pod_output.stdout_lines | join(',')"
       become: false
 

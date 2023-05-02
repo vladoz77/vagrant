@@ -7,10 +7,11 @@ kubeadm_temlate: "{{playbook_dir}}/kubeadm-config.j2"
 kubeadm_config: /tmp/kubeadm-config.yaml
 
 #network plugin
-flanel: https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
-calico: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/calico.yaml
+#flannel cni
+flannel: "{{playbook_dir}}/kube-flannel.j2"
+#calico cni
 network_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
-custom_resource: "{{playbook_dir}}/custom-resources.j2"
+calico: "{{playbook_dir}}/kube-calico.j2"
 
 #nodelocaldns
 localdns_config: "{{playbook_dir}}/localdns.j2"

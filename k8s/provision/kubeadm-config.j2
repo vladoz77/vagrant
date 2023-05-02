@@ -1,4 +1,3 @@
-
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration
 bootstrapTokens:
@@ -14,7 +13,7 @@ localAPIEndpoint:
 nodeRegistration:
   criSocket: "unix:///var/run/containerd/containerd.sock"
   imagePullPolicy: IfNotPresent
-  name: kubernetes
+  name: {{ ansible_hostname }}
   taints:
   - effect: NoSchedule
     key: node-role.kubernetes.io/maste
@@ -32,27 +31,20 @@ etcd:
 imageRepository: "registry.k8s.io"
 apiServer:
   timeoutForControlPlane: 4m0s
-  extraArgs:
-    authorization-mode: Node,RBAC
-    bind-address: 0.0.0.0
-    service-cluster-ip-range: {{ serviceSubnet }}
-    service-node-port-range: 30000-32767
 kubernetesVersion: {{ kubernetesVersion }}
-controlPlaneEndpoint: 192.168.218.189:7443
+#controlPlaneEndpoint: 
 networking:
   dnsDomain: cluster.local
   podSubnet: {{ podSubnet }}
   serviceSubnet: {{ serviceSubnet }}
-scheduler: {}
 
 ---
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
-bindAddress: 0.0.0.0
-clusterCIDR: {{ podSubnet }}
+mode: ipvs
 ipvs:
   strictARP: True
-mode: ipvs
+
 
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
