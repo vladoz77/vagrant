@@ -13,5 +13,6 @@ home_kube_dir: /home/{{ user }}/.kube
 podSubnet: 10.244.0.0/16
 serviceSubnet: 10.243.0.0/16
 network_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
-calico: "{{playbook_dir}}/custom-resources.j2"
-flannel: https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+calico: "{{playbook_dir}}/kube-calico.j2"
+calico_manifest: "{{playbook_dir}}/calico_manifest.j2"
+flannel:  "{{playbook_dir}}/kube-flannel.j2"

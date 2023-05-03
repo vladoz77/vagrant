@@ -50,17 +50,23 @@
       register: network_exist
 
 
-    - name: install calico 
+    - name: install network plugin 
       block:
        
-        - name: apply network operator
-          ansible.builtin.shell:
-            kubectl apply -f "{{flannel}}"
-        
-        # - name: install calico network
+        # - name: download network operator
+        #   ansible.builtin.uri:
+        #     url: "{{flannel}}"
+        #     dest: ~/network_operator.yaml
+
+        # - name: install calico network operator
         #   kubernetes.core.k8s:
-        #      template: "{{ calico }}"
+        #      src: ~/network_operator.yaml
         #      state: present
+        
+        - name: install calico network
+          kubernetes.core.k8s:
+             template: "{{ flannel }}"
+             state: present
       
       become: false
       when: network_exist.rc != 0

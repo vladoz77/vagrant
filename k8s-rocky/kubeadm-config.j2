@@ -15,8 +15,7 @@ nodeRegistration:
   imagePullPolicy: IfNotPresent
   name: {{ ansible_hostname }}
   taints: null
-    # - effect: NoSchedule
-    #   key: node-role.kubernetes.io/master
+
 
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
@@ -29,11 +28,6 @@ etcd:
 imageRepository: registry.k8s.io
 apiServer:
   timeoutForControlPlane: 4m0s
-extraArgs:
-    authorization-mode: Node,RBAC
-    bind-address: 0.0.0.0
-    service-cluster-ip-range: {{ serviceSubnet }}
-    service-node-port-range: 30000-32767
 #kubernetesVersion: 
 #controlPlaneEndpoint: {{ vip_address }}
 networking:
@@ -44,8 +38,6 @@ networking:
 ---
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
-bindAddress: 0.0.0.0
-clusterCIDR: {{ podSubnet }}
 mode: ipvs
 ipvs:
   strictARP: True
