@@ -66,7 +66,7 @@
 #Можно установить либо calico либо flannel       
         - name: install  network plugin
           kubernetes.core.k8s:
-             template: "{{ flannel }}"
+             template: "{{ calico_manifest }}"
              state: present
       
       become: false
