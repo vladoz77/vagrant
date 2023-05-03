@@ -63,7 +63,8 @@
         #      src: ~/network_operator.yaml
         #      state: present
         
-        - name: install calico network
+#Можно установить либо calico либо flannel       
+        - name: install  network plugin
           kubernetes.core.k8s:
              template: "{{ flannel }}"
              state: present
