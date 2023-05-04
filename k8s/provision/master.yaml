@@ -16,9 +16,9 @@
       #     src: "{{ kube_vip_template }}"
       #     dest: /etc/kubernetes/manifests/kube-vip.yaml
        
-       - name: k8s image pull
-         ansible.builtin.shell:
-          sudo kubeadm config images pull
+      #  - name: k8s image pull
+      #    ansible.builtin.shell:
+      #     sudo kubeadm config images pull
 
        - name: copy template kubeadm
          ansible.builtin.template:

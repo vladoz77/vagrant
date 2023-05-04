@@ -4,6 +4,8 @@
   vars:
     name: vlad
     password: '8231'
+    ansible_python_interpreter: /usr/bin/python3
+
   tasks:
     
     - name: set timezone

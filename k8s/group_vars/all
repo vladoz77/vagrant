@@ -3,7 +3,7 @@ ansible_python_interpreter: /usr/bin/python3
 name: vlad
 password: '8231'
 home_kube_dir: /home/{{ name }}/.kube
-kubernetesVersion: '1.27.1'
+kubernetesVersion: '1.26.3'
 soft_dependences:
    - curl
    - ca-certificates
