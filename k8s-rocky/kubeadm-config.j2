@@ -28,7 +28,7 @@ etcd:
 imageRepository: registry.k8s.io
 apiServer:
   timeoutForControlPlane: 4m0s
-#kubernetesVersion: 
+kubernetesVersion: {{ kubernetesVersion }}
 #controlPlaneEndpoint: {{ vip_address }}
 networking:
   dnsDomain: cluster.local
