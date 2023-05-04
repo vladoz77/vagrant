@@ -55,15 +55,15 @@
     - name: install calico 
       block:
        
-        - name: download network operator
-          ansible.builtin.uri:
-            url: "{{network_operator}}"
-            dest: ~/network_operator.yaml
+        # - name: download network operator
+        #   ansible.builtin.uri:
+        #     url: "{{network_operator}}"
+        #     dest: ~/network_operator.yaml
 
-        - name: install calico network operator
-          kubernetes.core.k8s:
-            src: ~/network_operator.yaml
-            state: present
+        # - name: install calico network operator
+        #   kubernetes.core.k8s:
+        #     src: ~/network_operator.yaml
+        #     state: present
         
         - name: install  network plugin
           kubernetes.core.k8s:

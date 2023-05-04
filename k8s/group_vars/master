@@ -9,9 +9,11 @@ kubeadm_config: /tmp/kubeadm-config.yaml
 #network plugin
 #flannel cni
 flannel: "{{playbook_dir}}/kube-flannel.j2"
-#calico cni
+#calico operator
 network_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
-calico: "{{playbook_dir}}/kube-calico.j2"
+custom_res: "{{playbook_dir}}/kube-calico.j2"
+#calico manifest
+calico: "{{playbook_dir}}/calico.j2"
 
 #nodelocaldns
 localdns_config: "{{playbook_dir}}/localdns.j2"
