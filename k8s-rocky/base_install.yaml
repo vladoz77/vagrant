@@ -88,6 +88,7 @@
           net.bridge.bridge-nf-call-iptables = 1
           net.ipv4.ip_forward = 1
           
+          
 
     - name: reload syctl parametrs
       ansible.builtin.shell:

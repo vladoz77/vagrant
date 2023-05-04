@@ -16,9 +16,9 @@ soft_for_install:
       - nfs-utils
       - python3
       - containerd.io
-      - kubectl
-      - kubelet
-      - kubeadm
+      - kubectl-{{ kubernetesVersion }}-0.x86_64
+      - kubelet-{{ kubernetesVersion }}-0.x86_64
+      - kubeadm-{{ kubernetesVersion }}-0.x86_64
       - ipvsadm
       - python3-pip
       # - cri-o
