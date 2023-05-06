@@ -1,0 +1,41 @@
+- name: base_provision
+  hosts: all
+  become: true
+  vars:
+    name: vlad
+    password: '8231'
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    
+    - name: set timezone
+      community.general.timezone:
+        name: Europe/Moscow
+      
+    - name: set hostname
+      ansible.builtin.hostname:
+        name: "{{ hostname }}"  
+
+    - name: create user
+      ansible.builtin.user:
+        name: "{{ name }}"
+        groups: wheel
+        password: "{{ password | password_hash('sha512') }}"
+        shell: "{{ shell | default('/bin/bash') }}" 
+        state: present
+        
+
+    - name: add ssh keys
+      authorized_key:
+        user: "{{ name }}"
+        state: present
+        key: "{{ lookup('file', '/home/{{ name }}/.ssh/id_rsa.pub') }}"
+
+    - name: update file /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{hostvars[item].ansible_default_ipv4.address}} {{hostvars[item].ansible_hostname}}"
+      loop: "{{groups['all']}}"
+
+
+   
