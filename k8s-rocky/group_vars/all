@@ -7,6 +7,7 @@ password: '8231'
 #Req soft
 kubernetesVersion: '1.26.3'
 soft_for_install:
+      - wget
       - nano
       - curl
       - iproute-tc
@@ -26,6 +27,13 @@ soft_for_install:
 modules:
   - overlay
   - br_netfilter
+
+#sysctl param
+sysctl_param:
+  - net.bridge.bridge-nf-call-ip6tables
+  - net.bridge.bridge-nf-call-iptables
+  - net.ipv4.ip_forward
+
 #Req pip module
 pip_modules:
    - kubernetes

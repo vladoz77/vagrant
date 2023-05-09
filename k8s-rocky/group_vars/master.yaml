@@ -1,6 +1,6 @@
 #Kube-vip
-kube_vip_template: "{{playbook_dir}}/kube-vip-bgp.j2"
-vip_address: 192.168.59.100
+kube_vip_template: "{{playbook_dir}}/kube-vip.j2"
+vip_address: 172.16.10.254
 
 #Kube config file
 base_kube_conf_dir: /etc/kubernetes/admin.conf

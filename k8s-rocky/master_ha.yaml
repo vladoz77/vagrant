@@ -34,7 +34,7 @@
     
     - name: add master
       shell: 
-          "{{hostvars[groups['master'][0] ].join_master}} --apiserver-advertise-address {{ ansible_facts.eth1.ipv4.address }}"
+          "{{hostvars[groups['master'][0] ].join_master}}"
     
     
     - name: create .kube directory

@@ -8,7 +8,7 @@ bootstrapTokens:
   - signing
   - authentication
 localAPIEndpoint:
-  advertiseAddress: {{ ansible_facts.eth1.ipv4.address }}
+  advertiseAddress: {{ ansible_default_ipv4.address }}
   bindPort: 6443
 nodeRegistration:
   criSocket: unix:///var/run/containerd/containerd.sock
