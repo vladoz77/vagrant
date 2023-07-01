@@ -5,6 +5,6 @@
 [node]
 172.16.10.10 hostname=node1
 172.16.10.11 hostname=node2
-172.16.10.12 hostname=node3
+#172.16.10.12 hostname=node3
 [nfs]
 172.16.10.50 hostname=nfs

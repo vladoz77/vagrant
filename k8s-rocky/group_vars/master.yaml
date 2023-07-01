@@ -15,4 +15,4 @@ serviceSubnet: 10.243.0.0/16
 network_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
 calico: "{{playbook_dir}}/kube-calico.j2"
 calico_manifest: "{{playbook_dir}}/calico_manifest.j2"
-flannel:  "{{playbook_dir}}/kube-flannel.j2"
+# flannel:  "{{playbook_dir}}/kube-flannel.j2"

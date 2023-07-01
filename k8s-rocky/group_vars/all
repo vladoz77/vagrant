@@ -5,7 +5,7 @@ password: '8231'
 #Repo data
 
 #Req soft
-kubernetesVersion: '1.26.3'
+kubernetesVersion: '1.27.3'
 soft_for_install:
       - wget
       - nano
