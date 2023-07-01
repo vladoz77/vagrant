@@ -1,6 +1,6 @@
 ---
 - name: prepair k8s cluster
-  hosts: all
+  hosts: master, node
   become: true
   tasks:
 #add repo for k8s and containerd
