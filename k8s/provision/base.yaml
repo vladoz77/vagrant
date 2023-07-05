@@ -45,7 +45,7 @@
         name:  "{{ pip_modules }}"
 
     
-    - name: update containerd to 1.7
+    - name: update containerd to 1.7.2
       ansible.builtin.unarchive:
         src: "{{ containerd_url }}"
         dest: /usr/

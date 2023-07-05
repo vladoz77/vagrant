@@ -29,7 +29,7 @@ k8s_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
 k8s_repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
 docker_url: https://download.docker.com/linux/{{ ansible_facts.distribution | lower }}/gpg
 docker_repo: deb https://download.docker.com/linux/{{ ansible_facts.distribution | lower }} {{ ansible_facts.distribution_release }} stable
-containerd_url: https://github.com/containerd/containerd/releases/download/v1.7.0/containerd-1.7.0-linux-amd64.tar.gz
+containerd_url: https://github.com/containerd/containerd/releases/download/v1.7.2/containerd-1.7.2-linux-amd64.tar.gz
 
 
 
