@@ -1,6 +1,6 @@
 ---
 - name: prepair k8s cluster
-  hosts: all
+  hosts: master, node
   become: true
   tasks:
 #add repo for k8s and containerd
@@ -117,20 +117,7 @@
       ansible.builtin.shell:
         containerd config default | sudo tee /etc/containerd/config.toml
       notify: restart containerd
-    #   ansible.builtin.blockinfile:
-    #     dest: /etc/containers/registries.conf
-    #     block: |
-    #       unqualified-search-registries = ["user.private.repo"]
-
-    #       [[registry]]
-    #       prefix = "registry.k8s.io"
-    #       insecure = false
-    #       blocked = false
-    #       location = "registry.k8s.io"
-
-    #       [[registry.mirror]]
-    #       location = "user.private.repo"
-    #   notify: restart service
+    
 
 # edit bashrc
     - name: bashrc edit

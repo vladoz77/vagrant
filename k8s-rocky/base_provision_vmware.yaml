@@ -33,4 +33,5 @@
         line: "{{hostvars[item].ansible_default_ipv4.address}} {{hostvars[item].ansible_hostname}}"
       loop: "{{groups['all']}}"
 
-    
+    - name: Unconditionally reboot the machine with all defaults
+      ansible.builtin.reboot:
