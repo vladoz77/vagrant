@@ -1,7 +1,0 @@
----
-# defaults file for docker_install
-docker_group: docker
-docker_soft:
-  - docker-ce
-  - docker-ce-cli
-  - containerd.io
