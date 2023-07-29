@@ -35,7 +35,14 @@ networking:
   dnsDomain: cluster.local
   serviceSubnet: {{ serviceSubnet }}
   podSubnet: {{ podSubnet }}
-
+controllerManager: 
+  extraArgs:
+    address: 0.0.0.0
+    bind-address: 0.0.0.0
+scheduler:
+  extraArgs:
+    address: 0.0.0.0
+    bind-address: 0.0.0.0
 ---
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
