@@ -101,6 +101,13 @@
         value: "1" 
         reload: true
       loop: "{{ sysctl_param }}"
+
+    - name: set vm.max_map_count in 262144
+      ansible.posix.sysctl:
+        name: vm.max_map_count
+        state: present
+        value: "262144"
+        reload: true
   
     - name: disable swap 
       ansible.builtin.shell:
