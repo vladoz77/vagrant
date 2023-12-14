@@ -1,0 +1,8 @@
+---
+hostname: rocky
+user:
+  - name: vlad
+    password: 8231
+    groups:
+      - wheel
+    
