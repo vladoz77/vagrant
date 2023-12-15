@@ -17,18 +17,6 @@
         gpgcheck: true
         state: present
 
-    # - name: add repo for crio
-    #   ansible.builtin.yum_repository:
-    #     name: devel:kubic:libcontainers:stable:cri-o:1.26
-    #     description: crio
-    #     baseurl:
-    #       - https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.26/CentOS_8/
-    #     gpgkey:
-    #       - https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.26/CentOS_8/repodata/repomd.xml.key
-    #     enabled: true
-    #     gpgcheck: true
-    #     state: present
-
     - name: add repo for containerd
       ansible.builtin.yum_repository:
         name: containerd

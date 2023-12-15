@@ -8,15 +8,11 @@
         ps -aux | grep kube-api | grep -v grep
       register: isrunning
       ignore_errors: true
+
 # Init cluster
     - name: init cluster
       block:
 
-      #  - name: add kube-vip 
-      #    ansible.builtin.template:
-      #     src: "{{ kube_vip_template }}"
-      #     dest: /etc/kubernetes/manifests/kube-vip.yaml
-     
        - name: copy template kubeadm
          ansible.builtin.template:
           src: "{{ kubeadm_temlate }}"
