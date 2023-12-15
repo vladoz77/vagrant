@@ -3,14 +3,11 @@
   become: true
   ignore_errors: true
   tasks:
-    - name: update hostname
-      ansible.builtin.hostname:
-        name: "{{ hostname }}"
 
     - name: create user
       ansible.builtin.user:
         name: "{{ item.name }}"
-        groups: "{{ item.groups | | default( item.name ) }}"
+        groups: "{{ item.groups }}"
         password: "{{ item.password | password_hash('sha512') }}"
         shell: /bin/bash
         state: present
@@ -19,7 +16,7 @@
 
     - name: add ssh keys
       authorized_key:
-        user: "{{ item.user }}"
+        user: "{{ item.name }}"
         state: present
         key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
       loop: "{{ user }}"
