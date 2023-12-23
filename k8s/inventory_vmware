@@ -1,0 +1,6 @@
+[master]
+172.16.10.5 hostname=mater1
+[node]
+172.16.10.10 hostname=node1
+172.16.10.11 hostname=node2
+172.16.10.12 hostname=node3

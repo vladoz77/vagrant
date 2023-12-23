@@ -9,5 +9,6 @@
             "file:///home/vlad/vagrant.d/k8s/provision/localdns.yaml",
             "file:///home/vlad/vagrant.d/k8s/ha-master.yaml"
         ]
-    }
+    },
+    "ansible.python.interpreterPath": "/bin/python3"
 }

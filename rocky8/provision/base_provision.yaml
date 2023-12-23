@@ -1,14 +1,15 @@
 - name: base_provision
   hosts: all
   become: true
+  ignore_errors: true
   tasks:
-  
+
     - name: create user
       ansible.builtin.user:
         name: "{{ item.name }}"
         groups: "{{ item.groups }}"
         password: "{{ item.password | password_hash('sha512') }}"
-        shell: "{{ item.shell | default('/bin/bash') }}" 
+        shell: /bin/bash
         state: present
       loop: "{{ user }}"
         
@@ -17,22 +18,11 @@
       authorized_key:
         user: "{{ item.name }}"
         state: present
-        key: "{{ lookup('file', '/home/{{ item.name }}/.ssh/id_rsa.pub') }}"
+        key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
       loop: "{{ user }}"
 
     - name: update file /etc/hosts
       ansible.builtin.lineinfile:
         path: /etc/hosts
-        line: "{{hostvars[item].ansible_facts.enp0s8.ipv4.address}} {{hostvars[item].ansible_hostname}}"
+        line: "{{hostvars[item].ansible_fact.ens160.ipv4.address}} {{hostvars[item].ansible_hostname}}"
       loop: "{{groups['all']}}"
-
-    
-      
-
-    
-        
-           
-        
-        
-        
-          
