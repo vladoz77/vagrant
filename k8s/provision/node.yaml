@@ -12,6 +12,9 @@
       ansible.builtin.set_fact:
         join_command: "{{kube_join_token.stdout_lines[0]}}"
 
+    - ansible.builtin.debug:
+        var: join_command
+
 - name: config node
   hosts: node
   become: true

@@ -1,7 +1,0 @@
-{% if inventory_hostname == groups['master'][0] %}
-i am node1
-{%elif inventory_hostname == groups['master'][1] %}
-i am node 2
-{% else %}
-i am not node
-{%endif%}

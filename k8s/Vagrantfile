@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
         
 
     end    
-    Node = 2
+    Node = 1
     Master =1
     
     # VM config node
@@ -18,7 +18,7 @@ Vagrant.configure("2") do |config|
            node.vm.hostname = "node#{node_id}"
            node.vm.network "private_network", ip: "192.168.59.#{10+node_id}"
            node.vm.provider "virtualbox" do |vb|
-             vb.memory = 800
+             vb.memory = 2048
              vb.linked_clone = true
            end
         end
