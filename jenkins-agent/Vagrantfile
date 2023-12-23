@@ -1,0 +1,32 @@
+# ENV['VAGRANT_SERVER_URL'] = 'http://vagrant.elab.pro'
+Vagrant.configure("2") do |config|
+    # General configuration
+    config.vm.box = "generic/ubuntu2204"
+    #config.vm.synced_folder ".", "/vagrant", disabled: true
+    config.ssh.insert_key = false
+    
+    # Config VM provider
+    config.vm.provider "virtualbox" do |vb|
+       vb.memory = 2048
+       vb.cpus = 2
+       vb.linked_clone = true
+    end
+    
+    # VM provision
+    config.vm.provision "ansible" do |ansible|
+      ansible.limit = "all"
+      ansible.playbook = "provisioning/provision.yaml"
+      ansible.inventory_path = "provisioning/inventory"
+    end
+    
+    #Config servers
+    #ubuntu
+    config.vm.define "ubuntu" do |ubuntu|
+      ubuntu.vm.hostname = "jenkins-agent"
+      ubuntu.vm.network "private_network", ip: "192.168.56.100"
+    end
+  
+   
+  
+  end
+  
