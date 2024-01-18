@@ -25,18 +25,6 @@
         line: "{{hostvars[item].ansible_facts.eth1.ipv4.address}} {{hostvars[item].ansible_hostname}}"
       loop: "{{groups['all']}}"
 
-    - name: add gpg key
-      ansible.builtin.apt_key:
-        url: "{{ item }}"
-        state: present
-        validate_certs: no
-      loop: "{{ gpg_keys }}"
-
-    - name: add repo
-      ansible.builtin.apt_repository:
-        repo:  "{{ item }}"
-        state: present
-      loop: "{{ repo }}"
     
     - name: update package
       ansible.builtin.apt:
@@ -50,17 +38,7 @@
         state: present
         update_cache: true
 
-    - name: modify usergroup
-      ansible.builtin.user:
-        name: "{{ item.name }}"
-        groups: "{{ item.groups }}"
-        state:  present
-      loop: "{{ user }}"
-        
-    - name: Change /var/run/docker.sock permission
-      ansible.builtin.file:
-        path: /var/run/docker.sock
-        mode: '0666'
+    
            
         
         
