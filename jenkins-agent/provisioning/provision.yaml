@@ -38,11 +38,10 @@
         state: present
       loop: "{{ repo }}"
     
-    - name: update package
+    - name: Update all packages to their latest version
       ansible.builtin.apt:
-        name: '*'
+        name: "*"
         state: latest
-        update_cache: true
 
     - name: install base soft
       ansible.builtin.apt:
