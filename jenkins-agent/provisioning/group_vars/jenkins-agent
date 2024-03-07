@@ -1,15 +1,17 @@
 ---
 # User list
 user:
-  - name: vlad
-    password: "8231"
-    groups: 
-     - sudo
-  
   - name: jenkins
     password: "jenkins"
     groups: 
      - sudo
+    # ssh_key_path: /home/vlad/.ssh/id_rsa.pub
+    
+  
+  # - name: jenkins
+  #   password: "jenkins"
+  #   groups: 
+  #    - sudo
      
 # gpg keys 
 gpg_keys:
@@ -32,7 +34,8 @@ soft:
   - docker-ce
   - docker-ce-cli
   - python3-docker
-  
+  - git
+  - default-jdk
 
 # service
 service_name:
