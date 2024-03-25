@@ -1,17 +1,17 @@
 ---
 # User list
+# group_name:
+#   - docker
+
 user:
   - name: jenkins
     password: "jenkins"
     groups: 
      - sudo
-    # ssh_key_path: /home/vlad/.ssh/id_rsa.pub
+    ssh_key_path: /home/vlad/.ssh/id_rsa.pub
+
     
   
-  # - name: jenkins
-  #   password: "jenkins"
-  #   groups: 
-  #    - sudo
      
 # gpg keys 
 gpg_keys:
