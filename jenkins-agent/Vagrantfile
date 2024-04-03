@@ -1,15 +1,16 @@
 # ENV['VAGRANT_SERVER_URL'] = 'http://vagrant.elab.pro'
 Vagrant.configure("2") do |config|
     # General configuration
-    config.vm.box = "generic/ubuntu2010"
+    config.vm.box = "generic/ubuntu2310"
     #config.vm.synced_folder ".", "/vagrant", disabled: true
     config.ssh.insert_key = false
     
     # Config VM provider
     config.vm.provider "virtualbox" do |vb|
-       vb.memory = 1024
+       vb.memory = 2048
        vb.cpus = 2
        vb.linked_clone = true
+       vb.gui = true
     end
     
     # VM provision
