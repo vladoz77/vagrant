@@ -71,10 +71,11 @@
       loop: "{{ user }}"
       
 
-    - name: add user to git
+    - name: config git
       ansible.builtin.shell: |
         git config --global user.name "{{ item.name }}"
         git config --global user.email {{ item.name }}@example.com
+        git config --global init.defaultBranch main
       loop: "{{ user }}"
         
            
