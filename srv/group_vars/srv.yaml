@@ -1,6 +1,0 @@
----
-user:
-  - name: vlad
-    password: "8231"
-    groups: 
-     - sudo
