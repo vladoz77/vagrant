@@ -1,0 +1,242 @@
+- name: master-playbook
+  hosts: all
+  become: true
+  ignore_errors: true
+  tasks:
+    - name: set timezone
+      community.general.timezone:
+        name: Europe/Moscow
+    
+    - name: create user
+      ansible.builtin.user:
+        name: "{{ user }}"
+        groups: wheel
+        password: "{{ password | password_hash('sha512') }}"
+        shell: /bin/bash
+        state: present
+
+    - name: add ssh keys
+      authorized_key:
+        user: "{{ user }}"
+        state: present
+        key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
+
+    - name: update file /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{hostvars[item].ansible_facts.eth1.ipv4.address}} {{hostvars[item].ansible_hostname}}"
+      loop: "{{groups['all']}}"
+
+    - name: add repo for k8s
+      ansible.builtin.yum_repository:
+        name: kubernetes
+        description: soft for k8s
+        baseurl:
+          - "{{ kubernetes_repo }}"
+        gpgkey:
+          - "{{ kubernetes_gpg_key }}"
+        enabled: true
+        gpgcheck: true
+        state: present
+
+    - name: add repo for containerd
+      ansible.builtin.yum_repository:
+        name: containerd
+        description: soft for CRI
+        baseurl:
+          - https://download.docker.com/linux/centos/$releasever/$basearch/stable
+        gpgkey:
+          - https://download.docker.com/linux/centos/gpg
+        enabled: true
+        gpgcheck: true
+        state: present
+
+    - name: install packages
+      ansible.builtin.yum:
+        name: "{{ soft_for_install }}"
+        state: present
+        update_cache: true
+      notify: start kubelet
+
+    # - name: startes soft
+    #   ansible.builtin.service:
+    #     name: kubelet
+    #     state: started
+    #     enabled: true
+
+    - name: Install kubernetes python package
+      ansible.builtin.pip:
+        name:  "{{ pip_modules }}"
+
+    - name: disable firewall
+      ansible.builtin.service:
+        name: firewalld
+        state: stopped
+        enabled: false
+
+    - name: Disable SELinux
+      ansible.posix.selinux:
+        state: disabled
+    
+    - name: load module
+      community.general.modprobe:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ modules }}"
+
+    - name: create /etc/modules-load.d/istio-iptables.conf for istio
+      ansible.builtin.blockinfile:
+        path: /etc/modules-load.d/istio-iptables.conf 
+        create: true
+        block: |
+          br_netfilter
+          nf_nat
+          xt_REDIRECT
+          xt_owner
+          iptable_nat
+          iptable_mangle
+          iptable_filter
+
+    - name: set sysctl parametrs
+      ansible.posix.sysctl:
+        name:  "{{ item }}"
+        state: present
+        value: "1" 
+        reload: true
+      loop: "{{ sysctl_param }}"
+
+    - name: set vm.max_map_count in 262144
+      ansible.posix.sysctl:
+        name: vm.max_map_count
+        state: present
+        value: "262144"
+        reload: true
+  
+    - name: disable swap 
+      ansible.builtin.shell:
+        swapoff -a
+
+    - name: remove swaw from fstab
+      ansible.builtin.lineinfile:
+        dest: /etc/fstab
+        regexp: swap
+        state: absent
+
+    # - name: config containerd
+    - name: update config containerd
+      ansible.builtin.shell: |
+        containerd config default | sudo tee /etc/containerd/config.toml
+        sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
+      notify: restart containerd
+
+# edit bashrc
+    - name: bashrc edit
+      ansible.builtin.blockinfile:  
+        dest: /home/{{ user }}/.bashrc
+        block: |
+          source <(kubectl completion bash)
+          alias k=kubectl
+          complete -o default -F __start_kubectl k
+    
+    # Install cluster
+    - name: check if cluster are running
+      ansible.builtin.shell:
+        ps -aux | grep kube-api | grep -v grep
+      register: isrunning
+      ignore_errors: true
+
+    - name: init cluster
+      block:
+       - name: copy template kubeadm
+         ansible.builtin.template:
+          src: "{{ kubeadm_temlate }}"
+          dest: "~/kubeadm-config.yaml"
+        
+       - name: kubeadm init
+         ansible.builtin.shell:
+           kubeadm init --config ~/kubeadm-config.yaml 
+      when: isrunning.rc != 0
+
+    #Config Directory
+    - name: create .kube directory
+      ansible.builtin.file:
+        path: "{{ home_kube_dir }}"
+        state: directory
+        owner: "{{ user }}"
+        group: "{{ user }}"
+
+    - name: create link to conf
+      ansible.builtin.file:
+        src: "{{ base_kube_conf_dir }}"
+        dest: "{{ home_kube_dir }}/config"
+        state: link
+        owner: "{{ user }}"
+
+  # init net plugin  
+    - name: check if pod network exist
+      become: false
+      ansible.builtin.shell: kubectl get namespaces calico-system
+      register: network_exist
+
+    - name: install network plugin 
+      block:
+        - name: download network operator
+          ansible.builtin.uri:
+            url: "{{network_operator}}"
+            dest: ~/network_operator.yaml
+
+        - name: install calico network operator
+          kubernetes.core.k8s:
+             src: ~/network_operator.yaml
+             state: present
+        
+        - name: install  calico crd
+          kubernetes.core.k8s:
+             template: "{{ calico }}"
+             state: present
+      
+      become: false
+      when: network_exist.rc != 0
+
+# add local dns
+    - name: check if localdns exist
+      ansible.builtin.shell:
+         kubectl get pod -n kube-system 
+      register: pod_output
+      become: false
+     
+    - name: install localdns
+      block:
+         - name: get kube-dns ip
+           kubernetes.core.k8s:
+              api_version: v1
+              kind: service
+              name: kube-dns
+              namespace: kube-system
+           register: kube_dns
+
+         - name: create localdns
+           kubernetes.core.k8s:
+             template: "{{ localdns_config }}"
+             state: present
+      
+      when: "'node-local-dns' not in pod_output.stdout_lines | join(',')"
+      become: false
+
+  handlers:
+     - name: start kubelet
+       ansible.builtin.systemd:
+        name: kubelet
+        state: started
+        daemon_reload: true
+        enabled: true
+  
+     - name: restart containerd
+       ansible.builtin.systemd:
+        name: containerd
+        state: restarted
+        daemon_reload: true
+        enabled: true
+
+    
+    

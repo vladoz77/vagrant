@@ -24,6 +24,9 @@ Vagrant.configure("2") do |config|
                 node.groups = {
                   node: ["node[1:#{node_id}]"]
                 }
+                node.extra_vars ={
+                  node_ip = "192.168.59.#{10+node_id}"
+                }
 
               end
             end
@@ -42,6 +45,9 @@ Vagrant.configure("2") do |config|
               master.groups = {
                 master: ["master[1:#{master_id}]"]
                 }
+              master.extra_vars = {
+                  node_ip = "192.168.59.#{20+master_id}"
+              }
             end
           end
         end
