@@ -16,13 +16,14 @@
        - name: copy template kubeadm
          ansible.builtin.template:
           src: "{{ kubeadm_temlate }}"
-          dest: "{{ kubeadm_config }}"
+          dest: "~/kubeadm-config.yaml"
         
        - name: kubeadm init
          ansible.builtin.shell:
-           kubeadm init --config "{{ kubeadm_config }}" 
+           kubeadm init --config ~/kubeadm-config.yaml 
 
       when: isrunning.rc != 0
+
 #Config Directory
     - name: create .kube directory
       ansible.builtin.file:
@@ -45,10 +46,8 @@
       ansible.builtin.shell: kubectl get namespaces calico-system
       register: network_exist
 
-
     - name: install network plugin 
       block:
-       
         - name: download network operator
           ansible.builtin.uri:
             url: "{{network_operator}}"
@@ -59,7 +58,6 @@
              src: ~/network_operator.yaml
              state: present
         
-#Можно установить либо calico либо flannel       
         - name: install  calico crd
           kubernetes.core.k8s:
              template: "{{ calico }}"

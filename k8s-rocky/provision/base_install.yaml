@@ -16,17 +16,17 @@
         gpgcheck: true
         state: present
 
-    # - name: add repo for containerd
-    #   ansible.builtin.yum_repository:
-    #     name: containerd
-    #     description: soft for CRI
-    #     baseurl:
-    #       - https://download.docker.com/linux/centos/$releasever/$basearch/stable
-    #     gpgkey:
-    #       - https://download.docker.com/linux/centos/gpg
-    #     enabled: true
-    #     gpgcheck: true
-    #     state: present
+    - name: add repo for containerd
+      ansible.builtin.yum_repository:
+        name: containerd
+        description: soft for CRI
+        baseurl:
+          - https://download.docker.com/linux/centos/$releasever/$basearch/stable
+        gpgkey:
+          - https://download.docker.com/linux/centos/gpg
+        enabled: true
+        gpgcheck: true
+        state: present
 
     
   
@@ -36,6 +36,7 @@
         name: "{{ soft_for_install }}"
         state: present
         update_cache: true
+    
     
     - name: startes soft
       ansible.builtin.service:
@@ -109,11 +110,11 @@
         state: absent
 
     # - name: config containerd
-    # - name: update config containerd
-    #   ansible.builtin.shell:
-    #     containerd config default | sudo tee /etc/containerd/config.toml
-    #   notify: restart containerd
-    
+    - name: update config containerd
+      ansible.builtin.shell: |
+        containerd config default | sudo tee /etc/containerd/config.toml
+        sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
+      notify: restart containerd
 
 # edit bashrc
     - name: bashrc edit

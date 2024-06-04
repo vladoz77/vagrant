@@ -7,7 +7,7 @@ kubernetes_repo: https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
 kubernetes_gpg_key: https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
 
 #Req soft
-kubernetesVersion: '1.30'
+
 soft_for_install:
 - wget
 - nano
@@ -19,9 +19,9 @@ soft_for_install:
 - nfs-utils
 - python3
 - containerd.io
-- kubectl-{{ kubernetesVersion }}-0.x86_64
-- kubelet-{{ kubernetesVersion }}-0.x86_64
-- kubeadm-{{ kubernetesVersion }}-0.x86_64
+- kubectl.x86_64
+- kubelet.x86_64
+- kubeadm.x86_64
 - ipvsadm
 - python3-pip
 # - cri-o

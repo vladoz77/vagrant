@@ -8,9 +8,11 @@ bootstrapTokens:
   - signing
   - authentication
 localAPIEndpoint:
-  advertiseAddress: {{ ansible_default_ipv4.address }}
+  advertiseAddress: {{ node_ip }}
   bindPort: 6443
 nodeRegistration:
+  kubeletExtraArgs:
+    node-ip: {{ node_ip }}
   criSocket: unix:///var/run/containerd/containerd.sock
   imagePullPolicy: IfNotPresent
   name: {{ ansible_hostname }}
@@ -30,18 +32,15 @@ imageRepository: registry.k8s.io
 apiServer:
   timeoutForControlPlane: 4m0s
 kubernetesVersion: {{ kubernetesVersion }}
-#controlPlaneEndpoint: {{ vip_address }}
 networking:
   dnsDomain: cluster.local
   serviceSubnet: {{ serviceSubnet }}
   podSubnet: {{ podSubnet }}
 controllerManager: 
   extraArgs:
-    address: 0.0.0.0
     bind-address: 0.0.0.0
 scheduler:
   extraArgs:
-    address: 0.0.0.0
     bind-address: 0.0.0.0
 ---
 apiVersion: kubeproxy.config.k8s.io/v1alpha1

@@ -1,13 +1,15 @@
 
 #Kube config file
+kubernetesVersion: 'v1.30.1'
 base_kube_conf_dir: /etc/kubernetes/admin.conf
 kubeadm_temlate: "{{playbook_dir}}/template/kubeadm-config.j2"
-kubeadm_config: /tmp/kubeadm-config.yaml
+# kubeadm_config: /tmp/kubeadm-config.yaml
 localdns_config: "{{playbook_dir}}/template/localdns.j2"
 home_kube_dir: /home/{{ user }}/.kube
 
 #Net config
+node_ip: 192.168.56.24
 podSubnet: 10.244.0.0/16
 serviceSubnet: 10.243.0.0/16
-network_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
+network_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/tigera-operator.yaml
 calico: "{{playbook_dir}}/template/kube-calico-cdr.j2"
