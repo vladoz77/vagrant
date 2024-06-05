@@ -8,11 +8,11 @@ bootstrapTokens:
   - signing
   - authentication
 localAPIEndpoint:
-  advertiseAddress: {{ node_ip }}
+  advertiseAddress: {{ ansible_facts.all_ipv4_addresses[0] }}
   bindPort: 6443
 nodeRegistration:
   kubeletExtraArgs:
-    node-ip: {{ node_ip }}
+    node-ip: {{ ansible_facts.all_ipv4_addresses[0] }}
   criSocket: unix:///var/run/containerd/containerd.sock
   imagePullPolicy: IfNotPresent
   name: {{ ansible_hostname }}

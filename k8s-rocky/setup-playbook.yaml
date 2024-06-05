@@ -1,0 +1,8 @@
+- name: master-playbook
+  hosts: all
+  become: true
+  ignore_errors: true
+  tasks:
+    - name: show facts
+      ansible.builtin.debug:
+        msg: "{{ hostvars[item].ansible_facts.all_ipv4_addresses[0] }}"
