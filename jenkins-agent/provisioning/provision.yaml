@@ -65,6 +65,22 @@
       - name: install trivi from deb
         ansible.builtin.apt:
           deb: /tmp/trivy.deb
+      
+      - name: delete file
+        ansible.builtin.file:
+          path: /tmp/trivy.deb
+          state: absent
+      
+      - name: ensures that folder {{trivy_report_url_dest}} exist
+        ansible.builtin.file:
+          path: "{{ trivy_report_url_dest }}"
+          state: directory
+
+      - name: download template file
+        ansible.builtin.uri:
+          url: "{{ trivy_report_url }}"
+          dest: "{{ trivy_report_url_dest }}/html.tpl"
+          
       when: trivy_deb.rc == 1
 
     - name: modify usergroup

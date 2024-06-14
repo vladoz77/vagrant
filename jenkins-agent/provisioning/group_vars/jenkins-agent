@@ -38,7 +38,8 @@ soft:
   
 # Trivi install
 trivi_url: https://github.com/aquasecurity/trivy/releases/download/v0.18.3/trivy_0.18.3_Linux-64bit.deb
-
+trivy_report_url: https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl
+trivy_report_url_dest: /usr/local/share/trivy/templates
 # service
 service_name:
   - docker
