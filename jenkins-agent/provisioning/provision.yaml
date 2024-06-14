@@ -38,16 +38,34 @@
         state: present
       loop: "{{ repo }}"
     
-    - name: Update all packages to their latest version
-      ansible.builtin.apt:
-        name: "*"
-        state: latest
+    # - name: Update all packages to their latest version
+    #   ansible.builtin.apt:
+    #     name: "*"
+    #     state: latest
 
     - name: install base soft
       ansible.builtin.apt:
         name: "{{ soft }}"
         state: present
         update_cache: true
+
+    - name: Check if trivy is installed
+      command: dpkg-query -W trivy
+      register: trivy_deb
+      failed_when: trivy_deb.rc > 1
+      changed_when: trivy_deb.rc == 1
+
+    - name: install trivy scaner
+      block:
+      - name: download trivi
+        ansible.builtin.uri:
+          url: "{{ trivi_url }}"
+          dest: /tmp/trivy.deb
+
+      - name: install trivi from deb
+        ansible.builtin.apt:
+          deb: /tmp/trivy.deb
+      when: trivy_deb.rc == 1
 
     - name: modify usergroup
       ansible.builtin.user:
