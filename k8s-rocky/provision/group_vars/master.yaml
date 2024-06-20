@@ -26,6 +26,11 @@ soft_for_install:
 - python3-pip
 - sysstat
 - jq
+- net-tools
+- tree
+- traceroute
+
+
 # - cri-o
 #Req modules
 modules:

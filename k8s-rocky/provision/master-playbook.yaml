@@ -153,9 +153,10 @@
     # Install cluster
     - name: check if cluster are running
       ansible.builtin.shell:
-        ps -aux | grep kube-api | grep -v grep
+        ps -aux | grep kube-api | grep -v grep 2>/dev/null
       register: isrunning
       ignore_errors: true
+      failed_when: isrunning.rc > 1
 
     - name: init cluster
       block:
@@ -167,7 +168,7 @@
        - name: kubeadm init
          ansible.builtin.shell:
            kubeadm init --config ~/kubeadm-config.yaml 
-      when: isrunning.rc != 0
+      when: isrunning.rc == 1
 
     #Config Directory
     - name: create .kube directory
@@ -188,8 +189,10 @@
     - name: check if pod network exist
       become: false
       remote_user: "{{ user }}"
-      ansible.builtin.shell: kubectl get namespaces calico-system
+      ansible.builtin.shell: kubectl get namespaces calico-system 2>/dev/null
       register: network_exist
+      failed_when: network_exist.rc > 1
+
 
     - name: install network plugin 
       block:
@@ -210,34 +213,34 @@
       
       become: false
       remote_user: "{{ user }}"
-      when: network_exist.rc != 0
+      when: network_exist.rc == 1
 
 # add local dns
-    - name: check if localdns exist
-      ansible.builtin.shell:
-         kubectl get pod -n kube-system 
-      register: pod_output
-      remote_user: "{{ user }}"
-      become: false
+    # - name: check if localdns exist
+    #   ansible.builtin.shell:
+    #      kubectl get pod -n kube-system 1&2>/dev/null
+    #   register: pod_output
+    #   remote_user: "{{ user }}"
+    #   become: false
      
-    - name: install localdns
-      block:
-         - name: get kube-dns ip
-           kubernetes.core.k8s:
-              api_version: v1
-              kind: service
-              name: kube-dns
-              namespace: kube-system
-           register: kube_dns
+    # - name: install localdns
+    #   block:
+    #      - name: get kube-dns ip
+    #        kubernetes.core.k8s:
+    #           api_version: v1
+    #           kind: service
+    #           name: kube-dns
+    #           namespace: kube-system
+    #        register: kube_dns
 
-         - name: create localdns
-           kubernetes.core.k8s:
-             template: "{{ localdns_config }}"
-             state: present
+    #      - name: create localdns
+    #        kubernetes.core.k8s:
+    #          template: "{{ localdns_config }}"
+    #          state: present
       
-      when: "'node-local-dns' not in pod_output.stdout_lines | join(',')"
-      become: false
-      remote_user: "{{ user }}"
+    #   when: "'node-local-dns' not in pod_output.stdout_lines | join(',')"
+    #   become: false
+    #   remote_user: "{{ user }}"
 
   # handlers:
   #    - name: start kubelet
