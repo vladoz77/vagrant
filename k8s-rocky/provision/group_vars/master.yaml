@@ -1,6 +1,6 @@
-#User data
-user: vlad
-password: '8231'
+# #User data
+# username: vlad
+# password: '8231'
 
 #Repo data
 kubernetes_repo: https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
@@ -59,7 +59,7 @@ base_kube_conf_dir: /etc/kubernetes/admin.conf
 kubeadm_temlate: "{{playbook_dir}}/template/kubeadm-config.j2"
 # kubeadm_config: /tmp/kubeadm-config.yaml
 localdns_config: "{{playbook_dir}}/template/localdns.j2"
-home_kube_dir: /home/{{ user }}/.kube
+home_kube_dir: /home/vagrant/.kube
 
 #Net config
 # node_ip: 192.168.56.24

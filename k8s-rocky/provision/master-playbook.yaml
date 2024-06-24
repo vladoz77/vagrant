@@ -1,5 +1,5 @@
 - name: master-playbook
-  hosts: all
+  hosts: master
   become: true
   ignore_errors: true
   tasks:
@@ -7,23 +7,23 @@
       community.general.timezone:
         name: Europe/Moscow
         
-    - name: edit hostname
-      ansible.builtin.hostname:
-        name: "{{ hostname }}" 
+    # - name: edit hostname
+    #   ansible.builtin.hostname:
+    #     name: "{{ hostname }}" 
 
-    - name: create user
-      ansible.builtin.user:
-        name: "{{ user }}"
-        groups: wheel
-        password: "{{ password | password_hash('sha512') }}"
-        shell: /bin/bash
-        state: present
+    # - name: create user
+    #   ansible.builtin.user:
+    #     name: "{{ user }}"
+    #     groups: wheel
+    #     password: "{{ password | password_hash('sha512') }}"
+    #     shell: /bin/bash
+    #     state: present
 
-    - name: add ssh keys
-      authorized_key:
-        user: "{{ user }}"
-        state: present
-        key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
+    # - name: add ssh keys
+    #   authorized_key:
+    #     user: "{{ user }}"
+    #     state: present
+    #     key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
 
     - name: update file /etc/hosts
       ansible.builtin.lineinfile:
@@ -144,7 +144,7 @@
 # edit bashrc
     - name: bashrc edit
       ansible.builtin.blockinfile:  
-        dest: /home/{{ user }}/.bashrc
+        dest: /home/vagrant/.bashrc
         block: |
           source <(kubectl completion bash)
           alias k=kubectl
@@ -175,15 +175,15 @@
       ansible.builtin.file:
         path: "{{ home_kube_dir }}"
         state: directory
-        owner: "{{ user }}"
-        group: "{{ user }}"
+        owner: vagrant
+        group: vagrant
 
     - name: create link to conf
       ansible.builtin.file:
         src: "{{ base_kube_conf_dir }}"
         dest: "{{ home_kube_dir }}/config"
         state: link
-        owner: "{{ user }}"
+        owner: vagrant
 
   # init net plugin  
     - name: check if pod network exist
@@ -212,7 +212,7 @@
              state: present
       
       become: false
-      remote_user: "{{ user }}"
+      # remote_user: "{{ user }}"
       when: network_exist.rc == 1
 
 # add local dns
