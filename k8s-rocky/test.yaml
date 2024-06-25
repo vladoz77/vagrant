@@ -1,0 +1,12 @@
+- name: master config
+  ignore_errors: true
+  hosts: master
+  become: true
+  tasks:
+    - name: update file /etc/hosts
+      ansible.builtin.debug:
+        # path: /etc/hosts
+        # msg: "{{hostvars['master1'].ansible_hostname}}"
+        msg: "{{groups['all']}}"
+
+      # loop: "{{groups.all}}"

@@ -1,8 +1,50 @@
-- name: master-playbook
-  hosts: all
-  become: true
+
+- name: master config
   ignore_errors: true
+  hosts: master
+  become: true
   tasks:
-    - name: show facts
+
+    - name: get node list
+      ansible.builtin.shell: kubectl get node -o json | jq '.items[].metadata.name'
+      register: node_list
+      become: false
+
+    - name: check
       ansible.builtin.debug:
-        msg: "{{ hostvars[item].ansible_facts.all_ipv4_addresses[0] }}"
+        var: node_list.stdout_lines | join(',')
+
+    - name: set fact
+      ansible.builtin.set_fact:
+        node_list: "{{ node_list.stdout_lines | join(',') }}"
+
+    - name: get token for joinnig pod
+      ansible.builtin.shell:
+        kubeadm token create --print-join-command
+      register: kube_join_token
+ 
+    - name: set fact
+      ansible.builtin.set_fact:
+        join_command: "{{kube_join_token.stdout}}"
+    
+    - ansible.builtin.debug:
+        var: join_command
+
+- name: config node
+  hosts: node
+  become: false
+  tasks:
+    - name: check if node in cluster
+      ansible.builtin.debug:
+        msg: "Node in the list"
+        # var : "{{ ansible_hostname }}"
+      when:  ansible_hostname not in  hostvars[groups['master'][0]].node_list
+      # loop: "{{ hostvars[groups['master'][0]].node_list }}"
+      
+    - name: add node
+      ansible.builtin.shell: "{{ hostvars[groups['master'][0]].join_command }}"
+      when:  ansible_hostname not in  hostvars[groups['master'][0]].node_list
+
+         
+
+ 

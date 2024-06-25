@@ -28,7 +28,7 @@
     - name: update file /etc/hosts
       ansible.builtin.lineinfile:
         path: /etc/hosts
-        line: "{{hostvars[item].ansible_facts.all_ipv4_addresses[0]}} {{hostvars[item].ansible_hostname}}"
+        line: "{{hostvars[item].ansible_host}} {{ item }}"
       loop: "{{groups['all']}}"
 
     - name: add repo for k8s
@@ -188,7 +188,6 @@
   # init net plugin  
     - name: check if pod network exist
       become: false
-      remote_user: "{{ user }}"
       ansible.builtin.shell: kubectl get namespaces calico-system 2>/dev/null
       register: network_exist
       failed_when: network_exist.rc > 1
@@ -212,8 +211,8 @@
              state: present
       
       become: false
-      # remote_user: "{{ user }}"
       when: network_exist.rc == 1
+
 
 # add local dns
     # - name: check if localdns exist
