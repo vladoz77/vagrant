@@ -12,18 +12,18 @@
         state: present
       loop: "{{ user }}"
         
-    # - name: add ssh keys
-    #   authorized_key:
-    #     user: "{{ item.name }}"
-    #     state: present
-    #     key: "{{ lookup('file',  item.ssh_key_path ) }}"
-    #   loop: "{{ user }}"
+    - name: add ssh keys
+      authorized_key:
+        user: "{{ item.name }}"
+        state: present
+        key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
+      loop: "{{ user }}"
 
-    - name: update file /etc/hosts
-      ansible.builtin.lineinfile:
-        path: /etc/hosts
-        line: "{{hostvars[item].ansible_facts.eth1.ipv4.address}} {{hostvars[item].ansible_hostname}}"
-      loop: "{{groups['all']}}"
+    # - name: update file /etc/hosts
+    #   ansible.builtin.lineinfile:
+    #     path: /etc/hosts
+    #     line: "{{hostvars[item].ansible_facts.eth1.ipv4.address}} {{hostvars[item].ansible_hostname}}"
+    #   loop: "{{groups['all']}}"
 
     - name: add gpg key
       ansible.builtin.apt_key:
