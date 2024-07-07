@@ -5,8 +5,6 @@
   tasks:
     - name: update file /etc/hosts
       ansible.builtin.debug:
-        # path: /etc/hosts
-        # msg: "{{hostvars['master1'].ansible_hostname}}"
-        msg: "{{groups['all']}}"
+        var: ansible_facts
 
       # loop: "{{groups.all}}"

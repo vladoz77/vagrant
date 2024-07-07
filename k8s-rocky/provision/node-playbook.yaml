@@ -44,11 +44,16 @@
         update_cache: true
       # notify: 
       #   - start kubelet
+    
+    - name: Configure node ip
+      lineinfile:
+        path: /etc/sysconfig/kubelet
+        line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
 
-    - name: startes soft
+    - name: restart kubelet
       ansible.builtin.service:
         name: kubelet
-        state: started
+        state: restarted
         enabled: true
 
     - name: Install kubernetes python package
@@ -135,6 +140,7 @@
 - name: master config
   ignore_errors: true
   hosts: master1
+  gather_facts: no
   become: true
   tasks:
 
@@ -158,6 +164,7 @@
     
 - name: config node
   hosts: node
+  gather_facts: no
   become: true
   tasks:
       

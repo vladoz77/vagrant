@@ -11,8 +11,6 @@ localAPIEndpoint:
   advertiseAddress: {{ node_ip }}
   bindPort: 6443
 nodeRegistration:
-  kubeletExtraArgs:
-    node-ip: {{ node_ip }}
   criSocket: unix:///var/run/containerd/containerd.sock
   imagePullPolicy: IfNotPresent
   name: {{ ansible_hostname }}
