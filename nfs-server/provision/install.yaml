@@ -38,12 +38,13 @@
         state: directory
         owner: nobody
         group: nobody
+        mode: "777"
 
     - name: config nfs
       ansible.builtin.lineinfile:
         path: /etc/exports
         line: |
-          /var/nfs *(rw,no_root_squash) 
+          /var/nfs *(rw,sync,no_root_squash,no_subtree_check)
         create: true
       notify: restart nfs
 
