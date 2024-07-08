@@ -21,8 +21,8 @@
         key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
       loop: "{{ user }}"
 
-    - name: update file /etc/hosts
+    - name: update host file
       ansible.builtin.lineinfile:
         path: /etc/hosts
-        line: "{{hostvars[item].ansible_fact.ens160.ipv4.address}} {{hostvars[item].ansible_hostname}}"
-      loop: "{{groups['all']}}"
+        line: "{{ hostvars[item].ansible_facts.eth1.ipv4.address }} {{hostvars[item].ansible_hostname}}"
+      loop: "{{ groups.all }}"

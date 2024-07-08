@@ -1,23 +1,25 @@
-ENV['VAGRANT_SERVER_URL'] = 'https://vagrant.elab.pro'
+# ENV['VAGRANT_SERVER_URL'] = 'https://vagrant.elab.pro'
 Vagrant.configure("2") do |config|
-    config.vm.box = "centos/8"
+    config.vm.box = "generic/rocky9"
     config.ssh.insert_key = false
     config.vm.provider "virtualbox" do |vb|
         vb.memory = 512
         vb.linked_clone = true
     end
-    N = 3
+    N = 1
     
     # VM config
     (1..N).each do |i|
         config.vm.define "srv#{i}" do |srv|
            srv.vm.hostname = "rocky#{i}"
-           srv.vm.network "private_network", ip: "192.168.56.#{10+i}"
+           srv.vm.network "private_network", ip: "192.168.59.#{10+i}"
            if i == N
               srv.vm.provision "ansible" do |baseprovision|
                  baseprovision.limit = "all"
-                 baseprovision.playbook = "base_provision.yaml"
-                 baseprovision.inventory_path = "inventory"
+                 baseprovision.playbook = "provision/base_provision.yaml"
+                 baseprovision.groups = {
+                    rocky: ["srv[1:#{N}]"]
+                 }
               end
            end
         end
