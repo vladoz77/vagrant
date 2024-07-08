@@ -1,0 +1,80 @@
+- name: base_provision
+  hosts: all
+  become: true
+  ignore_errors: true
+  tasks:
+
+    - name: add user
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        password: "{{ item.password | password_hash('sha512') }}"
+        groups: "{{ item.groups }}"
+        shell: "{{ item.shell | default('/bin/bash') }}"
+        state: present
+      loop: "{{ user }}"
+
+    - name: add ssh keys
+      authorized_key:
+        user: "{{ item.name }}"
+        state: present
+        key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
+      loop: "{{ user }}"
+
+    - name: update host file
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars[item].ansible_facts.eth1.ipv4.address }} {{hostvars[item].ansible_hostname}}"
+      loop: "{{ groups.all }}"
+
+    - name: install soft
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ soft }}"
+
+    - name: Create directory "{{ nfs_directory_path }}" for nfs 
+      ansible.builtin.file:
+        path: "{{ nfs_directory_path }}"
+        state: directory
+        owner: nobody
+        group: nobody
+
+    - name: config nfs
+      ansible.builtin.lineinfile:
+        path: /etc/exports
+        line: |
+          /var/nfs *(rw,no_root_squash) 
+        create: true
+      notify: restart nfs
+
+    - name: firewall config 
+      ansible.posix.firewalld:
+        port: "{{ item }}"
+        state: enabled
+        permanent: true
+      loop: "{{ firewall_rules }}"
+      notify: reload firewalld
+
+  handlers:
+    - name: enable nfs
+      ansible.builtin.systemd:
+        name: nfs-server
+        enabled: true
+        state: started
+    
+    - name: restart nfs
+      ansible.builtin.systemd:
+        name: nfs-server
+        enabled: true
+        state: restarted
+
+    - name: reload firewalld
+      ansible.builtin.systemd:
+        name: firewalld
+        enabled: true
+        state: reloaded
+    
+    
+
+
+  

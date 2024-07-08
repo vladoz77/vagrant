@@ -1,0 +1,9 @@
+- name: base_provision
+  hosts: all
+  become: true
+  ignore_errors: true
+  tasks:
+    - name: debug
+      ansible.builtin.debug:
+        var: groups.all
+        # var: ansible_facts.eth1.ipv4.address
