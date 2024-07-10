@@ -60,8 +60,7 @@
         name: "{{ soft_for_install }}"
         state: present
         update_cache: true
-      # notify: 
-      #   - start kubelet
+
     - name: Configure node ip
       lineinfile:
         path: /etc/sysconfig/kubelet
@@ -93,18 +92,27 @@
         state: present
       loop: "{{ modules }}"
 
-    - name: create /etc/modules-load.d/istio-iptables.conf for istio
-      ansible.builtin.blockinfile:
-        path: /etc/modules-load.d/istio-iptables.conf 
-        create: true
-        block: |
-          br_netfilter
-          nf_nat
-          xt_REDIRECT
-          xt_owner
-          iptable_nat
-          iptable_mangle
-          iptable_filter
+    - name: make module persistent
+      ansible.builtin.lineinfile:
+        path: /etc/modules-load.d/modules.conf 
+        line: "{{ item }}"
+        create: yes
+      loop: "{{ modules }}"
+
+
+    # - name: create /etc/modules-load.d/istio-iptables.conf for istio
+    #   ansible.builtin.blockinfile:
+    #     path: /etc/modules-load.d/istio-iptables.conf 
+    #     create: true
+    #     line: "{{ item }}"
+    #   with_items:
+    #     - br_netfilter
+    #     - nf_nat
+    #     - xt_REDIRECT
+    #     - xt_owner
+    #     - iptable_nat
+    #     - iptable_mangle
+    #       iptable_filter
 
     - name: set sysctl parametrs
       ansible.posix.sysctl:
@@ -219,36 +227,34 @@
 
 
 # add local dns
-    # - name: check if localdns exist
-    #   ansible.builtin.shell:
-    #      kubectl get pod -n kube-system 1&2>/dev/null
-    #   register: pod_output
-    #   remote_user: "{{ user }}"
-    #   become: false
+    - name: check if localdns exist
+      ansible.builtin.shell:
+         kubectl get pod -n kube-system 1&2>/dev/null
+      register: pod_output
+      become: false
      
-    # - name: install localdns
-    #   block:
-    #      - name: get kube-dns ip
-    #        kubernetes.core.k8s:
-    #           api_version: v1
-    #           kind: service
-    #           name: kube-dns
-    #           namespace: kube-system
-    #        register: kube_dns
+    - name: install localdns
+      block:
+         - name: get kube-dns ip
+           kubernetes.core.k8s:
+              api_version: v1
+              kind: service
+              name: kube-dns
+              namespace: kube-system
+           register: kube_dns
 
-    #      - name: create localdns
-    #        kubernetes.core.k8s:
-    #          template: "{{ localdns_config }}"
-    #          state: present
+         - name: create localdns
+           kubernetes.core.k8s:
+             template: "{{ localdns_config }}"
+             state: present
       
-    #   when: "'node-local-dns' not in pod_output.stdout_lines | join(',')"
-    #   become: false
-    #   remote_user: "{{ user }}"
+      when: "'node-local-dns' not in pod_output.stdout_lines | join(',')"
+      become: false
 
   # handlers:
-  #    - name: start kubelet
+  #    - name: start iscsid
   #      ansible.builtin.systemd:
-  #       name: kubelet
+  #       name: iscsid.service
   #       state: started
   #       daemon_reload: true
   #       enabled: true

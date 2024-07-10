@@ -51,8 +51,8 @@ ipvs:
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
-# clusterDNS:
-# - 169.254.20.10
+clusterDNS:
+- 169.254.20.10
 systemReserved:
   memory: 512Mi
   cpu: 500m
