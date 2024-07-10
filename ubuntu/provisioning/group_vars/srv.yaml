@@ -1,0 +1,23 @@
+---
+# User list
+user:
+  - name: vlad
+    password: "8231"
+    groups: 
+     - sudo
+
+# soft for install
+soft:
+  - curl
+  - nmap
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - rsync
+  
+  
+
+# service
+service_name:
+  - docker
+
