@@ -29,6 +29,7 @@ soft_for_install:
 - net-tools
 - tree
 - traceroute
+- iscsi-initiator-utils
 
 
 # - cri-o
@@ -42,6 +43,7 @@ modules:
 - iptable_nat
 - iptable_mangle
 - iptable_filter
+- iscsi_tcp
 
 #sysctl param
 sysctl_param:
