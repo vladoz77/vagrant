@@ -42,19 +42,25 @@
         name: "{{ soft_for_install }}"
         state: present
         update_cache: true
-      # notify: 
-      #   - start kubelet
+     
+    - name: start iscsid
+      ansible.builtin.service:
+        name: iscsid
+        state: started
+        enabled: true
     
     - name: Configure node ip
       lineinfile:
         path: /etc/sysconfig/kubelet
         line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
-
+      # notify:
+      #   - restart kubelet
     - name: restart kubelet
       ansible.builtin.service:
         name: kubelet
         state: restarted
         enabled: true
+    
 
     - name: Install kubernetes python package
       ansible.builtin.pip:
@@ -76,18 +82,13 @@
         state: present
       loop: "{{ modules }}"
 
-    - name: create /etc/modules-load.d/istio-iptables.conf for istio
-      ansible.builtin.blockinfile:
-        path: /etc/modules-load.d/istio-iptables.conf 
-        create: true
-        block: |
-          br_netfilter
-          nf_nat
-          xt_REDIRECT
-          xt_owner
-          iptable_nat
-          iptable_mangle
-          iptable_filter
+    - name: make module persistent
+      ansible.builtin.lineinfile:
+        path: /etc/modules-load.d/modules.conf 
+        line: "{{ item }}"
+        create: yes
+      loop: "{{ modules }}"
+
 
     - name: set sysctl parametrs
       ansible.posix.sysctl:
@@ -128,14 +129,18 @@
         daemon_reload: true
         enabled: true
 
-# edit bashrc
-    - name: bashrc edit
-      ansible.builtin.blockinfile:  
-        dest: /home/vagrant/.bashrc
-        block: |
-          source <(kubectl completion bash)
-          alias k=kubectl
-          complete -o default -F __start_kubectl k
+
+
+    
+
+# # edit bashrc
+#     - name: bashrc edit
+#       ansible.builtin.blockinfile:  
+#         dest: /home/vagrant/.bashrc
+#         block: |
+#           source <(kubectl completion bash)
+#           alias k=kubectl
+#           complete -o default -F __start_kubectl k
 
 - name: master config
   ignore_errors: true
@@ -162,6 +167,7 @@
       ansible.builtin.set_fact:
         join_command: "{{kube_join_token.stdout}}"
     
+
 - name: config node
   hosts: node
   gather_facts: no
@@ -171,6 +177,8 @@
     - name: add node
       ansible.builtin.shell: "{{ hostvars['master1'].join_command }}"
       when:  ansible_hostname not in  hostvars['master1'].node_list
+
+  
 
          
 

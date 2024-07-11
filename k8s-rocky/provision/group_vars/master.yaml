@@ -30,6 +30,8 @@ soft_for_install:
 - tree
 - traceroute
 - iscsi-initiator-utils
+- nfs-utils
+- nfs4-acl-tools
 
 
 # - cri-o
