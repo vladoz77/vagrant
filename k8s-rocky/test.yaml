@@ -1,10 +1,11 @@
 - name: master config
   ignore_errors: true
   hosts: master
-  become: true
+  become: false
   tasks:
-    - name: update file /etc/hosts
-      ansible.builtin.debug:
-        var: ansible_facts
-
-      # loop: "{{groups.all}}"
+    - name: script
+      ansible.builtin.script:
+        "{{playbook_dir}}/calico-metrics.sh"
+     
+                
+                

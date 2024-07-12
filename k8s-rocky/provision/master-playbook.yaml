@@ -217,6 +217,9 @@
           kubernetes.core.k8s:
              template: "{{ calico }}"
              state: present
+
+        - name: enable metrics
+          ansible.builtin.script: "{{ calico_enable_metrics }}"            
       
       become: false
       when: network_exist.rc == 1
