@@ -1,3 +1,4 @@
+# https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/#kubeadm-k8s-io-v1beta3-InitConfiguration
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration
 bootstrapTokens:
@@ -15,10 +16,11 @@ nodeRegistration:
   imagePullPolicy: IfNotPresent
   name: {{ ansible_hostname }}
   taints: null
+  kubeletExtraArgs:
+    node-ip: {{ node_ip }}
   
-
-
 ---
+# https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/#kubeadm-k8s-io-v1beta3-ClusterConfiguration
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 certificatesDir: /etc/kubernetes/pki
@@ -30,6 +32,7 @@ imageRepository: registry.k8s.io
 apiServer:
   timeoutForControlPlane: 4m0s
 kubernetesVersion: {{ kubernetesVersion }}
+controlPlaneEndpoint: {{ node_ip }}:6443
 networking:
   dnsDomain: cluster.local
   serviceSubnet: {{ serviceSubnet }}
@@ -40,7 +43,9 @@ controllerManager:
 scheduler:
   extraArgs:
     bind-address: 0.0.0.0
+    
 ---
+# https://kubernetes.io/docs/reference/config-api/kube-proxy-config.v1alpha1/
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
 metricsBindAddress: 0.0.0.0:10249
@@ -49,6 +54,7 @@ ipvs:
   strictARP: True
 
 ---
+# https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
 clusterDNS:

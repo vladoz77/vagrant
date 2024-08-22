@@ -1,6 +1,6 @@
 # #User data
-# username: vlad
-# password: '8231'
+username: vlad
+password: '8231'
 
 #Repo data
 kubernetes_repo: https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
