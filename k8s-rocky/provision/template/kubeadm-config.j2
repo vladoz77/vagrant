@@ -57,6 +57,7 @@ ipvs:
 # https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
+cgroupDriver: "systemd"
 clusterDNS:
 - 169.254.20.10
 systemReserved:
