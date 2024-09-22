@@ -11,19 +11,19 @@
     #   ansible.builtin.hostname:
     #     name: "{{ hostname }}" 
 
-    # - name: create user
-    #   ansible.builtin.user:
-    #     name: "{{ user }}"
-    #     groups: wheel
-    #     password: "{{ password | password_hash('sha512') }}"
-    #     shell: /bin/bash
-    #     state: present
+    - name: create user
+      ansible.builtin.user:
+        name: "{{ username }}"
+        groups: wheel
+        password: "{{ password | password_hash('sha512') }}"
+        shell: /bin/bash
+        state: present
 
-    # - name: add ssh keys
-    #   authorized_key:
-    #     user: "{{ user }}"
-    #     state: present
-    #     key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
+    - name: add ssh keys
+      authorized_key:
+        user: "{{ username }}"
+        state: present
+        key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
 
     - name: update file /etc/hosts
       ansible.builtin.lineinfile:
@@ -67,10 +67,10 @@
         state: started
         enabled: true
 
-    - name: Configure node ip
-      lineinfile:
-        path: /etc/sysconfig/kubelet
-        line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+    # - name: Configure node ip
+    #   lineinfile:
+    #     path: /etc/sysconfig/kubelet
+    #     line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
       # notify:
       #   - restart kubelet
 
@@ -138,7 +138,6 @@
       ansible.builtin.shell: |
         containerd config default | sudo tee /etc/containerd/config.toml
         sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
-      
       # notify: 
       #  - restart containerd
 
@@ -203,14 +202,14 @@
 
     - name: install network plugin 
       block:
-        - name: download network operator
-          ansible.builtin.uri:
-            url: "{{network_operator}}"
-            dest: ~/network_operator.yaml
+        # - name: download network operator
+        #   ansible.builtin.uri:
+        #     url: "{{network_operator}}"
+        #     dest: ~/network_operator.yaml
 
         - name: install calico network operator
           kubernetes.core.k8s:
-             src: ~/network_operator.yaml
+             src: "{{network_operator}}"
              state: present
         
         - name: install  calico crd

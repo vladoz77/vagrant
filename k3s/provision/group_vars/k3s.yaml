@@ -1,0 +1,10 @@
+# Config user
+user:
+  - name: vlad
+    password: "8231"
+    groups:
+      - wheel
+
+# config k3s
+cluster_cidr: 10.10.0.0/16
+node_ip: "192.168.59.100"

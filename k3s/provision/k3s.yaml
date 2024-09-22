@@ -1,0 +1,36 @@
+- name: base_provision
+  hosts: all
+  become: true
+  ignore_errors: true
+  tasks:
+
+    - name: create user
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        groups: "{{ item.groups }}"
+        password: "{{ item.password | password_hash('sha512') }}"
+        shell: /bin/bash
+        state: present
+      loop: "{{ user }}"
+        
+
+    - name: add ssh keys
+      authorized_key:
+        user: "{{ item.name }}"
+        state: present
+        key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
+      loop: "{{ user }}"
+
+    - name: update host file
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars[item].ansible_facts.eth1.ipv4.address }} {{hostvars[item].ansible_hostname}}"
+      loop: "{{ groups.all }}"
+
+    - name: instal  k3s
+      ansible.builtin.shell:
+        curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="--flannel-backend=none --disable servicelb --cluster-cidr={{ cluster_cidr }} --disable-network-policy --disable=traefik --disable servicelb  --advertise-address={{ node_ip }}  --node-external-ip=1{{ node_ip }} --node-ip={{ node_ip }}" sh
+
+    - name: install calico crd
+      ansible.builtin.shell:
+        kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/tigera-operator.yaml
