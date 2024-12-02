@@ -200,28 +200,28 @@
       failed_when: network_exist.rc > 1
 
 
-    - name: install network plugin 
-      block:
-        # - name: download network operator
-        #   ansible.builtin.uri:
-        #     url: "{{network_operator}}"
-        #     dest: ~/network_operator.yaml
+    # - name: install network plugin 
+    #   block:
+    #     # - name: download network operator
+    #     #   ansible.builtin.uri:
+    #     #     url: "{{network_operator}}"
+    #     #     dest: ~/network_operator.yaml
 
-        - name: install calico network operator
-          kubernetes.core.k8s:
-             src: "{{network_operator}}"
-             state: present
+    #     - name: install calico network operator
+    #       kubernetes.core.k8s:
+    #          src: "{{network_operator}}"
+    #          state: present
         
-        - name: install  calico crd
-          kubernetes.core.k8s:
-             template: "{{ calico }}"
-             state: present
+    #     - name: install  calico crd
+    #       kubernetes.core.k8s:
+    #          template: "{{ calico }}"
+    #          state: present
 
-        - name: enable metrics
-          ansible.builtin.script: "{{ calico_enable_metrics }}"            
+    #     - name: enable metrics
+    #       ansible.builtin.script: "{{ calico_enable_metrics }}"            
       
-      become: false
-      when: network_exist.rc == 1
+    #   become: false
+    #   when: network_exist.rc == 1
 
 
 # add local dns
