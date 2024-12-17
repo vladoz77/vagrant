@@ -1,10 +1,10 @@
- #User data
+#User data
 username: vlad
 password: '8231'
 
 #Repo data
-kubernetes_repo: https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
-kubernetes_gpg_key: https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
+kubernetes_repo: https://pkgs.k8s.io/core:/stable:/v1.32/rpm/
+kubernetes_gpg_key: https://pkgs.k8s.io/core:/stable:/v1.32/rpm/repodata/repomd.xml.key
 
 #Req soft
 
@@ -33,7 +33,6 @@ soft_for_install:
 - nfs-utils
 - nfs4-acl-tools
 
-
 # - cri-o
 #Req modules
 modules:
@@ -58,9 +57,7 @@ pip_modules:
 - kubernetes
 
 #Kube config file
-kubernetesVersion: 'v1.31.0'
+kubernetesVersion: 'v1.32.0'
 
 # Add node in cluster
 node_in_cluster: hostvars[groups['master'] ].node_exist.stdout_lines
-
-  

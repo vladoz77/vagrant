@@ -63,10 +63,6 @@
         state: started
         enabled: true
     
-    - name: Configure node ip
-      lineinfile:
-        path: /etc/sysconfig/kubelet
-        line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
       # notify:
       #   - restart kubelet
     - name: restart kubelet

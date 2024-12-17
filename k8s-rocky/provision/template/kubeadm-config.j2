@@ -49,9 +49,9 @@ scheduler:
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
 metricsBindAddress: 0.0.0.0:10249
-mode: ipvs
-ipvs:
-  strictARP: True
+mode: iptables
+#ipvs:
+#  strictARP: True
 
 ---
 # https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/
