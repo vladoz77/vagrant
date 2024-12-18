@@ -1,6 +1,6 @@
 # repo for k8s
-kubernetes_repo: https://pkgs.k8s.io/core:/stable:/v1.32/rpm/
-kubernetes_gpg_key: https://pkgs.k8s.io/core:/stable:/v1.32/rpm/repodata/repomd.xml.key
+kubernetes_repo: https://pkgs.k8s.io/core:/stable:/v{{ kubernetesVersion }}/rpm/
+kubernetes_gpg_key: https://pkgs.k8s.io/core:/stable:/v{{ kubernetesVersion }}/rpm/repodata/repomd.xml.key
 
 # repo for docker
 docker_repo: https://download.docker.com/linux/centos/$releasever/$basearch/stable
