@@ -22,13 +22,13 @@ Vagrant.configure("2") do |config|
       config.vm.define  "master#{master_id}" do |master|
         master.vm.hostname = "master#{master_id}"
         master.vm.network "private_network", ip: "192.168.59.#{10+master_id}"
-        # if master_id == Master
-        #   master.vm.provision "ansible" do |master|
-        #     master.limit = "all"
-        #     master.playbook = "provision/master-playbook.yaml"
-        #     master.inventory_path = "provision/inventory"
-        #   end
-        # end
+        if master_id == Master
+          master.vm.provision "ansible" do |master|
+            master.limit = "all"
+            master.playbook = "provision/test-master-playbook.yaml"
+            master.inventory_path = "provision/inventory"
+          end
+        end
       end
     end    
 
@@ -37,13 +37,13 @@ Vagrant.configure("2") do |config|
         config.vm.define "node#{node_id}" do |node|
             node.vm.hostname = "node#{node_id}"
             node.vm.network "private_network", ip: "192.168.59.#{20+node_id}"
-            # if node_id == Node
-            #   node.vm.provision "ansible" do |node|
-            #     node.limit = "all"
-            #     node.playbook = "provision/node-playbook.yaml"
-            #     node.inventory_path = "provision/inventory"
-            #   end
-            # end
+            if node_id == Node
+              node.vm.provision "ansible" do |node|
+                node.limit = "all"
+                node.playbook = "provision/test-node-playbook.yaml"
+                node.inventory_path = "provision/inventory"
+              end
+            end
         end
     end    
 end

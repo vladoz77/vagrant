@@ -1,0 +1,16 @@
+---
+- name: select calico var files
+  ansible.builtin.include_vars: vars/calico.yaml
+
+- name: install calico network operator
+  kubernetes.core.k8s:
+    src: "{{network_operator}}"
+    state: present
+
+- name: install  calico crd
+  kubernetes.core.k8s:
+    template: "{{ calico }}"
+    state: present
+
+- name: enable metrics
+  ansible.builtin.script: "{{ calico_enable_metrics }}"

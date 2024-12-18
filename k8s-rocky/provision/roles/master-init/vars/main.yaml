@@ -1,0 +1,4 @@
+# kubeadm template file
+kubeadm_temlate: "kubeadm-config.j2"
+home_kube_dir: /home/{{ username }}/.kube
+base_kube_conf_dir: /etc/kubernetes/admin.conf

@@ -1,0 +1,10 @@
+---
+
+- name: copy template kubeadm
+  ansible.builtin.template:
+    src: "{{ kubeadm_temlate }}"
+    dest: "~/kubeadm-config.yaml"
+
+- name: kubeadm init
+  ansible.builtin.shell:
+    kubeadm init --config ~/kubeadm-config.yaml 

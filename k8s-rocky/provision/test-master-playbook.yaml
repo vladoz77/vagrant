@@ -1,0 +1,21 @@
+        
+- name: master config
+  hosts: master
+  become: true
+  pre_tasks:
+
+    - name: node preconfig
+      ansible.builtin.include_role: 
+        name: all-node-config
+
+  roles:
+    - role: master-init
+      become: true
+
+    - role: network-config
+      become_user: "{{ username }}"
+      become: false
+      
+
+
+

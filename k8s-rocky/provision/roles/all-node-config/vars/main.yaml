@@ -1,13 +1,12 @@
-# #User data
-username: vlad
-password: '8231'
-
-#Repo data
+# repo for k8s
 kubernetes_repo: https://pkgs.k8s.io/core:/stable:/v1.32/rpm/
 kubernetes_gpg_key: https://pkgs.k8s.io/core:/stable:/v1.32/rpm/repodata/repomd.xml.key
 
-#Req soft
+# repo for docker
+docker_repo: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+docker_gpg_key: https://download.docker.com/linux/centos/gpg
 
+# Soft for install
 soft_for_install:
 - wget
 - nano
@@ -34,10 +33,11 @@ soft_for_install:
 - nfs4-acl-tools
 - tcpdump
 
+# calicoctl install
 calicoctl_url: https://github.com/projectcalico/calico/releases/download/{{ calico_version }}/calicoctl-linux-amd64
+calico_install_dir: /usr/bin/calicoctl
 
-# - cri-o
-#Req modules
+# modules list
 modules:
 - overlay
 - br_netfilter
@@ -58,20 +58,3 @@ sysctl_param:
 #Req pip module
 pip_modules:
 - kubernetes
-
-#Kube config file
-kubernetesVersion: 'v1.32.0'
-base_kube_conf_dir: /etc/kubernetes/admin.conf
-kubeadm_temlate: "{{playbook_dir}}/template/kubeadm-config.j2"
-# kubeadm_config: /tmp/kubeadm-config.yaml
-localdns_config: "{{playbook_dir}}/template/localdns.j2"
-home_kube_dir: /home/vagrant/.kube
-
-#Net config
-# node_ip: 192.168.56.24
-calico_version: v3.29.1
-podSubnet: 10.244.0.0/16
-serviceSubnet: 10.243.0.0/16
-network_operator: https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/tigera-operator.yaml
-calico: "{{playbook_dir}}/template/kube-calico-cdr.j2"
-calico_enable_metrics: "{{playbook_dir}}/files/calico-enable-metric.sh"

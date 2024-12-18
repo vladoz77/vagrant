@@ -1,0 +1,15 @@
+---
+
+- name: create .kube directory
+  ansible.builtin.file:
+    path: "{{ home_kube_dir }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+
+- name: create link to conf
+  ansible.builtin.file:
+    src: "{{ base_kube_conf_dir }}"
+    dest: "{{ home_kube_dir }}/config"
+    state: link
+    owner: "{{ username }}"

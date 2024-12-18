@@ -1,0 +1,15 @@
+---
+
+- name: check if pod network exist
+  ansible.builtin.shell: kubectl get namespaces calico-system 2>/dev/null
+  register: network_exist
+  failed_when: network_exist.rc > 1
+
+- name: install calico network plugin
+  ansible.builtin.include_tasks:
+    tasks/calico-install.yaml
+  when: 
+   - network_exist.rc == 1
+   - network_plugin == "calico"
+
+    

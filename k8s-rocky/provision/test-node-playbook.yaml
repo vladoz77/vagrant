@@ -1,0 +1,31 @@
+- name: get token from master node
+  hosts: master
+  become: true
+  become_user: "{{ username }}"
+  roles:
+    - role: get-token
+      become: false
+      # delegate_to: "{{ hostvars[groups['master'][0]].ansible_host }}"
+
+
+- name: node config
+  hosts: node
+  become: true
+  pre_tasks:
+    - name: host preconfig
+      ansible.builtin.include_role: 
+        name: all-node-config
+
+    - name: test1
+      debug:
+        var: "{{ hostvars[groups['master'][0]].node_list }}"
+
+    - name: test2
+      ansible.builtin.debug:
+        var: "{{ hostvars[groups['master'][0]].join_command }}"
+
+
+  tasks:
+    - name: add node
+      ansible.builtin.shell: "{{ hostvars[groups['master'][0]].join_command }}"
+      when:  inventory_hostname not in  hostvars[groups['master'][0]].node_list 

@@ -1,0 +1,12 @@
+---
+# Base provision for node, create user, add ssh key ant etc
+- name: node-baseprovision
+  ansible.builtin.include_tasks: tasks/baseprovision.yaml
+
+# Install base soft
+- name: install-base-soft
+  ansible.builtin.include_tasks: tasks/install-soft.yaml
+
+# Config node
+- name: node-config
+  ansible.builtin.include_tasks: tasks/config-nodes.yaml

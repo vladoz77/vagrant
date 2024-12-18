@@ -1,0 +1,18 @@
+---
+
+- name: check if cluster are running
+  ansible.builtin.shell:
+    ps -aux | grep kube-api | grep -v grep 2>/dev/null
+  register: isrunning
+  ignore_errors: true
+  failed_when: isrunning.rc > 1
+
+- name: Init cluster
+  ansible.builtin.include_tasks: tasks/init-cluster.yaml
+  when: isrunning.rc == 1
+
+- name: Config .kube/config
+  ansible.builtin.include_tasks: config-k8s.yaml
+  when: isrunning.rc == 1
+
+    
