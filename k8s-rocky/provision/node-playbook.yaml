@@ -14,7 +14,7 @@
   pre_tasks:
     - name: host preconfig
       ansible.builtin.include_role: 
-        name: all-node-config
+        name: base-install
 
     - name: test1
       debug:

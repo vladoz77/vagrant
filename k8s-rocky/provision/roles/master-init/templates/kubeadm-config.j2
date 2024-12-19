@@ -50,17 +50,23 @@ apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
 clusterCIDR: {{ podSubnet }}
 metricsBindAddress: 0.0.0.0:10249
+{% if kubeproxy_mode_ipvs == true %}
 mode: ipvs 
 ipvs:
   strictARP: True
+{% else %}
+mode: iptables
+{% endif %}
 
 ---
 # https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
 cgroupDriver: "systemd"
+{% if nodelocaldns == true %}
 clusterDNS:
-- 169.254.20.10
+- {{ nodelocaldns_address }}
+{% endif %}
 systemReserved:
   memory: 512Mi
   cpu: 500m

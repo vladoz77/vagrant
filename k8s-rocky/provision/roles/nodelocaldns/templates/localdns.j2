@@ -57,19 +57,19 @@ data:
       }
       reload
       loop
-      bind 169.254.20.10 {{ kube_dns.result.spec.clusterIP }}
+      bind {{ nodelocaldns_address }} {{ kube_dns.result.spec.clusterIP }}
       forward . __PILLAR__CLUSTER__DNS__ {
         prefer_udp
       }
       prometheus :9253
-      health 169.254.20.10:8080
+      health {{ nodelocaldns_address }}:8080
     }
     in-addr.arpa:53 {
       errors
       cache 30
       reload
       loop
-      bind 169.254.20.10 {{ kube_dns.result.spec.clusterIP }}
+      bind {{ nodelocaldns_address }} {{ kube_dns.result.spec.clusterIP }}
       forward . __PILLAR__CLUSTER__DNS__ {
         prefer_udp
       }
@@ -80,7 +80,7 @@ data:
       cache 30
       reload
       loop
-      bind 169.254.20.10 {{ kube_dns.result.spec.clusterIP }}
+      bind {{ nodelocaldns_address }} {{ kube_dns.result.spec.clusterIP }}
       forward . __PILLAR__CLUSTER__DNS__ {
         prefer_udp
       }
@@ -91,7 +91,7 @@ data:
       cache 30
       reload
       loop
-      bind 169.254.20.10 {{ kube_dns.result.spec.clusterIP }}
+      bind {{ nodelocaldns_address }} {{ kube_dns.result.spec.clusterIP }}
       forward . __PILLAR__UPSTREAM__SERVERS__ {
         prefer_udp
       }

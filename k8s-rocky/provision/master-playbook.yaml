@@ -6,7 +6,7 @@
 
     - name: node preconfig
       ansible.builtin.include_role: 
-        name: all-node-config
+        name: base-install
 
   roles:
     - role: master-init
@@ -16,6 +16,9 @@
       become_user: "{{ username }}"
       become: false
       
+    - role: nodelocaldns
+      become_user: "{{ username }}"
+      become: false
 
 
 

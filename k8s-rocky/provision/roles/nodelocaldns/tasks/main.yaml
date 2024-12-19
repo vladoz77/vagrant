@@ -1,0 +1,13 @@
+---
+
+- name: check if localdns exist
+  ansible.builtin.shell:
+     kubectl get pod -n kube-system 1&2>/dev/null
+  register: pod_output
+
+- name: install localdns
+  ansible.builtin.include_tasks: localdns.yaml
+  when: 
+    - "'node-local-dns' not in pod_output.stdout_lines | join(',')"
+    - nodelocaldns == true
+    

@@ -1,8 +1,17 @@
+# Username and password 
 username: vlad
 password: '8231'
+# Calico version
 calico_version: v3.29.1
+# kubernetes version
 kubernetesVersion: '1.32'
 kubernetesSubversion: '0'
+# network config
 podSubnet: 10.244.0.0/16
 serviceSubnet: 10.243.0.0/16
+# Select kube-proxy mode, enable ipvs or iptable (True or false)
+kubeproxy_mode_ipvs: false
 network_plugin: calico
+# Enable nodelocaldns (true or false)
+nodelocaldns: true
+nodelocaldns_address: 169.254.20.10
