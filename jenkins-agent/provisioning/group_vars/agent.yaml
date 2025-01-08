@@ -1,12 +1,6 @@
 ---
-# User list
-user:
-  
-  - name: jenkins
-    password: "jenkins"
-    groups: 
-     - sudo
-     
+username: jenkins
+password: "jenkins"
 # gpg keys 
 gpg_keys:
 # gpg key for docker

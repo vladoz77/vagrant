@@ -5,25 +5,32 @@
   
     - name: create user
       ansible.builtin.user:
-        name: "{{ item.name }}"
-        groups: "{{ item.groups }}"
-        password: "{{ item.password | password_hash('sha512') }}"
+        name: "{{ username }}"
+        groups: 
+          - sudo
+        password: "{{ password | password_hash('sha512') }}"
         shell: "{{ item.shell | default('/bin/bash') }}" 
         state: present
-      loop: "{{ user }}"
+      
         
     - name: add ssh keys
       authorized_key:
-        user: "{{ item.name }}"
+        user: "{{ username }}"
         state: present
         key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
-      loop: "{{ user }}"
 
-    # - name: update file /etc/hosts
-    #   ansible.builtin.lineinfile:
-    #     path: /etc/hosts
-    #     line: "{{hostvars[item].ansible_facts.eth1.ipv4.address}} {{hostvars[item].ansible_hostname}}"
-    #   loop: "{{groups['all']}}"
+    - name: Generate ssh key
+      community.crypto.openssh_keypair:
+        path: /home/{{ username }}/.ssh/id_rsa
+        size: 2048
+        type: ed25519
+        owner: "{{ username }}"
+        force: true
+
+    - name: copy ssh pub key to autorize
+      ansible.builtin.shell:
+        cat /home/{{ username }}/.ssh/id_rsa.pub >> /home/{{ username }}/.ssh/authorized_keys
+        
 
     - name: add gpg key
       ansible.builtin.apt_key:
@@ -38,11 +45,6 @@
         state: present
       loop: "{{ repo }}"
     
-    # - name: Update all packages to their latest version
-    #   ansible.builtin.apt:
-    #     name: "*"
-    #     state: latest
-
     - name: install base soft
       ansible.builtin.apt:
         name: "{{ soft }}"
@@ -73,12 +75,11 @@
       
       when: trivy_deb.rc == 1
 
-    - name: modify usergroup
-      ansible.builtin.user:
-        name: "{{ item.name }}"
-        groups: "{{ item.groups }}"
-        state:  present
-      loop: "{{ user }}"
+    # - name: modify usergroup
+    #   ansible.builtin.user:
+    #     name: "{{ item.name }}"
+    #     groups: "{{ item.groups }}"
+    #     state:  present
         
     - name: Change /var/run/docker.sock permission
       ansible.builtin.file:
