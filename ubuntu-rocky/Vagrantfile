@@ -1,0 +1,64 @@
+
+# Vm
+Ubuntu = 1
+Rocky  = 1
+
+# Common config
+VM_MEMORY = 1024
+VM_CPUS = 2
+SYNCED_FOLDER_PATH = "factory"
+SYNCED_FOLDER_DEST = "/tmp/factory"
+
+def configure_ansible(vm, playbook, groups)
+    vm.vm.provision "ansible" do |ansible|
+      ansible.limit = "all"
+      ansible.playbook = playbook
+      ansible.groups = groups
+    end
+  end
+
+
+Vagrant.configure("2") do |config|
+  # General configuration
+  #config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.ssh.insert_key = false
+  # Config VM provider
+  config.vm.provider "vmware_desktop" do |v|
+    v.gui = true
+    v.linked_clone = false
+    v.vmx["memsize"] = VM_MEMORY
+    v.vmx["numvcpus"] = VM_CPUS
+  end
+
+  
+  #Config ubuntu servers
+  (1..Ubuntu).each do |i|
+    config.vm.define "ubuntu-#{i}" do |ubuntu|
+      ubuntu.vm.box = "generic/ubuntu2204"
+      ubuntu.vm.hostname = "ubuntu-#{i}"
+      ubuntu.vm.network "private_network", ip: "172.10.0.#{1+i}"
+      ubuntu.vm.synced_folder SYNCED_FOLDER_PATH, SYNCED_FOLDER_DEST
+      if i == Ubuntu
+        configure_ansible(ubuntu, "provision/playbook-ubuntu.yaml", {
+            ubuntu: ["ubuntu-[1:#{i}]"],
+            rocky: ["rocky-[1:#{i}]"]
+        })
+      end
+    end
+  end
+  # Config rocky server
+  (1..Rocky).each do |i|
+    config.vm.define "rocky-#{i}" do |rocky|
+      rocky.vm.box = "generic/rocky9"
+      rocky.vm.hostname = "rocky-#{i}"
+      rocky.vm.network "private_network", ip: "192.168.0.#{1+i}"
+      rocky.vm.synced_folder "factory", "/tmp/factory"
+      if i == Rocky
+        configure_ansible(rocky, "provision/playbook-rocky.yaml", {
+            ubuntu: ["ubuntu-[1:#{i}]"],
+            rocky: ["rocky-[1:#{i}]"]
+        })
+      end
+    end
+  end
+end

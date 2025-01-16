@@ -1,0 +1,26 @@
+---
+# User list
+user:
+  - name: vlad
+    password: "8231"
+    groups: 
+     - sudo
+
+# soft for install
+packages:
+  - curl
+  - nmap
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - rsync
+  - nginx
+  
+
+# nginx_config
+listening_port: 80
+server_name: example.com
+root_directory: /var/www/site
+image_endpoint: images
+site_config_dir: /etc/nginx/sites-available/
+
