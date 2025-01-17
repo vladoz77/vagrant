@@ -25,6 +25,11 @@
         name: "{{ packages }}"
         state: latest
         update_cache: true
+
+    - name: Make sure pymysql is present
+      pip:
+        name: pymysql
+        state: present
     
     - name: copy content to directory
       ansible.builtin.copy:
@@ -37,6 +42,35 @@
         src: "{{ playbook_dir }}/template/default.j2"
         dest: "{{ site_config_dir }}/default"
       notify: reload_nginx
+
+    - name: create db in mysql
+      community.mysql.mysql_db:
+        name: "{{ db_name }}"
+        login_unix_socket: "{{ login_socket }}"
+        state: present
+
+    - name: Create user with password
+      community.mysql.mysql_user:
+        state: present
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        priv: '{{ item }}.*:ALL'
+        login_unix_socket: "{{ login_socket }}"
+      loop: "{{ db_name }}"
+
+    - name: Flush privileges
+      community.mysql.mysql_query:
+        query: "FLUSH PRIVILEGES"
+        login_unix_socket: "{{ login_socket }}"
+
+    - name: Dump multiple databases
+      community.mysql.mysql_db:
+        state: dump
+        name: "{{ db_name }}"
+        target: "/tmp/dump.sql"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_password }}"
+      
     
   handlers:  
     - name: reload_nginx
@@ -44,3 +78,5 @@
         name: nginx
         state: restarted
         enabled: true
+
+        
