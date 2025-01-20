@@ -1,0 +1,21 @@
+---
+- name: node_exporter_start
+  ansible.builtin.systemd_service:
+    state: started
+    name: "{{ service_name }}"
+    enabled: true
+    daemon_reload: true
+
+- name: firewalld_restart
+  ansible.builtin.systemd_service:
+    state: restarted
+    name: firewalld.service
+    enabled: true
+    daemon_reload: true
+
+- name: ufw_restart
+  ansible.builtin.systemd_service:
+    state: restarted
+    name: ufw.service
+    enabled: true
+    daemon_reload: true

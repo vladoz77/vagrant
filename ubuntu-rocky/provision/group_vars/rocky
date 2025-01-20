@@ -1,9 +1,10 @@
 ---
 hostname: rocky
 user:
-  - name: vlad
-    password: "8231"
-    groups:
-      - wheel
+- name: vlad
+  password: "8231"
+  groups:
+  - wheel
 
-    
+# node exporter version
+exporter_version: 1.8.2

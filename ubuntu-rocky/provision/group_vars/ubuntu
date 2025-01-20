@@ -1,23 +1,22 @@
 ---
 # User list
 user:
-  - name: vlad
-    password: "8231"
-    groups: 
-     - sudo
+- name: vlad
+  password: "8231"
+  groups:
+  - sudo
 
 # soft for install
 packages:
-  - curl
-  - nmap
-  - ca-certificates
-  - gnupg
-  - lsb-release
-  - rsync
-  - nginx
-  - mysql-server
-  - python3-pip
-  
+- curl
+- nmap
+- ca-certificates
+- gnupg
+- lsb-release
+- rsync
+- nginx
+- mysql-server
+- python3-pip
 
 # nginx_config
 listening_port: 80
@@ -27,11 +26,12 @@ image_endpoint: images
 site_config_dir: /etc/nginx/sites-available/
 
 #db config
-db_name: 
- - db1
+db_name:
+- db1
 db_user: "{{ user[0].name }}"
 db_password: "{{ user[0].password }}"
 login_socket: /var/run/mysqld/mysqld.sock
 db_dump_dir: /tmp/dump
 
-
+# node exporter version
+exporter_version: 1.8.2

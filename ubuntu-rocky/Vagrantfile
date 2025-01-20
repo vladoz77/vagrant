@@ -1,7 +1,7 @@
 
 # Vm
-Ubuntu = 3
-Rocky  = 1
+Ubuntu = 1
+Rocky  = 0
 
 # Common config
 VM_MEMORY = 1024

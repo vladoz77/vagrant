@@ -2,7 +2,7 @@
   hosts: rocky
   become: true
   ignore_errors: true
-  tasks:
+  pre_tasks:
 
     - name: create user
       ansible.builtin.user:
@@ -13,10 +13,12 @@
         state: present
       loop: "{{ user }}"
         
-
     - name: add ssh keys
       authorized_key:
         user: "{{ item.name }}"
         state: present
         key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
       loop: "{{ user }}"
+
+  roles:
+    - role: node-exporter

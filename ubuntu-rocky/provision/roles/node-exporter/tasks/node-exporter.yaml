@@ -1,0 +1,52 @@
+---
+- name: add port to ufw in ubuntu
+  community.general.ufw:
+    rule: allow
+    port: '9100'
+    proto: tcp
+    state: enabled
+  when: ansible_facts.os_family == "Debian"
+  notify: ufw_restart
+
+- name: add port to firewalld in RedHat
+  ansible.posix.firewalld:
+    port: 9100/tcp
+    permanent: true
+    state: enabled
+  when: ansible_facts.os_family == "RedHat"
+  notify: firewalld_restart
+
+- name: Make sure app dir exists
+  file:
+    path: "{{ extract_dir }}"
+    state: directory
+
+- name: install and Unarchive node-exporter
+  ansible.builtin.unarchive:
+    src: "{{ exporter_url }}"
+    dest: "{{ extract_dir }}"
+    remote_src: yes
+    extra_opts:
+    - "--strip-component=1"
+
+- name: Create node exporter-user
+  ansible.builtin.user:
+    name: "{{ node_exporter_user }}"
+    create_home: false
+    shell: /bin/false
+
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: "{{ extract_dir }}/node_exporter"
+    dest: "{{ install_dir }}"
+    mode: +x
+    owner: "{{ node_exporter_user }}"
+    group: "{{ node_exporter_user }}"
+    remote_src: yes
+
+- name: copy systemd service
+  ansible.builtin.template:
+    src: "{{ systemd_template }}"
+    dest: "{{ systemd_service_path }}/{{ service_name }}"
+  changed_when: True
+  notify: node_exporter_start
