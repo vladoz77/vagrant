@@ -1,0 +1,7 @@
+exporter_url: "https://github.com/prometheus/node_exporter/releases/download/v{{ exporter_version }}/node_exporter-{{ exporter_version }}.linux-amd64.tar.gz"
+extract_dir: /tmp/node_exporter
+install_dir: /usr/local/bin
+node_exporter_user: node_exporter
+systemd_template: node_exporter.service.j2
+systemd_service_path: /etc/systemd/system
+service_name: node-exporter.service

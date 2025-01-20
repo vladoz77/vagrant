@@ -1,0 +1,82 @@
+- name: Ubuntu provision
+  hosts: ubuntu
+  become: true
+  tasks:
+  
+    - name: create user
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        groups: "{{ item.groups }}"
+        password: "{{ item.password | password_hash('sha512') }}"
+        shell: "{{ item.shell | default('/bin/bash') }}" 
+        state: present
+      loop: "{{ user }}"
+        
+    - name: add ssh keys
+      authorized_key:
+        user: "{{ item.name }}"
+        state: present
+        key: "{{ lookup('file', '/home/{{ item.name }}/.ssh/id_rsa.pub') }}"
+      loop: "{{ user }}"
+
+    
+    - name: install packages
+      ansible.builtin.apt:
+        name: "{{ packages }}"
+        state: latest
+        update_cache: true
+
+    - name: Make sure pymysql is present
+      pip:
+        name: pymysql
+        state: present
+    
+    - name: copy content to directory
+      ansible.builtin.copy:
+        src: "/tmp/factory/"
+        dest: "{{ root_directory }}"
+        remote_src: yes
+
+    - name: Copy nginx default config
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/template/default.j2"
+        dest: "{{ site_config_dir }}/default"
+      notify: reload_nginx
+
+    - name: create db in mysql
+      community.mysql.mysql_db:
+        name: "{{ db_name }}"
+        login_unix_socket: "{{ login_socket }}"
+        state: present
+
+    - name: Create user with password
+      community.mysql.mysql_user:
+        state: present
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        priv: '{{ item }}.*:ALL'
+        login_unix_socket: "{{ login_socket }}"
+      loop: "{{ db_name }}"
+
+    - name: Flush privileges
+      community.mysql.mysql_query:
+        query: "FLUSH PRIVILEGES"
+        login_unix_socket: "{{ login_socket }}"
+
+    - name: Dump multiple databases
+      community.mysql.mysql_db:
+        state: dump
+        name: "{{ db_name }}"
+        target: "/tmp/dump.sql"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_password }}"
+      
+    
+  handlers:  
+    - name: reload_nginx
+      ansible.builtin.systemd:
+        name: nginx
+        state: restarted
+        enabled: true
+
+        

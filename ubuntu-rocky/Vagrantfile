@@ -1,7 +1,7 @@
 
 # Vm
 Ubuntu = 1
-Rocky  = 0
+Rocky  = 1
 
 # Common config
 VM_MEMORY = 1024
