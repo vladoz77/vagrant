@@ -1,7 +1,7 @@
 
 # Vm
-Ubuntu = 1
-Rocky  = 0
+Ubuntu = 3
+Rocky  = 1
 
 # Common config
 VM_MEMORY = 1024
@@ -30,13 +30,20 @@ Vagrant.configure("2") do |config|
     v.vmx["numvcpus"] = VM_CPUS
   end
 
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = VM_MEMORY
+    vb.cpus = VM_CPUS
+    vb.linked_clone = true
+ #   vb.gui = true
+ end
+
   
   #Config ubuntu servers
   (1..Ubuntu).each do |i|
     config.vm.define "ubuntu-#{i}" do |ubuntu|
       ubuntu.vm.box = "generic/ubuntu2204"
       ubuntu.vm.hostname = "ubuntu-#{i}"
-      ubuntu.vm.network "private_network", ip: "172.10.0.#{1+i}"
+      ubuntu.vm.network "private_network", ip: "192.168.57.#{1+i}"
       ubuntu.vm.synced_folder SYNCED_FOLDER_PATH, SYNCED_FOLDER_DEST
       if i == Ubuntu
         configure_ansible(ubuntu, "provision/playbook-ubuntu.yaml", {
@@ -51,7 +58,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "rocky-#{i}" do |rocky|
       rocky.vm.box = "generic/rocky9"
       rocky.vm.hostname = "rocky-#{i}"
-      rocky.vm.network "private_network", ip: "192.168.0.#{1+i}"
+      rocky.vm.network "private_network", ip: "192.168.56.#{1+i}"
       rocky.vm.synced_folder "factory", "/tmp/factory"
       if i == Rocky
         configure_ansible(rocky, "provision/playbook-rocky.yaml", {
