@@ -19,3 +19,4 @@
       loop: "{{ user }}"
   roles:
     - role: node-exporter
+    - role: docker

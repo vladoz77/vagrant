@@ -1,0 +1,21 @@
+---
+- name: use var for ubuntu
+  ansible.builtin.include_vars: rhel
+
+- name: get service facts
+  ansible.builtin.service_facts:
+
+- name: install docker
+  block:
+
+  - name: Add  repositories for rhel
+    ansible.builtin.yum_repository:
+      name: Docker_repo
+      description: Docker CE Stable
+      file: external_repos
+      baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+      gpgcheck: true
+      gpgkey: https://download.docker.com/linux/centos/gpg
+      state: present
+  
+  when: service_name not in ansible_facts.services
