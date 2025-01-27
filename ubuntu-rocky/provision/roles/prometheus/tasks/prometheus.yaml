@@ -1,0 +1,19 @@
+---
+- name: include vars for prometheus config
+  ansible.builtin.include_vars: prometheus.yaml
+    
+
+- name: Create directory for Prometheus configuration
+  ansible.builtin.file:
+    path: "{{ prometheus_dir }}"
+    state: directory
+
+- name: Copy rules
+  ansible.builtin.copy:
+    src: files/rules/
+    dest: "{{ prometheus_dir }}/rules"
+
+- name: Generate Prometheus configuration file
+  ansible.builtin.template:
+    src: prometheus.yaml.j2
+    dest: "{{ prometheus_dir }}/prometheus.yaml"

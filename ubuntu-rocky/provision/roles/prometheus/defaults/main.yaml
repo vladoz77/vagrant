@@ -1,0 +1,3 @@
+grafana_enabled: false
+node_exporter_enabled: false
+prometheus_dir: /opt/prometheus

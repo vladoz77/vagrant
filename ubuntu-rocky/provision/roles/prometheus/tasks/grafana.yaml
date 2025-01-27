@@ -1,0 +1,33 @@
+---
+- name: include vars for prometheus config
+  ansible.builtin.include_vars: grafana.yaml
+
+- name: Generate grafana configuration file
+  ansible.builtin.template:
+    src: grafana.ini.j2
+    dest: "{{ prometheus_dir }}/grafana.ini"
+
+- name: Create folder for datasources
+  ansible.builtin.file:
+    path: "{{ prometheus_dir }}/{{ datasource_folder }}"
+    state: directory
+
+- name: Create folder for dashboard
+  ansible.builtin.file:
+    path: "{{ prometheus_dir }}/{{ dashboard_config_folder }}"
+    state: directory
+
+- name: Generate grafana datasource file
+  ansible.builtin.template:
+    src: "{{ grafana_datasource_template }}"
+    dest: "{{ prometheus_dir }}/{{ datasource_folder }}/prometheus_datasource.yaml"
+
+- name: Generate grafana dashboard file
+  ansible.builtin.template:
+    src: grafana_dashboard.yaml.j2
+    dest: "{{ prometheus_dir }}/{{ dashboard_config_folder }}/dashboard.yaml"
+
+- name: Copy dashboard 
+  ansible.builtin.copy:
+    src: files/dashboards/
+    dest: "{{ prometheus_dir }}/dashboards"

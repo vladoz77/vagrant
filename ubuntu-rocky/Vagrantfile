@@ -1,7 +1,7 @@
 
 # Vm
-Ubuntu = 1
-Rocky  = 1
+Ubuntu = 2
+Rocky  = 0
 
 # Common config
 VM_MEMORY = 1024
@@ -9,11 +9,11 @@ VM_CPUS = 2
 SYNCED_FOLDER_PATH = "factory"
 SYNCED_FOLDER_DEST = "/tmp/factory"
 
-def configure_ansible(vm, playbook, groups)
+def configure_ansible(vm, playbook, inventory)
     vm.vm.provision "ansible" do |ansible|
       ansible.limit = "all"
       ansible.playbook = playbook
-      ansible.groups = groups
+      ansible.inventory_path = inventory
     end
   end
 
@@ -46,10 +46,7 @@ Vagrant.configure("2") do |config|
       ubuntu.vm.network "private_network", ip: "172.10.0.#{1+i}"
       ubuntu.vm.synced_folder SYNCED_FOLDER_PATH, SYNCED_FOLDER_DEST
       if i == Ubuntu
-        configure_ansible(ubuntu, "provision/playbook-ubuntu.yaml", {
-            ubuntu: ["ubuntu-[1:#{i}]"],
-            rocky: ["rocky-[1:#{i}]"]
-        })
+        configure_ansible(ubuntu, "provision/playbook-ubuntu.yaml", "provision/inventory.ini")
       end
     end
   end
@@ -61,10 +58,7 @@ Vagrant.configure("2") do |config|
       rocky.vm.network "private_network", ip: "192.168.0.#{1+i}"
       rocky.vm.synced_folder "factory", "/tmp/factory"
       if i == Rocky
-        configure_ansible(rocky, "provision/playbook-rocky.yaml", {
-            ubuntu: ["ubuntu-[1:#{i}]"],
-            rocky: ["rocky-[1:#{i}]"]
-        })
+        configure_ansible(rocky, "provision/playbook-rocky.yaml", "provision/inventory.ini")
       end
     end
   end

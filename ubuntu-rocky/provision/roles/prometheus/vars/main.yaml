@@ -1,0 +1,34 @@
+prometehus_volume: prometheus-data
+network_name: prometheus
+prometheus_image: prom/prometheus
+prometheus_container_name: prometheus
+restart_policy: unless-stopped
+prometheus_commands:
+  - --config.file=/etc/prometheus/prometheus.yaml
+  - --web.enable-lifecycle
+  - --storage.tsdb.path=/prometheus
+prometheus_env:
+  - TZ=Europe/Moscow
+list_prometheus_volumes:
+  - ./prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+  - ./rules:/etc/prometheus/rules
+  - "{{ prometehus_volume }}:/prometheus"
+prometheus_port:
+  - 9090:9090
+
+# Grafana configuration
+grafana_volume: grafana-data
+grafana_image: grafana/grafana
+grafana_container_name: grafana
+list_grafana_volumes:
+  - "{{ grafana_volume }}:/var/lib/grafana:rw"
+  - ./grafana.ini:/etc/grafana/grafana.ini
+  - "./{{ datasource_folder }}:/etc/grafana/{{ datasource_folder }}"
+  - "./{{ dashboard_config_folder }}:/etc/grafana/{{ dashboard_config_folder }}"
+  - "./dashboards:{{ dashboards_file_folder }}"
+grafana_port:
+  - 3000:3000
+datasource_folder: provisioning/datasources
+dashboard_config_folder: provisioning/dashboards
+dashboards_file_folder: /var/lib/grafana/dashboards
+

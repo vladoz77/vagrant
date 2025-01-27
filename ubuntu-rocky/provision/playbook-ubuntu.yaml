@@ -1,7 +1,7 @@
 - name: Ubuntu provision
-  hosts: ubuntu
+  hosts: all
   become: true
-  pre_tasks:
+  tasks:
     - name: create user
       ansible.builtin.user:
         name: "{{ item.name }}"
@@ -17,6 +17,42 @@
         state: present
         key: "{{ lookup('file', '/home/{{ item.name }}/.ssh/id_rsa.pub') }}"
       loop: "{{ user }}"
+
+    - name: install packages
+      ansible.builtin.apt:
+        name: "{{ packages }}"
+        state: latest
+        update_cache: true
+  roles:
+    - role: docker
+
+
+- name: node exporter  install  
+  hosts: all
+  become: true     
   roles:
     - role: node-exporter
-    - role: docker
+
+- name: Gather facts about services
+  hosts: all
+  tasks:
+  - name: check if node-exporter is running
+    ansible.builtin.command: systemctl is-active node-exporter.service
+    register: node_exporter_status
+    ignore_errors: yes
+
+  - ansible.builtin.debug:
+        msg:  "{{'node-exporter is running' if node_exporter_status.rc == 0 else 'node-exporter is not running'}}"
+
+
+
+
+- name: prometheus install
+  hosts: prometheus
+  become: true
+  vars:
+    - node_exporter_enabled: true
+    - grafana_enabled: true
+  roles: 
+
+  - role: prometheus

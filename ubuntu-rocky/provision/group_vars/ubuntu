@@ -14,9 +14,10 @@ packages:
 - gnupg
 - lsb-release
 - rsync
-- nginx
-- mysql-server
 - python3-pip
+
+python_lib:
+- requests
 
 # nginx_config
 listening_port: 80

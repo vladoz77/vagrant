@@ -1,0 +1,10 @@
+apiVersion: 1
+
+providers:
+  - name: {{ name_dashboard_provider }}
+    type: file
+    updateIntervalSeconds: 30
+    allowUiUpdates: {{ allowUiUpdates_dashboard }}
+    options:
+      path: {{ dashboards_file_folder }}
+      foldersFromFilesStructure: true

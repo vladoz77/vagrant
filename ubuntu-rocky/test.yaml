@@ -1,0 +1,11 @@
+- name: Ubuntu provision
+  hosts: all
+  become: true
+  tasks:
+  - name: check if node-exporter is running
+    ansible.builtin.command: systemctl is-active node-exporter.service
+    register: node_exporter_status
+    ignore_errors: yes
+
+  - ansible.builtin.debug:
+        msg:  "{{'running' if node_exporter_status.rc == 0 else 'not running'}}"

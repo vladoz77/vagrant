@@ -44,10 +44,10 @@
     group: "{{ node_exporter_user }}"
     remote_src: yes
 
-- name: copy systemd service
+- name: copy systemd service {{ exporter_service_name }}
   ansible.builtin.template:
     src: "{{ systemd_template }}"
-    dest: "{{ systemd_service_path }}/{{ service_name }}"
+    dest: "{{ systemd_service_path }}/{{ exporter_service_name }}"
   notify: node_exporter_start
 
 - name: Flush handlers

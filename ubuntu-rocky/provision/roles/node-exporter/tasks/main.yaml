@@ -5,4 +5,4 @@
 
 - name: install node-exporter
   ansible.builtin.include_tasks: node-exporter.yaml
-  when:  '"{{ service_name }}" not in ansible_facts.services or ansible_facts.services["node-exporter.service"].state != "running"' 
+  when:  '"{{ exporter_service_name }}" not in ansible_facts.services or ansible_facts.services["{{exporter_service_name}}"].state != "running"' 

@@ -10,4 +10,4 @@ packages:
 - docker-buildx-plugin
 - docker-compose-plugin
 
-service_name: docker.service
+docker_service_name: docker.service

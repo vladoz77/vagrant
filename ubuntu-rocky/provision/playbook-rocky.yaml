@@ -1,5 +1,5 @@
 - name: base_provision
-  hosts: rocky
+  hosts: ubuntu
   become: true
   ignore_errors: true
   pre_tasks:

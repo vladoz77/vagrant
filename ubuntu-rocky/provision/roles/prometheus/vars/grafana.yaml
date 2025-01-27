@@ -1,0 +1,7 @@
+grafana_domain_name: grafana.home.local
+grafana_http_port: 3000
+name_dashboard_provider: dashboard
+dashboards_file_folder: /var/lib/grafana/dashboards
+allowUiUpdates_dashboard: true
+grafana_datasource_template: grafana_datasource.yaml.j2
+grafana_dashboard_template: grafana_dashboard.yaml.j2

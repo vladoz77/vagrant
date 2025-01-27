@@ -1,0 +1,31 @@
+global:
+  scrape_interval: {{ scrape_interval }}
+  evaluation_interval: {{ evaluation_interval }}
+
+rule_files:
+- "rules/*.yaml"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      {% for host in groups['prometheus'] -%}
+      - targets: 
+        - {{ hostvars[host].ansible_facts.eth1.ipv4.address }}:9090
+        labels:
+          hostname: {{ hostvars[host].ansible_facts.nodename }}
+          os_version: {{ hostvars[host].ansible_facts.os_family }}
+      {%- endfor %}
+
+  {% if node_exporter_enabled == true -%}
+  - job_name: 'node_exporter'
+    static_configs:
+      {% for host in groups['all'] -%}
+      {% if  hostvars[host].node_exporter_status.rc == 0 -%}
+      - targets:
+        - {{ hostvars[host].ansible_facts.eth1.ipv4.address }}:9100
+        labels:
+            hostname: {{ hostvars[host].ansible_facts.nodename }}
+            os_version: {{ hostvars[host].ansible_facts.os_family }}
+      {% endif -%}
+      {% endfor -%}
+  {% endif -%}

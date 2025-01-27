@@ -1,0 +1,52 @@
+services:
+  prometheus:
+    image: {{ prometheus_image }}
+    container_name: {{ prometheus_container_name }}
+    restart: {{ restart_policy }}
+    command: 
+    {% for command in prometheus_commands -%}
+    - {{ command }}
+    {% endfor -%}
+    environment:
+    {% for env in prometheus_env -%}
+    - {{ env }}
+    {% endfor -%}
+    volumes:
+    {% for volume in list_prometheus_volumes -%}
+    - {{ volume }}
+    {% endfor -%}
+    ports:
+    {% for port in prometheus_port -%}
+    - {{ port }}
+    {% endfor -%}
+    networks:
+      - {{ network_name }}
+  {% if grafana_enabled == true -%}
+  grafana:  
+    image: {{ grafana_image }}
+    container_name: {{ grafana_container_name }}
+    restart: {{ restart_policy }}
+    volumes:
+    {% for volume in list_grafana_volumes -%}
+    - {{ volume }}
+    {% endfor -%}
+    ports:
+    {% for port in grafana_port -%}
+    - {{ port }}
+    {% endfor -%}
+    networks:
+      - {{ network_name }}
+    depends_on:
+      - {{ prometheus_container_name }}
+  {%- endif %}
+
+
+
+volumes:
+  {{ prometehus_volume }}:
+  {% if grafana_enabled == true -%}
+  {{ grafana_volume }}:
+  {%- endif %}
+
+networks:
+  {{ network_name }}:
