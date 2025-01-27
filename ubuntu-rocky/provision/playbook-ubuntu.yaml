@@ -25,13 +25,8 @@
         update_cache: true
   roles:
     - role: docker
-
-
-- name: node exporter  install  
-  hosts: all
-  become: true     
-  roles:
     - role: node-exporter
+
 
 - name: Gather facts about services
   hosts: all
