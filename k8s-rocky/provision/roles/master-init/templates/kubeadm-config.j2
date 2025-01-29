@@ -32,7 +32,11 @@ imageRepository: registry.k8s.io
 apiServer:
   timeoutForControlPlane: 4m0s
 kubernetesVersion: v{{ kubernetesVersion }}.{{ kubernetesSubversion }}
+{% if ha_enabled == true %}
+controlPlaneEndpoint: {{ vip_address }}:{{ vip_port}}
+{% else %}
 controlPlaneEndpoint: {{ node_ip }}:6443
+{% endif %}
 networking:
   dnsDomain: cluster.local
   serviceSubnet: {{ serviceSubnet }}

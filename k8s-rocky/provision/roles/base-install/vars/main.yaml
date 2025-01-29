@@ -33,6 +33,19 @@ soft_for_install:
 - nfs4-acl-tools
 - tcpdump
 
+# Packages need for ha config
+ha_packages:
+  - haproxy
+  - keepalived
+
+haproxy_config_tempate: haproxy.cfg.j2
+haproxy_config_dir: /etc/haproxy/haproxy.cfg
+keepalived_config_template: keepalived.conf.j2
+keepalived_check_script_template: check_apiserver.sh.j2
+keepalived_config_dir: /etc/keepalived/keepalived.conf
+keepalived_check_script_dir: /etc/keepalived/check_apiserver.sh
+
+
 # calicoctl install
 calicoctl_url: https://github.com/projectcalico/calico/releases/download/{{ calico_version }}/calicoctl-linux-amd64
 calico_install_dir: /usr/bin/calicoctl

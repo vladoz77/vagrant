@@ -4,8 +4,8 @@
   become: false
   tasks:
     - name: script
-      ansible.builtin.script:
-        "{{playbook_dir}}/calico-metrics.sh"
+      ansible.builtin.debug:
+        var: ansible_facts.hostname
      
                 
                 

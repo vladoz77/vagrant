@@ -8,17 +8,20 @@
       ansible.builtin.include_role: 
         name: base-install
 
-  # roles:
-  #   - role: master-init
-  #     become: true
 
-  #   - role: network-config
-  #     become_user: "{{ username }}"
-  #     become: false
+# - name: master init
+#   hosts: master[0]
+#   roles:
+#     - role: master-init
+#       become: true
+
+#     - role: network-config
+#       become_user: "{{ username }}"
+#       become: false
       
-  #   - role: nodelocaldns
-  #     become_user: "{{ username }}"
-  #     become: false
+#     - role: nodelocaldns
+#       become_user: "{{ username }}"
+#       become: false
 
 
 

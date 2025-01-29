@@ -1,5 +1,6 @@
 [master]
 172.16.10.10 hostname=master01 node_ip=172.16.10.10 
+172.16.10.11 hostname=master01 node_ip=172.16.10.10
 
 [node]
 172.16.10.20 hostname=node01 node_ip=172.16.10.20 
