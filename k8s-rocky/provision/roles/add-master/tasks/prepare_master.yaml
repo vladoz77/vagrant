@@ -1,0 +1,8 @@
+---
+- name: get token from master1
+  ansible.builtin.shell: kubeadm token create --print-join-command
+  register: join_token
+
+- name: get certificate
+  ansible.builtin.shell: kubeadm init phase upload-certs --upload-certs | tail -1
+  register: certificate

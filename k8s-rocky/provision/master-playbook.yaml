@@ -2,26 +2,30 @@
 - name: master config
   hosts: master
   become: true
-  pre_tasks:
-
-    - name: node preconfig
-      ansible.builtin.include_role: 
-        name: base-install
+  roles:
+    - role: node-config
 
 
-# - name: master init
-#   hosts: master[0]
-#   roles:
-#     - role: master-init
-#       become: true
+- name: master init
+  hosts: master[0]
+  roles:
+    - role: master-init
+      become: true
 
-#     - role: network-config
-#       become_user: "{{ username }}"
-#       become: false
+    - role: network-config
+      become_user: "{{ username }}"
+      become: false
       
-#     - role: nodelocaldns
-#       become_user: "{{ username }}"
-#       become: false
+    - role: nodelocaldns
+      become_user: "{{ username }}"
+      become: false
+
+- name: add another master node
+  hosts: master
+  become: true
+  roles:
+    - role: add-master
+      when: ha_enabled == true
 
 
 

@@ -3,9 +3,25 @@
   hosts: master
   become: false
   tasks:
-    - name: script
-      ansible.builtin.debug:
-        var: ansible_facts.hostname
+    - name: get token for joinnig pod
+      ansible.builtin.shell: kubeadm token create --print-join-command
+      register: join_token
+      when: inventory_hostname == groups['master'][0]
+
+    - name: get certificate
+      ansible.builtin.shell: kubeadm init phase upload-certs --upload-certs | tail -1
+      register: certificate
+      when: inventory_hostname == groups['master'][0]
+
+- name: add master
+  hosts: master
+  become: true
+  tasks:
+    - name: add master node
+      debug:
+        msg: "{{ hostvars[groups['master'][0]].join_token.stdout }} --control-plane --certificate-key {{ hostvars[groups['master'][0]].certificate.stdout }}"
+      when: inventory_hostname != groups['master'][0]
+        
      
                 
                 
