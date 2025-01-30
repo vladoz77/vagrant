@@ -1,0 +1,34 @@
+---
+
+- name: start iscsid
+  ansible.builtin.service:
+    name: iscsid
+    state: started
+    enabled: true
+
+- name: restart kubelet
+  ansible.builtin.service:
+    name: kubelet
+    state: restarted
+    enabled: true
+
+- name: restart containerd
+  ansible.builtin.service:
+    name: containerd
+    state: restarted
+    daemon_reload: true
+    enabled: true
+
+- name: restart_haproxy
+  ansible.builtin.systemd_service:
+    name: haproxy
+    state: restarted
+    enabled: true
+    daemon_reload: true
+
+- name: restart_keepalived
+  ansible.builtin.systemd_service:
+    name: keepalived
+    state: restarted
+    enabled: true
+    daemon_reload: true

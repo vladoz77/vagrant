@@ -1,0 +1,73 @@
+# repo for k8s
+kubernetes_repo: https://pkgs.k8s.io/core:/stable:/v{{ kubernetesVersion }}/rpm/
+kubernetes_gpg_key: https://pkgs.k8s.io/core:/stable:/v{{ kubernetesVersion }}/rpm/repodata/repomd.xml.key
+
+# repo for docker
+docker_repo: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+docker_gpg_key: https://download.docker.com/linux/centos/gpg
+
+# Soft for install
+soft_for_install:
+- wget
+- nano
+- curl
+- iproute-tc
+- vim
+- git
+- bash-completion
+- nfs-utils
+- python3
+- containerd.io
+- kubectl.x86_64
+- kubelet.x86_64
+- kubeadm.x86_64
+- ipvsadm
+- python3-pip
+- sysstat
+- jq
+- net-tools
+- tree
+- traceroute
+- iscsi-initiator-utils
+- nfs-utils
+- nfs4-acl-tools
+- tcpdump
+
+# Packages need for ha config
+ha_packages:
+  - haproxy
+  - keepalived
+
+haproxy_config_tempate: haproxy.cfg.j2
+haproxy_config_dir: /etc/haproxy/haproxy.cfg
+keepalived_config_template: keepalived.conf.j2
+keepalived_check_script_template: check_apiserver.sh.j2
+keepalived_config_dir: /etc/keepalived/keepalived.conf
+keepalived_check_script_dir: /etc/keepalived/check_apiserver.sh
+
+
+# calicoctl install
+calicoctl_url: https://github.com/projectcalico/calico/releases/download/{{ calico_version }}/calicoctl-linux-amd64
+calico_install_dir: /usr/bin/calicoctl
+
+# modules list
+modules:
+- overlay
+- br_netfilter
+- nf_nat
+- xt_REDIRECT
+- xt_owner
+- iptable_nat
+- iptable_mangle
+- iptable_filter
+- iscsi_tcp
+
+#sysctl param
+sysctl_param:
+- net.bridge.bridge-nf-call-ip6tables
+- net.bridge.bridge-nf-call-iptables
+- net.ipv4.ip_forward
+
+#Req pip module
+pip_modules:
+- kubernetes

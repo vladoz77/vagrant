@@ -1,0 +1,49 @@
+---
+- name: add repo for k8s
+  ansible.builtin.yum_repository:
+    name: kubernetes
+    description: soft for k8s
+    baseurl:
+    - "{{ kubernetes_repo }}"
+    gpgkey:
+    - "{{ kubernetes_gpg_key }}"
+    enabled: true
+    gpgcheck: true
+    state: present
+
+- name: add repo for containerd
+  ansible.builtin.yum_repository:
+    name: containerd
+    description: soft for CRI
+    baseurl:
+    - "{{ docker_repo }}"
+    gpgkey:
+    - "{{ docker_gpg_key }}"
+    enabled: true
+    gpgcheck: true
+    state: present
+
+- name: install packages
+  ansible.builtin.yum:
+    name: "{{ soft_for_install }}"
+    state: present
+    update_cache: true
+  notify:
+  - start iscsid
+  - restart kubelet
+
+- name: check if calicoctl is installed
+  ansible.builtin.stat:
+    path: "{{ calico_install_dir }}"
+  register: stat_result
+
+- name: download and install calicoctl
+  ansible.builtin.uri:
+    url: "{{ calicoctl_url }}"
+    dest: "{{ calico_install_dir }}"
+    mode: 755
+  when: stat_result.stat.exists == False
+
+- name: Install kubernetes python package
+  ansible.builtin.pip:
+    name: "{{ pip_modules }}"
