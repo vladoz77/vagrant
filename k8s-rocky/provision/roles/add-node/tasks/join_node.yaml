@@ -1,0 +1,4 @@
+---
+- name: add node
+  ansible.builtin.shell: "{{ hostvars[groups['master'][0]].node_join_token.stdout }}"
+  when: inventory_hostname not in  hostvars[groups['master'][0]].node_list

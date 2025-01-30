@@ -1,31 +1,31 @@
-- name: get token from master node
-  hosts: master
-  become: true
-  become_user: "{{ username }}"
-  roles:
-    - role: get-token
-      become: false
-      # delegate_to: "{{ hostvars[groups['master'][0]].ansible_host }}"
-
-
 - name: node config
   hosts: node
   become: true
-  pre_tasks:
-    - name: host preconfig
-      ansible.builtin.include_role: 
-        name: base-install
+  roles:
+    - role: node-config
 
-    - name: test1
-      debug:
-        var: "{{ hostvars[groups['master'][0]].node_list }}"
+- name: get token
+  hosts: master[0]
+  tasks:
+    - name: get list nodes
+      ansible.builtin.shell: kubectl get node -o json | jq '.items[].metadata.name'
+      register: node_list
 
-    - name: test2
-      ansible.builtin.debug:
-        var: "{{ hostvars[groups['master'][0]].join_command }}"
+    - name: set fact
+      ansible.builtin.set_fact:
+        node_list: "{{ node_list.stdout_lines | join(',') }}"
 
+    - name: get token for joinnig pod
+      ansible.builtin.shell:
+        kubeadm token create --print-join-command
+      register: node_join_token
 
+- name: add node
+  hosts: node
   tasks:
     - name: add node
-      ansible.builtin.shell: "{{ hostvars[groups['master'][0]].join_command }}"
-      when:  inventory_hostname not in  hostvars[groups['master'][0]].node_list 
+      ansible.builtin.shell: "{{ hostvars[groups['master'][0]].node_join_token.stdout }}"
+      when: inventory_hostname not in  hostvars[groups['master'][0]].node_list
+
+
+  

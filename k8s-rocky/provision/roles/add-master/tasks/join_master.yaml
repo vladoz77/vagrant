@@ -1,0 +1,2 @@
+- name: add master node
+  ansible.builtin.shell: "{{ hostvars[groups['master'][0]].join_token.stdout }} --control-plane --certificate-key {{ hostvars[groups['master'][0]].certificate.stdout }}"
