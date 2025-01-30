@@ -1,6 +1,6 @@
 [master]
-master1 ansible_host=192.168.59.11 ansible_port=22 ansible_user='vagrant' ansible_ssh_private_key_file='/home/vlad/.vagrant.d/insecure_private_key' node_ip=192.168.59.11 ansible_become=yes
-
-
+master1 ansible_host=192.168.59.11 node_ip=192.168.59.11 ansible_become=yes
+master2 ansible_host=192.168.59.12 node_ip=192.168.59.12 ansible_become=yes
+master3 ansible_host=192.168.59.13 node_ip=192.168.59.13 ansible_become=yes
 [node]
 node1 ansible_host=192.168.59.21 ansible_port=22 ansible_user='vagrant' ansible_ssh_private_key_file='/home/vlad/.vagrant.d/insecure_private_key' node_ip=192.168.59.21 ansible_become=yes
