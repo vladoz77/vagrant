@@ -1,2 +1,8 @@
-- name: add master node
-  ansible.builtin.shell: "{{ hostvars[groups['master'][0]].join_token.stdout }} --control-plane --certificate-key {{ hostvars[groups['master'][0]].certificate.stdout }}"
+- ansible.builtin.debug:
+     msg: "{{ hostvars[groups['master'][0]].join_token.stdout }} --control-plane --certificate-key {{ hostvars[groups['master'][0]].certificate.stdout }}   --apiserver-advertise-address {{ansible_facts.eth1.ipv4.address}}"
+
+- name: add aadition master node
+  ansible.builtin.shell:
+     "{{ hostvars[groups['master'][0]].join_token.stdout }} \
+     --control-plane --certificate-key {{ hostvars[groups['master'][0]].certificate.stdout }}  \
+     --apiserver-advertise-address {{ansible_facts.eth1.ipv4.address}}"

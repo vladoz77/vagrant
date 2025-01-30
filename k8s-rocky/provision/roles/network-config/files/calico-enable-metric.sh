@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "wait while namespace calico-system create"
-sleep 20
+sleep 30
 # Enable metrics 
 kubectl patch felixconfiguration default --type merge --patch '{"spec":{"prometheusMetricsEnabled": true}}'
 kubectl patch installation default --type=merge -p '{"spec": {"typhaMetricsPort":9093}}'
