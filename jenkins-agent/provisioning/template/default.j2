@@ -1,0 +1,19 @@
+server {
+    listen {{ listening_port }};
+    listen [::]:{{ listening_port }};
+
+    server_name {{ server_name }};
+
+    location = /{{ endpoint }} {
+        root {{ site_directory }};
+        index {{ site_file }};
+        try_files /index.html =404;
+    }
+
+
+    location / {
+        return 404 "Not found\n";
+    }
+}
+
+          
