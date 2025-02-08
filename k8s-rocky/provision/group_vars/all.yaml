@@ -16,6 +16,6 @@ network_plugin: calico
 nodelocaldns: true
 nodelocaldns_address: 169.254.20.10
 # Enabeled HA kubernetes master (true or false)
-ha_enabled: false
+ha_enabled: true
 vip_address: 192.168.59.200
 vip_port: 8443

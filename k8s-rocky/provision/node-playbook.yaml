@@ -1,38 +1,22 @@
-# - name: node config
-#   hosts: node
-#   become: true
-#   roles:
-#     - role: node-config
-
-
 - name: get token
   hosts: master[0]
   roles:
     - role: add-node
       tasks_from: prepare_master
-  # tasks:
-  #   - name: get list nodes
-  #     ansible.builtin.shell: kubectl get node -o json | jq '.items[].metadata.name'
-  #     register: node_list
-
-  #   - name: set fact
-  #     ansible.builtin.set_fact:
-  #       node_list: "{{ node_list.stdout_lines | join(',') }}"
-
-  #   - name: get token for joinnig pod
-  #     ansible.builtin.shell:
-  #       kubeadm token create --print-join-command
-  #     register: node_join_token
 
 - name: add node
   hosts: node
   roles:
     - role: node-config
-    
   tasks:
+    - name: Check if kubelet.conf exists
+      ansible.builtin.stat:
+        path: "/etc/kubernetes/kubelet.conf"
+      register: kubelet_conf
+
     - name: add node
       ansible.builtin.shell: "{{ hostvars[groups['master'][0]].node_join_token.stdout }}"
-      when: inventory_hostname not in  hostvars[groups['master'][0]].node_list
+      when: not kubelet_conf.stat.exists
 
 
   

@@ -32,6 +32,9 @@
   - start iscsid
   - restart kubelet
 
+- name: start handler force
+  meta: flush_handlers
+
 - name: check if calicoctl is installed
   ansible.builtin.stat:
     path: "{{ calico_install_dir }}"

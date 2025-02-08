@@ -1,0 +1,3 @@
+- name: ha requiment install
+  ansible.builtin.include_tasks: tasks/ha-prepare.yaml
+  when: ha_enabled == true 

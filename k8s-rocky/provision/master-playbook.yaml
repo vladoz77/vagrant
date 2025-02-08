@@ -4,6 +4,8 @@
   become: true
   roles:
     - role: node-config
+    - role: ha-master
+      when: ha_enabled == true
 
 
 - name: master init

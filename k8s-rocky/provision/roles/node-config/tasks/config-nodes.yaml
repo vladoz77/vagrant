@@ -55,6 +55,9 @@
   notify:
   - restart containerd
 
+- name: start handler force
+  meta: flush_handlers
+
 - name: bashrc edit
   ansible.builtin.blockinfile:
     dest: /home/{{ username }}/.bashrc
