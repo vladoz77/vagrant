@@ -1,6 +1,6 @@
 # ENV['VAGRANT_SERVER_URL'] = 'https://vagrant.elab.pro'
-Node = 4
-Master = 4
+Node = 0
+Master = 1
 
 
 Vagrant.configure("2") do |config|

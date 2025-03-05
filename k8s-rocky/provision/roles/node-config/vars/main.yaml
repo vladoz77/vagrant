@@ -32,6 +32,7 @@ soft_for_install:
 - nfs-utils
 - nfs4-acl-tools
 - tcpdump
+- unzip
 
 
 

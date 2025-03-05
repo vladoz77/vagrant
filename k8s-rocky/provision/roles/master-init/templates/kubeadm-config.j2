@@ -31,6 +31,9 @@ etcd:
 imageRepository: registry.k8s.io
 apiServer:
   timeoutForControlPlane: 4m0s
+  extraArgs:
+    service-cluster-ip-range: {{ serviceSubnet }}
+    feature-gates: "AllowUnsafeMalformedObjectDeletion=True"
 kubernetesVersion: v{{ kubernetesVersion }}.{{ kubernetesSubversion }}
 {% if ha_enabled == true %}
 controlPlaneEndpoint: {{ vip_address }}:{{ vip_port}}
@@ -44,6 +47,7 @@ networking:
 controllerManager: 
   extraArgs:
     bind-address: 0.0.0.0
+    controllers: {}
 scheduler:
   extraArgs:
     bind-address: 0.0.0.0
