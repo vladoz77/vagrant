@@ -6,10 +6,11 @@
   failed_when: network_exist.rc > 1
 
 - name: install calico network plugin
-  ansible.builtin.include_tasks:
-    tasks/calico-install.yaml
+  ansible.builtin.include_tasks: tasks/calico-install.yaml
   when: 
    - network_exist.rc == 1
    - network_plugin == "calico"
+
+
 
     

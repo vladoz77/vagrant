@@ -40,6 +40,8 @@ soft_for_install:
 # calicoctl install
 calicoctl_url: https://github.com/projectcalico/calico/releases/download/{{ calico_version }}/calicoctl-linux-amd64
 calico_install_dir: /usr/bin/calicoctl
+calicoctl_temlate: "calicoctl.cfg.j2"
+calicoconfig_dir: /etc/calico
 
 # modules list
 modules:

@@ -1,7 +1,6 @@
 ---
-- name: select calico var files
-  ansible.builtin.include_vars: vars/calico.yaml
-
+# - name: select calico var files
+#   ansible.builtin.include_vars: vars/calico.yaml
 - name: install calico network operator
   kubernetes.core.k8s:
     src: "{{network_operator}}"

@@ -1,0 +1,38 @@
+- name: check if calicoctl is installed
+  ansible.builtin.stat:
+    path: "{{ calico_install_dir }}"
+  register: stat_result
+
+- name: download and install calicoctl
+  ansible.builtin.uri:
+      url: "{{ calicoctl_url }}"
+      dest: "{{ calico_install_dir }}"
+      mode: 755
+  when: not stat_result.stat.exists 
+
+- name: check if calicoctl.cfg exist
+  ansible.builtin.stat:
+      path: "/etc/calico/calicoctl.cfg"
+  register: config_exist
+
+- name: create directory for calicoctl
+  ansible.builtin.file:
+    path: "{{ calicoconfig_dir }}"
+    state: directory
+    mode: '0755'
+  when: 
+    - not stat_result.stat.exists 
+    - not config_exist.stat.exists 
+
+- name: add config for calicoctl
+  ansible.builtin.template:
+    src: "{{ calicoctl_temlate }}"
+    dest: "/etc/calico/calicoctl.cfg"
+  when: 
+    - not stat_result.stat.exists 
+    - not config_exist.stat.exists 
+ 
+
+
+
+  

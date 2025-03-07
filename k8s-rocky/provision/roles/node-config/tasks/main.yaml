@@ -4,9 +4,12 @@
   ansible.builtin.include_tasks: tasks/baseprovision.yaml
 
 # Install base soft
-- name: install-base-soft
-  ansible.builtin.include_tasks: tasks/install-soft.yaml
+- name: install-base-packages
+  ansible.builtin.include_tasks: tasks/install-base-packages.yaml
 
+- name: install calicoctl on master
+  ansible.builtin.include_tasks: tasks/install-calicoctl.yaml 
+  when: inventory_hostname in groups['master']
 # Config node
 - name: node-config
   ansible.builtin.include_tasks: tasks/config-nodes.yaml
