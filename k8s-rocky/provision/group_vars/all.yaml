@@ -2,7 +2,7 @@
 username: vlad
 password: '8231'
 # Calico version
-calico_version: v3.29.1
+calico_version: v3.29.2
 # kubernetes version
 kubernetesVersion: '1.32'
 kubernetesSubversion: '2'
