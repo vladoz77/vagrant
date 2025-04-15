@@ -5,7 +5,8 @@ user:
   groups:
   - wheel
 
-disk: /dev/sdb
+disk: sdb
+partition: "{{ disk }}1"
 filesystem: xfs
 label_disk: data
 mount_path: /mnt/data

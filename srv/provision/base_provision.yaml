@@ -26,38 +26,45 @@
         line: "{{hostvars[item].ansible_facts.eth1.ipv4.address}} {{hostvars[item].ansible_hostname}}"
       loop: "{{groups['all']}}"
 
-    - name: check {{ disk }} 
+    - name: check disk {{ disk }} 
       ansible.builtin.stat:
-        path: "{{ disk }}"
+        path: "/dev/{{ disk }}"
       register: disk_stat
-
-    - name: check if {{ mount_path }} exist
-      ansible.builtin.stat:
-        path: "{{ mount_path }}"
-      register: mount
-
-    - name: check if {{ disk }} exist in /etc/fstab
-      ansible.builtin.shell:
-        "grep {{ label_disk }} /etc/fstab 2 >/dev/null" 
-      register: fstab_result
-      ignore_errors: true
 
     - name: create new partition on disk {{ disk }}
       community.general.parted:
-        device: "{{ disk }}"
+        device: "/dev/{{ disk }}"
         number: 1
         state: present
         fs_type: xfs 
         label: gpt
       when: disk_stat.stat.exists is true  and disk_stat.stat.isblk is true
 
-    - name: Create a {{ filesystem }} filesystem on {{ disk }}
+    - name: check {{ partition }}
+      ansible.builtin.stat:
+        path: "/dev/{{ partition }}"
+      register: partition_info
+
+    - name: Check if partition /dev/{{ partition }} is mounted using mount command
+      ansible.builtin.shell:
+        cmd: "mount | grep '^/dev/{{ partition }}'"
+      register: mount_check
+      ignore_errors: true
+      failed_when: mount_check.rc not in [ 0, 1 ]
+
+    - name: Create a {{ filesystem }} filesystem on {{ partition }}
       community.general.filesystem:
         fstype: "{{ filesystem }}"
-        dev: "{{ disk }}"
+        dev: "/dev/{{ partition }}"
         opts: "-L {{ label_disk }}"
         state: present
+      when:  mount_check.rc != 0 and partition_info.stat.exists and partition_info.stat.isblk
 
+    - name: check if {{ mount_path }} exist
+      ansible.builtin.stat:
+        path: "{{ mount_path }}"
+      register: mount
+    
     - name: create {{ mount_path }}
       ansible.builtin.file:
         path: "{{ mount_path }}"
@@ -66,6 +73,13 @@
         state: directory
       when: not mount.stat.exists
 
+    - name: check if {{ disk }} exist in /etc/fstab
+      ansible.builtin.shell:
+        "grep {{ label_disk }} /etc/fstab 2>&1 >/dev/null" 
+      register: fstab_result
+      ignore_errors: true
+      failed_when: mount_check.rc not in [ 0, 1 ]
+
     - name: Mount disk {{ disk  }} by path {{ mount_path }}
       ansible.posix.mount:
         path: "{{ mount_path }}"
@@ -73,9 +87,3 @@
         fstype: "{{ filesystem }}"
         state: present
       when: fstab_result.rc != 0
-        
-    
-
-
-
-      
