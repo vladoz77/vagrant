@@ -1,6 +1,12 @@
 ---
 user:
-  - name: vlad
-    password: "8231"
-    groups: 
-     - wheel
+- name: vlad
+  password: "8231"
+  groups:
+  - wheel
+
+disk: sdb
+partition: "{{ disk }}1"
+filesystem: xfs
+label_disk: data
+mount_path: /mnt/data
