@@ -38,6 +38,20 @@
     value: "262144"
     reload: true
 
+- name: set fs.inotify.max_user_instances in 512
+  ansible.posix.sysctl:
+    name: fs.inotify.max_user_instances
+    state: present
+    value: "512"
+    reload: true    
+
+- name: set fs.inotify.max_user_watches in 10000
+  ansible.posix.sysctl:
+    name: fs.inotify.max_user_watches
+    state: present
+    value: "10000"
+    reload: true 
+
 - name: disable swap
   ansible.builtin.shell: swapoff -a
 
