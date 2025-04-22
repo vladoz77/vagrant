@@ -56,11 +56,25 @@ modules:
 - iscsi_tcp
 
 #sysctl param
-sysctl_param:
-- net.bridge.bridge-nf-call-ip6tables
-- net.bridge.bridge-nf-call-iptables
-- net.ipv4.ip_forward
+# sysctl_param:
+# - net.bridge.bridge-nf-call-ip6tables
+# - net.bridge.bridge-nf-call-iptables
+# - net.ipv4.ip_forward
 
 #Req pip module
 pip_modules:
 - kubernetes
+
+sysctl_params:
+  - key: net.bridge.bridge-nf-call-ip6tables
+    value: 1
+  - key: net.bridge.bridge-nf-call-iptables
+    value: 1
+  - key: net.ipv4.ip_forward
+    value: 1
+  - key: vm.max_map_count
+    value: 262144
+  - key: fs.inotify.max_user_instances
+    value: 512
+  - key: fs.inotify.max_user_watches
+    value: 1000

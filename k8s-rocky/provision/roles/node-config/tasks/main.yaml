@@ -13,6 +13,3 @@
 # Config node
 - name: node-config
   ansible.builtin.include_tasks: tasks/config-nodes.yaml
-
-
-# Install and config haproxy and keeplived

@@ -1,5 +1,6 @@
 # ENV['VAGRANT_SERVER_URL'] = 'https://vagrant.elab.pro'
-Node = 0
+ENV["VAGRANT_EXPERIMENTAL"] = "disks"
+Node = 2
 Master = 1
 
 
@@ -12,12 +13,12 @@ Vagrant.configure("2") do |config|
       vb.cpus = 2
     end
     
-    config.vm.provider "vmware_desktop" do |v|
-      v.gui = true
-      v.linked_clone = false
-      v.vmx["memsize"] = "2048"
-      v.vmx["numvcpus"] = "2"
-    end
+    # config.vm.provider "vmware_desktop" do |v|
+    #   v.gui = true
+    #   v.linked_clone = false
+    #   v.vmx["memsize"] = "2048"
+    #   v.vmx["numvcpus"] = "2"
+    # end
     
     (1..Master).each do |master_id|
       config.vm.define  "master#{master_id}" do |master|
@@ -38,6 +39,8 @@ Vagrant.configure("2") do |config|
         config.vm.define "node#{node_id}" do |node|
             node.vm.hostname = "node#{node_id}"
             node.vm.network "private_network", ip: "192.168.59.#{20+node_id}"
+            node.vm.disk :disk, size: "10GB", name: "data" 
+            node.vm.disk :disk, size: "10GB", name: "ssd" 
             if node_id == Node
               node.vm.provision "ansible" do |node|
                 node.limit = "all"

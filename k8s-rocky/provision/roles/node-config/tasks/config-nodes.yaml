@@ -23,34 +23,13 @@
     create: yes
   loop: "{{ modules }}"
 
-- name: set sysctl parametrs
+- name: set "{{ item.key }}" to "{{ item.value}}"
   ansible.posix.sysctl:
-    name: "{{ item }}"
+    name: "{{ item.key }}"
     state: present
-    value: "1"
+    value: "{{ item.value}}"
     reload: true
-  loop: "{{ sysctl_param }}"
-
-- name: set vm.max_map_count in 262144
-  ansible.posix.sysctl:
-    name: vm.max_map_count
-    state: present
-    value: "262144"
-    reload: true
-
-- name: set fs.inotify.max_user_instances in 512
-  ansible.posix.sysctl:
-    name: fs.inotify.max_user_instances
-    state: present
-    value: "512"
-    reload: true    
-
-- name: set fs.inotify.max_user_watches in 10000
-  ansible.posix.sysctl:
-    name: fs.inotify.max_user_watches
-    state: present
-    value: "10000"
-    reload: true 
+  loop: "{{ sysctl_params }}"
 
 - name: disable swap
   ansible.builtin.shell: swapoff -a
