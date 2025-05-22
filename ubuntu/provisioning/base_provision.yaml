@@ -26,12 +26,6 @@
       loop: "{{groups['all']}}"
 
     
-    - name: update package
-      ansible.builtin.apt:
-        name: '*'
-        state: latest
-        update_cache: true
-
     - name: install base soft
       ansible.builtin.apt:
         name: "{{ soft }}"
