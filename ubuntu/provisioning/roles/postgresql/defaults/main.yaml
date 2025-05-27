@@ -1,0 +1,2 @@
+default_postresql_user: postgres
+pg_hba_conf_path: "/etc/postgresql/{{ version }}/main/pg_hba.conf"

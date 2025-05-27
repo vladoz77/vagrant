@@ -1,0 +1,5 @@
+postgresql: "postgresql-{{ version }}"
+version: 14
+
+packages:
+- python3-pip

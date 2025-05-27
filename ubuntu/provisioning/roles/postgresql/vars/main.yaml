@@ -1,0 +1,16 @@
+python_library:
+  - psycopg2-binary
+
+postgresql_settings:
+  listen_addresses: "*"
+  max_connections: 1000
+
+db_name: plane-db
+db_user: plane
+db_user_password: password
+db_user_privileges: 
+ - ALL
+
+
+allowed_ips:
+  - 0.0.0.0/0

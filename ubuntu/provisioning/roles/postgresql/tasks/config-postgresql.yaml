@@ -1,0 +1,33 @@
+- name: install req python python_library
+  ansible.builtin.pip: 
+    name: "{{ python_library }}"
+    state: present
+    
+- name: config postgresql
+  community.postgresql.postgresql_alter_system:
+    param: "{{ item.key }}"  
+    value: "{{ item.value }}"
+  loop: "{{ postgresql_settings | dict2items }}"
+  become_user: "{{ default_postresql_user }}"
+  become: true
+  notify: restart postgresql
+
+- name: start handler force
+  meta: flush_handlers
+
+- name: Grant user {{ db_user }} access to databases {{ db_name }} from ALL
+  community.postgresql.postgresql_pg_hba:
+    dest: "{{ pg_hba_conf_path }}"
+    contype: host
+    users: "{{ db_user }}"
+    source: "{{ item }}"
+    databases: "{{ db_name }}"
+    method: scram-sha-256
+    create: true
+  loop: "{{ allowed_ips }}"
+  become_user: "{{ default_postresql_user }}"
+  become: true
+  notify: restart postgresql
+
+- name: start handler force
+  meta: flush_handlers
