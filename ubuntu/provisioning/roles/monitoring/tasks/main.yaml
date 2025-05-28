@@ -1,0 +1,19 @@
+- name: install victoria metrics
+  ansible.builtin.include_tasks: victoriametrics.yaml
+  when: victoriametrics_enable == true
+
+- name: install {{ vmalert_container_name }}
+  ansible.builtin.include_tasks: "{{ vmalert_container_name }}.yaml"
+  when: vmalert_enable == true
+
+- name: install {{ alertmanager_container_name }}
+  ansible.builtin.include_tasks: "{{ alertmanager_container_name }}.yaml"
+  when: alertmanager_enable == true
+
+- name: copy docker compose to {{ work_dir }}
+  ansible.builtin.template:
+    src: templates/docker-compose.yaml.j2
+    dest: "{{ work_dir }}/docker-compose.yaml"
+    group: "{{ username }}"
+    owner: "{{ username }}"
+    

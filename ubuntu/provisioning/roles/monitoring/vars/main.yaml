@@ -1,0 +1,23 @@
+# victoriametrics
+victoriametrics_enable: true
+victoriametrics_container_name: victoriametrics
+victoriametrics_repo: victoriametrics/victoria-metrics
+victoriametric_version: v1.118.0
+victoriametrics_dir: "{{ work_dir }}/{{ victoriametrics_container_name }}"
+victoriametrics_port: 8428
+
+# vmalert config
+vmalert_enable: true
+vmalert_version: v1.118.0
+vmalert_repo: victoriametrics/vmalert
+vmalert_container_name: vmalert
+vmalert_dir: "{{ work_dir }}/{{ vmalert_container_name }}"
+vmalert_port: 8880
+
+# alertmanager config
+alertmanager_enable: true
+alertmanager_version: v0.28.0
+alertmanager_repo:  prom/alertmanager
+alertmanager_container_name: alertmanager
+alertmanager_dir: "{{ work_dir }}/{{ alertmanager_container_name }}"
+alertmanager_port: 9093

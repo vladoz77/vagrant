@@ -1,0 +1,16 @@
+- name: include vars for {{ alertmanager_container_name }}
+  ansible.builtin.include_vars: "{{ alertmanager_container_name }}.yaml"
+
+- name: create folder {{ victoriametrics_container_name }}
+  ansible.builtin.file:
+    path: "{{ alertmanager_dir }}"
+    group: "{{ username }}"
+    owner: "{{ username }}"
+    state: directory
+
+- name: copy template scrape config to {{ alertmanager_dir }}
+  ansible.builtin.template:
+    src: templates/alertmanager.yaml.j2
+    dest: "{{ alertmanager_dir }}/alertmanager.yaml"
+    owner: "{{ username }}"
+    group: "{{ username }}"    

@@ -1,0 +1,18 @@
+# victoriametrics config
+scrape_folder: /etc/prometheus
+# Container config
+victoriametrics_data: vmstorage
+victoriametrics_image: "{{ victoriametrics_repo }}:{{ victoriametric_version }}"
+victoriametrics_command:
+- "--storageDataPath=/storage"
+- "--retentionPeriod=30d"
+- "--promscrape.config={{ scrape_folder }}/scrape.yaml"
+victoriametrics_ports:
+- "{{ victoriametrics_port }}:{{ victoriametrics_port }}"
+victoriametrics_volumes:
+- "{{ victoriametrics_data }}:/storage"
+- "{{ victoriametrics_dir }}/scrape.yaml:{{ scrape_folder }}/scrape.yaml"
+
+# scrape config
+scrape_interval: 10s
+scrape_file: scrape.yaml

@@ -1,0 +1,80 @@
+services:
+  {% if victoriametrics_enable -%}
+  {{ victoriametrics_container_name }}:
+    container_name: {{ victoriametrics_container_name }}
+    image: {{ victoriametrics_image }}
+    restart: unless-stopped	
+    command:
+    {% for command in victoriametrics_command -%}
+    - {{ command }}
+    {% endfor -%}
+    ports:
+    {% for ports in victoriametrics_ports -%}
+    - {{ ports}}
+    {% endfor -%}
+    volumes:
+    {% for volumes in victoriametrics_volumes -%}
+    - {{ volumes }}
+    {% endfor -%}
+    networks:
+    - {{ monitoring_network }}
+  {% endif %}
+
+  {% if vmalert_enable -%}
+  {{ vmalert_container_name }}:
+    container_name: {{ vmalert_container_name }}
+    image: {{ vmalert_image }}
+    restart: unless-stopped	
+    command:
+    {% for command in vmalert_command -%}
+    - {{ command }}
+    {% endfor -%}
+    ports:
+    {% for port in vmalert_ports -%}
+    - {{ port }}
+    {% endfor -%}
+    volumes:
+    {% for volume in vmalert_volumes -%}
+    - {{volume }}
+    {% endfor -%}
+    depends_on:
+    {% if victoriametrics_enable -%}
+    - {{ victoriametrics_container_name}}
+    {%- endif %}
+
+    {% if alertmanager_enable -%}
+    - {{ alertmanager_container_name }}
+    {%- endif %}
+
+    networks:
+    - {{ monitoring_network }}
+  {% endif %}
+  
+  {% if alertmanager_enable -%}
+  alertmanager:
+    container_name: {{ alertmanager_container_name}}
+    image:  {{ alertmanager_image }}
+    restart: unless-stopped	
+    command:
+    {% for command in alertmanager_command -%}
+    - {{ command }}
+    {% endfor -%}
+    ports:
+    {% for port in alertmanager_ports -%}
+    - {{ port }}
+    {% endfor -%}
+    volumes:
+    {% for volume in alertmanager_volumes -%}
+    - {{ volume }}
+    {% endfor -%}
+    networks:
+    - {{ monitoring_network }}
+  {% endif %}
+
+volumes:
+  {% if victoriametrics_enable -%}
+  {{ victoriametrics_data }}:
+  {%- endif %}
+
+networks:
+  {{ monitoring_network }}:

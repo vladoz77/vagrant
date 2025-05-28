@@ -1,0 +1,15 @@
+# vmalert config
+rules_folder_on_container: /etc/alerts
+rules_folder_on_host: "{{vmalert_dir}}/rules"
+# vmalert container config
+vmalert_image: "{{ vmalert_repo }}:{{ vmalert_version }}"
+vmalert_command:
+- "--remoteRead.url=http://{{ victoriametrics_container_name }}:{{ victoriametrics_port }}"
+- "--datasource.url=http://{{ victoriametrics_container_name }}:{{ victoriametrics_port }}"
+- "--rule={{ rules_folder_on_container }}/*.yaml"
+- "--notifier.url=http://{{alertmanager_container_name }}:{{ alertmanager_port }}"
+- "--external.url=http://grafana:3000"
+vmalert_ports:
+- "{{ vmalert_port }}:{{ vmalert_port }}"
+vmalert_volumes:
+- "{{ rules_folder_on_host }}:{{ rules_folder_on_container }}"

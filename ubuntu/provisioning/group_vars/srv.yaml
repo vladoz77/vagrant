@@ -1,10 +1,7 @@
 ---
 # User list
-user:
-- name: vlad
-  password: "8231"
-  groups:
-  - sudo
+username: vlad
+password: "8231"
 
 # soft for install
 soft:

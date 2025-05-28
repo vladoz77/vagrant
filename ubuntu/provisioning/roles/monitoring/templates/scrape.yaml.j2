@@ -1,0 +1,22 @@
+global:
+  scrape_interval: {{ scrape_interval}}
+
+scrape_configs:
+{% if victoriametrics_enable -%}
+- job_name: {{ victoriametrics_container_name }}
+  static_configs:
+  - targets:
+    - {{ victoriametrics_container_name }}:{{ victoriametrics_port }}/metrics
+{% endif -%}
+{% if vmalert_enable -%}
+- job_name: {{ vmalert_container_name }}
+  static_configs:
+  - targets:
+    - {{ vmalert_container_name }}:{{ vmalert_port }}/metrics
+{% endif -%}
+{% if alertmanager_enable %}
+- job_name: {{ alertmanager_container_name }}
+  static_configs:
+  - targets:
+    - {{ alertmanager_container_name }}:{{ alertmanager_port }}/metrics
+{% endif -%}

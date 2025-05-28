@@ -5,19 +5,17 @@
 
   - name: create user
     ansible.builtin.user:
-      name: "{{ item.name }}"
-      groups: "{{ item.groups }}"
-      password: "{{ item.password | password_hash('sha512') }}"
-      shell: "{{ item.shell | default('/bin/bash') }}"
+      name: "{{ username }}"
+      groups: sudo
+      password: "{{ password | password_hash('sha512') }}"
+      shell: /bin/bash'
       state: present
-    loop: "{{ user }}"
 
   - name: add ssh keys
     authorized_key:
-      user: "{{ item.name }}"
+      user: "{{ username }}"
       state: present
-      key: "{{ lookup('file', '/home/{{ item.name }}/.ssh/id_rsa.pub') }}"
-    loop: "{{ user }}"
+      key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
 
   - name: update file /etc/hosts
     ansible.builtin.lineinfile:
@@ -31,6 +29,18 @@
       state: present
       update_cache: true
 
-  - name: install postgresql
+  
+  - name: install docker
     ansible.builtin.include_role:
-      name: postgresql
+      name: docker 
+
+
+  - name: install monitoring
+    vars:
+      alertmanager_enable: true
+      victoriametrics_enable: true
+      vmalert_enable: true
+    ansible.builtin.include_role:
+      name: monitoring
+
+

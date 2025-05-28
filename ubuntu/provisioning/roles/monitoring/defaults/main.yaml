@@ -1,0 +1,2 @@
+work_dir: "/home/{{ username }}/monitoring"
+monitoring_network: monitoring_network
