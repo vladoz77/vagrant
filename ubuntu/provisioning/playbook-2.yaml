@@ -1,0 +1,11 @@
+- hosts: all
+  become: yes
+  roles:
+    - role: postgresql
+      vars:
+        db_name: myapp_db
+        db_user: myapp_user
+        db_user_password: securepassword123
+        postgresql_settings:
+          listen_addresses: "*"
+          max_connections: 2000

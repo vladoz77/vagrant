@@ -35,12 +35,12 @@
       name: docker 
 
 
-  - name: install monitoring
-    vars:
-      alertmanager_enable: true
-      victoriametrics_enable: true
-      vmalert_enable: true
-    ansible.builtin.include_role:
-      name: monitoring
+  # - name: install monitoring
+  #   vars:
+  #     alertmanager_enable: true
+  #     victoriametrics_enable: true
+  #     vmalert_enable: true
+  #   ansible.builtin.include_role:
+  #     name: monitoring
 
 

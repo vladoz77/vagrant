@@ -1,22 +1,38 @@
 - name: use var for ubuntu
   ansible.builtin.include_vars: "{{ ansible_facts.os_family }}.yaml"
 
-- name: install req packages for role
+- name: install req packages
   ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
 
-- name: check if postgresql install
-  ansible.builtin.package_facts:
-    manager: auto
+- name: install req python packages for role
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: present
 
-- ansible.builtin.debug:
-    msg: "{{ postgresql }} is already installed"
-  when: postgresql in ansible_facts.packages
+- name: Add apt key for PostgreSQL
+  ansible.builtin.apt_key:
+    url: "{{ url_apt_key }}"
+    state: present
+
+- name: add postgresql repo
+  ansible.builtin.apt_repository:
+    repo: "{{ repo }}"
+    filename: pgdg
+    update_cache: true
+
+# - name: check if postgresql install
+#   ansible.builtin.package_facts:
+#     manager: auto
+
+# - ansible.builtin.debug:
+#     msg: "{{ postgresql }} is already installed"
+#   when: postgresql in ansible_facts.packages
 
 - name: install postgresql
   ansible.builtin.apt:
     name: "{{ postgresql }}"
     state: present
     update_cache: true
-  when: postgresql not in ansible_facts.packages
+  # when: postgresql not in ansible_facts.packages
