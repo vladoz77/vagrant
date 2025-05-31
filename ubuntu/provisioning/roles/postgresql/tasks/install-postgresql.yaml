@@ -22,17 +22,8 @@
     filename: pgdg
     update_cache: true
 
-# - name: check if postgresql install
-#   ansible.builtin.package_facts:
-#     manager: auto
-
-# - ansible.builtin.debug:
-#     msg: "{{ postgresql }} is already installed"
-#   when: postgresql in ansible_facts.packages
-
 - name: install postgresql
   ansible.builtin.apt:
     name: "{{ postgresql }}"
     state: present
     update_cache: true
-  # when: postgresql not in ansible_facts.packages
