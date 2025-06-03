@@ -1,12 +1,10 @@
 postgresql: "postgresql-{{ version }}"
 version: 17
 
-python_packages:
-- python3-pip
-
 packages:
 - curl
 - ca-certificates
+- python3-psycopg2
 
 url_apt_key: https://www.postgresql.org/media/keys/ACCC4CF8.asc
 repo: "deb https://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"

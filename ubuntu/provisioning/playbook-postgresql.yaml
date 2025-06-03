@@ -1,0 +1,14 @@
+- hosts: all
+  become: yes
+  roles:
+    - role: postgresql
+      vars:
+        db_name: plane-db
+        db_user: plane
+        db_user_password: password
+        postgresql_settings:
+          listen_addresses: "*"
+          max_connections: 1000
+          logging_collector: "on"
+        allowed_ips:
+        - 192.168.56.0/24

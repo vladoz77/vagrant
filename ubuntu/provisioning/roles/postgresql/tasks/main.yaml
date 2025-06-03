@@ -14,9 +14,6 @@
       become: false
   delegate_to: localhost
 
-- ansible.builtin.debug:
-    var: ansible_facts.os_family
-
 - name: Install postgresql
   ansible.builtin.include_tasks: install-postgresql.yaml
   when: ansible_facts.os_family == "Debian"

@@ -23,16 +23,16 @@
       line: "{{hostvars[item].ansible_facts.eth1.ipv4.address}} {{hostvars[item].ansible_hostname}}"
     loop: "{{groups['all']}}"
 
-  - name: install base soft
-    ansible.builtin.apt:
-      name: "{{ soft }}"
-      state: present
-      update_cache: true
+  # - name: install base soft
+  #   ansible.builtin.apt:
+  #     name: "{{ soft }}"
+  #     state: present
+  #     update_cache: true
 
   
-  - name: install docker
-    ansible.builtin.include_role:
-      name: docker 
+  # - name: install docker
+  #   ansible.builtin.include_role:
+  #     name: docker 
 
 
   # - name: install monitoring
