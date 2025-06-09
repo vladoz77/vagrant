@@ -11,4 +11,4 @@
           max_connections: 1000
           logging_collector: "on"
         allowed_ips:
-        - 192.168.56.0/24
+        - 172.16.10.0/24

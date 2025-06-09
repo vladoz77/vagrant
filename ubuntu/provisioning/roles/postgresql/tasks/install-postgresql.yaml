@@ -1,6 +1,12 @@
 - name: use var for ubuntu
   ansible.builtin.include_vars: "{{ ansible_facts.os_family }}.yaml"
 
+- name: install req packages
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: true
+
 - name: Check if {{ postgresql }} is installed
   ansible.builtin.command:
     cmd: "dpkg-query -W {{ postgresql }}"
@@ -8,17 +14,13 @@
   failed_when: postgresql_installed.rc >1
   changed_when: postgresql_installed.rc == 1
 
+
 - ansible.builtin.debug:
     msg: "{{ postgresql }} already install"
   when: postgresql_installed.rc == 0
 
 - name: Install {{ postgresql }}
   block:
-  - name: install req packages
-    ansible.builtin.apt:
-      name: "{{ packages }}"
-      state: present
-      update_cache: true
 
   - name: Add apt key for PostgreSQL
     ansible.builtin.apt_key:

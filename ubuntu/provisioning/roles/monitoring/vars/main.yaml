@@ -1,3 +1,6 @@
+# Collections
+docker_compose_dir: "{{ work_dir }}/docker-compose.yaml"
+
 # victoriametrics
 victoriametrics_enable: true
 victoriametrics_container_name: victoriametrics
@@ -21,3 +24,11 @@ alertmanager_repo:  prom/alertmanager
 alertmanager_container_name: alertmanager
 alertmanager_dir: "{{ work_dir }}/{{ alertmanager_container_name }}"
 alertmanager_port: 9093
+
+# grafana config
+grafana_enable: true
+grafana_version: 11.5.0
+grafana_repo:  grafana/grafana
+grafana_container_name: grafana
+grafana_dir: "{{ work_dir }}/{{ grafana_container_name }}"
+grafana_port: 3000

@@ -3,19 +3,19 @@
   become: true
   tasks:
 
-  - name: create user
-    ansible.builtin.user:
-      name: "{{ username }}"
-      groups: sudo
-      password: "{{ password | password_hash('sha512') }}"
-      shell: /bin/bash'
-      state: present
+  # - name: create user
+  #   ansible.builtin.user:
+  #     name: "{{ username }}"
+  #     groups: sudo
+  #     password: "{{ password | password_hash('sha512') }}"
+  #     shell: /bin/bash'
+  #     state: present
 
-  - name: add ssh keys
-    authorized_key:
-      user: "{{ username }}"
-      state: present
-      key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
+  # - name: add ssh keys
+  #   authorized_key:
+  #     user: "{{ username }}"
+  #     state: present
+  #     key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"
 
   - name: update file /etc/hosts
     ansible.builtin.lineinfile:
@@ -23,11 +23,11 @@
       line: "{{hostvars[item].ansible_facts.eth1.ipv4.address}} {{hostvars[item].ansible_hostname}}"
     loop: "{{groups['all']}}"
 
-  # - name: install base soft
-  #   ansible.builtin.apt:
-  #     name: "{{ soft }}"
-  #     state: present
-  #     update_cache: true
+  - name: install base soft
+    ansible.builtin.apt:
+      name: "{{ soft }}"
+      state: present
+      update_cache: true
 
   
   # - name: install docker

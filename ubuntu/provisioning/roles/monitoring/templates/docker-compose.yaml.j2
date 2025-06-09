@@ -71,9 +71,35 @@ services:
     - {{ monitoring_network }}
   {% endif %}
 
+  {% if alertmanager_enable -%}
+  grafana:
+    container_name: {{ grafana_container_name}}
+    image: {{ grafana_image }}
+    restart: unless-stopped
+    volumes:
+    {% for volume in grafana_volumes -%}
+    - {{ volume }}
+    {% endfor -%}
+    ports:
+    {% for port in grafana_ports -%}
+    - {{ port }}
+    {% endfor -%}
+    depends_on:
+    {% if victoriametrics_enable -%}
+    - {{ victoriametrics_container_name}}
+    {%- endif %}
+    
+    networks:
+    - {{ monitoring_network }}
+  {% endif %}
+
 volumes:
   {% if victoriametrics_enable -%}
   {{ victoriametrics_data }}:
+  {%- endif %}
+
+  {% if grafana_enable -%}
+  {{ grafana_data }}:
   {%- endif %}
 
 networks:

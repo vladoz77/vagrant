@@ -1,0 +1,12 @@
+grafana_data: grafana
+grafana_datasource_config: "{{ grafana_dir }}/datasources.yaml"
+grafana_dashboard_config: "{{ grafana_dir }}/dashboards.yaml"
+dashboards_folder: "{{ grafana_dir }}/dashboards"
+# grafana container config
+grafana_image: "{{ grafana_repo }}:{{ grafana_version }}"
+grafana_volumes:
+- "{{ grafana_data }}:/var/lib/grafana"
+- "{{ grafana_datasource_config }}:/etc/grafana/provisioning/datasources/datasources.yaml"
+# - "{{ grafana_dashboard_config }}:/etc/grafana/provisioning/dashboards/dashboards.yaml"
+grafana_ports:
+- "{{ grafana_port }}:{{grafana_port}}"

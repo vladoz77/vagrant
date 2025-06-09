@@ -1,0 +1,12 @@
+- hosts: all
+  become: yes
+  roles:
+    - role: docker
+    - role: monitoring
+      vars:
+        victoriametrics_enable: true
+        victoriametric_version: v1.118.0
+        vmalert_enable: true
+        vmalert_version: v1.118.0
+        alertmanager_enable: true
+        alertmanager_version: v0.28.0

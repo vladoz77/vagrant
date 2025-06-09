@@ -1,17 +1,8 @@
 ---
-- name: Install community.postgresql collection
-  block:
-    - name: Check if community.postgresql collection exists
-      ansible.builtin.command: ansible-galaxy collection list --format json
-      register: collections_check
-      changed_when: false
-      failed_when: false
-
-    - name: Install community.postgresql collection if missing
-      ansible.builtin.command: ansible-galaxy collection install community.postgresql
-      when: "'community.postgresql' not in collections_check.stdout"
-      changed_when: true
-      become: false
+- name: Install  collection 
+  ansible.builtin.command: "ansible-galaxy collection install -r {{ role_path }}/requirements.yaml"
+  become: false
+  run_once: true
   delegate_to: localhost
 
 - name: Install postgresql
