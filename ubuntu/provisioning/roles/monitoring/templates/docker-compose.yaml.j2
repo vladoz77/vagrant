@@ -93,6 +93,74 @@ services:
     - {{ monitoring_network }}
   {% endif %}
 
+  {% if karma_enable -%}
+  karma:
+    container_name: {{ karma_container_name }}
+    image: {{ karma_image }}
+    restart: unless-stopped
+    command:
+    {% for command in karma_command -%}
+    - {{ command }}
+    {% endfor -%}
+    ports:
+    {% for port in karma_ports -%}
+    - {{ port }}
+    {% endfor -%}
+    depends_on:
+    {% if alertmanager_enable -%}
+    - {{ alertmanager_container_name}}
+    {%- endif %}
+
+    networks:
+    - {{ monitoring_network }}
+  {% endif %}
+
+  {% if loki_enable -%}
+  loki:
+    container_name: {{ loki_container_name }}
+    image: "{{ loki_repo }}"
+    restart: unless-stopped
+    command:
+    {% for command in loki_command -%}
+    - {{ command }}
+    {% endfor -%}
+    ports:
+    {% for port in loki_ports -%}
+    - {{ port }}
+    {% endfor -%}
+    volumes:
+    {% for volume in grafana_volumes -%}
+    - {{ volume }}
+    {% endfor -%}
+    networks:
+      - {{ monitoring_network }}
+  {% endif %}
+
+  {% if loki_enable -%}
+  alloy:
+    container_name: {{ alloy_container_name }}
+    image: "{{ alloy_image }}"
+    restart: unless-stopped
+    ports:
+    {% for port in alloy_ports -%}
+    - {{ port }}
+    {% endfor -%}
+    volumes:
+    {% for volume in alloy_volumes -%}
+    - {{ volume }}
+    {% endfor -%}
+    command:
+    {% for command in alloy_command -%}
+    - {{ command }}
+    {% endfor -%}
+    networks:
+      - {{ monitoring_network }}
+    depends_on:
+    - {{ loki_container_name}}
+  {% endif %}
+
+
+
 volumes:
   {% if victoriametrics_enable -%}
   {{ victoriametrics_data }}:
@@ -100,6 +168,10 @@ volumes:
 
   {% if grafana_enable -%}
   {{ grafana_data }}:
+  {%- endif %}
+
+  {% if loki_enable -%}
+  {{ loki_data }}:
   {%- endif %}
 
 networks:

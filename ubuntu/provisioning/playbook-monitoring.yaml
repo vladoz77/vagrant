@@ -4,9 +4,10 @@
     - role: docker
     - role: monitoring
       vars:
+        monitoring_enable: true
         victoriametrics_enable: true
-        victoriametric_version: v1.118.0
         vmalert_enable: true
-        vmalert_version: v1.118.0
         alertmanager_enable: true
-        alertmanager_version: v0.28.0
+        grafana_enable: true
+        karma_enable: true
+        loki_enable: false

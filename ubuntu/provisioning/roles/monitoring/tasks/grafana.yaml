@@ -1,6 +1,3 @@
-- name: include vars for {{ grafana_container_name }}
-  ansible.builtin.include_vars: "{{ grafana_container_name }}.yaml"
-
 - name: create project {{ grafana_container_name }}
   ansible.builtin.file:
     path: "{{ grafana_dir }}"
@@ -21,6 +18,13 @@
     dest: "{{ dashboards_folder }}"
     owner: "{{ username }}"
     group: "{{ username }}"
+
+- name: copy templates for dashboards.yaml to {{ grafana_dir }}
+  ansible.builtin.template:
+    src: templates/dashboards.yaml.j2
+    dest: "{{ grafana_dir }}/dashboards.yaml"
+    owner: "{{ username }}"
+    group: "{{ username }}"  
 
 - name: copy template datasources.yaml  to {{ grafana_dir }}
   ansible.builtin.template:

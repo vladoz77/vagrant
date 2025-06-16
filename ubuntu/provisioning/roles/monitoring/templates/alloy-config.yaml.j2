@@ -1,0 +1,54 @@
+logging {
+  level  = "info"
+  format = "json"
+}
+
+local.file_match "logs" {
+  path_targets = [{ "__path__" = "/var/log/*.log" }]
+  sync_period  = "5s"
+}
+
+loki.source.file "log_scrape" {
+  targets       = local.file_match.logs.targets
+  forward_to    = [loki.process.filter_logs.receiver]
+  tail_from_end = true
+}
+
+loki.process "filter_logs" {
+  stage.drop {
+    source               = ""
+    expression           = ".*Connection closed by authenticating user root.*"
+    drop_counter_reason  = "noisy"
+  }
+  forward_to = [loki.write.grafana_loki.receiver]
+}
+
+loki.source.journal "journal" {
+  max_age       = "12h0m0s"
+  path          = "/var/log/journal"
+  relabel_rules = discovery.relabel.journal.rules
+  forward_to    = [loki.write.grafana_loki.receiver]
+  labels        = {
+    job = "systemd-journal",
+  }
+}
+
+discovery.relabel "journal" {
+  targets = []
+
+  rule {
+    source_labels = ["__journal__systemd_unit"]
+    target_label  = "unit"
+  }
+
+  rule {
+    source_labels = ["__journal__hostname"]
+    target_label  = "hostname"
+  }
+}
+
+loki.write "grafana_loki" {
+  endpoint {
+    url = "http://{{ loki_container_name }}:{{ loki_port }}/loki/api/v1/push"
+  }
+}
