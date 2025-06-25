@@ -1,9 +1,9 @@
 [master]
 master1 ansible_host=192.168.59.11 node_ip=192.168.59.11 ansible_become=yes
-; master2 ansible_host=192.168.59.12 node_ip=192.168.59.12 ansible_become=yes
-; master3 ansible_host=192.168.59.13 node_ip=192.168.59.13 ansible_become=yes
+master2 ansible_host=192.168.59.12 node_ip=192.168.59.12 ansible_become=yes
+master3 ansible_host=192.168.59.13 node_ip=192.168.59.13 ansible_become=yes
 ; master4 ansible_host=192.168.59.14 node_ip=192.168.59.14 ansible_become=yes
 [node]
 node1 ansible_host=192.168.59.21 node_ip=192.168.59.21 ansible_become=yes
 node2 ansible_host=192.168.59.22 node_ip=192.168.59.22 ansible_become=yes
-; node3 ansible_host=192.168.59.23 node_ip=192.168.59.23 ansible_become=yes
+node3 ansible_host=192.168.59.23 node_ip=192.168.59.23 ansible_become=yes

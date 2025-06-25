@@ -1,9 +1,0 @@
-[master]
-master1 ansible_host=172.16.10.10 node_ip=172.16.10.10 ansible_become=yes
-
-; 172.16.10.11 hostname=master01 node_ip=172.16.10.10
-
-[node]
-node1 ansible_host=172.16.10.20 node_ip=172.16.10.20 ansible_become=yes
-node2 ansible_host=172.16.10.21 node_ip=172.16.10.21 ansible_become=yes
-node3 ansible_host=172.16.10.22 node_ip=172.16.10.22 ansible_become=yes
