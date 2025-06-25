@@ -1,6 +1,7 @@
 Vagrant.configure("2") do |config|
   # General configuration
-  config.vm.box = "generic/ubuntu2204"
+  config.vm.box = "gusztavvargadr/ubuntu-server-2404-lts"
+  config.vm.box_version = "2404.0.2503"
   #config.vm.synced_folder ".", "/vagrant", disabled: true
   config.ssh.insert_key = false
   # Config VM provider

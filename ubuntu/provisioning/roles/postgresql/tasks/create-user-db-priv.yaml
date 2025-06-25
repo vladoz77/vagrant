@@ -1,11 +1,3 @@
-- name: create db {{ db_name }}
-  community.postgresql.postgresql_db:
-    name: "{{ db_name }}"
-    encoding: UTF-8
-    state: present
-  become: true
-  become_user: "{{ default_postresql_user }}"
-
 - name: create user {{ db_user }}
   community.postgresql.postgresql_user:
     name: "{{ db_user }}"
@@ -14,11 +6,22 @@
   become: true
   become_user: "{{ default_postresql_user }}"
 
-- name: create privileges for {{ db_user }}
-  community.postgresql.postgresql_privs:
-    login_db: "{{ db_name }}"
-    privs: "{{ db_user_privileges | join(',') }}"
-    roles: "{{ db_user }}"
-    type: database
+- name: create database {{ db_name }}
+  community.postgresql.postgresql_db:
+    name: "{{ db_name }}"
+    encoding: UTF-8
+    state: present
+    owner: "{{ db_user }}"
   become: true
   become_user: "{{ default_postresql_user }}"
+
+# - name: create privileges for {{ db_user }}
+#   community.postgresql.postgresql_privs:
+#     database: "{{ db_name }}"
+#     privs: "{{ db_user_privileges | join(',') }}"
+#     roles: "{{ db_user }}"
+#     type: database
+#   become: true
+#   become_user: "{{ default_postresql_user }}"
+
+

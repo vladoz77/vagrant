@@ -1,0 +1,13 @@
+- hosts: all
+  become: yes
+  roles:
+    - role: docker
+    - role: monitoring
+      vars:
+        monitoring_enable: true
+        victoriametrics_enable: true
+        vmalert_enable: true
+        alertmanager_enable: true
+        grafana_enable: true
+        karma_enable: true
+        loki_enable: false

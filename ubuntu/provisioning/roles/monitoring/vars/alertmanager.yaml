@@ -1,8 +1,0 @@
-# alertmanager container config
-alertmanager_image: "{{ alertmanager_repo }}:{{ alertmanager_version }}"
-alertmanager_command: 
-- "--config.file=/etc/alertmanager.yaml"
-alertmanager_ports: 
-- "{{ alertmanager_port }}:{{ alertmanager_port }}"
-alertmanager_volumes:
-- "{{ alertmanager_dir }}/alertmanager.yaml:/etc/alertmanager.yaml"

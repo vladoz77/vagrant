@@ -30,9 +30,4 @@
       user: "{{ username }}"
       group: docker
       append: true
-
-  # - name: Create a network
-  #   docker_network:
-  #     name: "{{ docker_network_name }}"
-
   when: docker_service_name not in ansible_facts.services

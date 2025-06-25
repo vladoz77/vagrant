@@ -1,0 +1,13 @@
+- name: Create project directory for {{ alloy_container_name }}
+  ansible.builtin.file:
+    path: "{{ alloy_dir }}"
+    group: "{{ username }}"
+    owner: "{{ username }}"
+    state: directory
+
+- name: Copy Alloy configuration
+  ansible.builtin.template:
+    src: templates/alloy-config.yaml.j2
+    dest: "{{ alloy_dir }}/alloy-config.yaml"
+    owner: "{{ username }}"
+    group: "{{ username }}"

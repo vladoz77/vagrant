@@ -1,4 +1,11 @@
 ---
+- name: Set username
+  ansible.builtin.set_fact:
+    username: "{{ username | default(ansible_user) }}"
+
+- ansible.builtin.debug:
+   var: username
+
 - name: docker install ubuntu
   ansible.builtin.include_tasks: ubuntu.yaml
   when: ansible_facts.os_family == "Debian" 

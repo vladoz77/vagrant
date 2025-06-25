@@ -1,7 +1,3 @@
-- name: include vars for {{ victoriametrics_container_name }}
-  ansible.builtin.include_vars: victoriametrics.yaml
-    
-
 - name: create folder {{ victoriametrics_container_name }}
   ansible.builtin.file:
     path: "{{ victoriametrics_dir }}"
@@ -14,5 +10,4 @@
     src: templates/scrape.yaml.j2
     dest: "{{ victoriametrics_dir }}/scrape.yaml"
     owner: "{{ username }}"
-    group: "{{ username }}"    
-
+    group: "{{ username }}"

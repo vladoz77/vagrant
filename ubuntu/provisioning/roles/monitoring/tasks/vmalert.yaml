@@ -1,6 +1,3 @@
-- name: include vars for {{ vmalert_container_name }}
-  ansible.builtin.include_vars: "{{ vmalert_container_name }}.yaml"
-
 - name: create project {{ vmalert_container_name }}
   ansible.builtin.file:
     path: "{{ vmalert_dir }}"
