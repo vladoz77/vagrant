@@ -1,0 +1,5 @@
+- name: get list node and get token
+  ansible.builtin.include_tasks: prepare-master.yaml
+  
+- name: join node
+  ansible.builtin.include_tasks: node-join.yaml

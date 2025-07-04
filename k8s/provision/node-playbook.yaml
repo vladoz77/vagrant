@@ -1,0 +1,6 @@
+- name: master config
+  hosts: node
+  become: true
+  roles:
+    - role: common-config
+    - role: node-add

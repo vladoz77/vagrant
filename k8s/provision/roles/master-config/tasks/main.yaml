@@ -1,0 +1,26 @@
+- ansible.builtin.debug:
+    var: vip_address
+
+
+- name: check if cluster are running
+  ansible.builtin.shell:
+    ps -aux | grep kube-api | grep -v grep 2>/dev/null
+  register: cluster_is_running
+  ignore_errors: true
+  failed_when: cluster_is_running.rc > 1
+
+- ansible.builtin.debug:
+   msg: Cluster is running
+  when: cluster_is_running.rc == 0
+
+- name: Init cluster
+  ansible.builtin.include_tasks: tasks/cluster-init.yaml
+  when: cluster_is_running.rc == 1  
+
+- name: install calico network plugin
+  ansible.builtin.include_tasks: tasks/network-config.yaml
+  when: cluster_is_running.rc == 1  
+
+- name: install localdns
+  ansible.builtin.include_tasks: tasks/nodelocaldns.yaml
+  when: nodelocaldns == true

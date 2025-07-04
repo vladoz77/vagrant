@@ -1,0 +1,1 @@
+default_kubelet_conf_file: /etc/kubernetes/kubelet.conf

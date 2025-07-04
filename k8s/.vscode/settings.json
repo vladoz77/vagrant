@@ -1,14 +1,6 @@
 {
+    "ansible.python.interpreterPath": "/bin/python",
     "yaml.schemas": {
-        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook": [
-            "file:///mnt/c/Users/vladi/vagrant/k8s/provision/k8s_install.yaml",
-            "file:///home/vlad/vagrant.d/k8s/provision/master%20%20witj%20config.yaml",
-            "file:///home/vlad/vagrant.d/k8s/provision/master%201.yaml",
-            "file:///mnt/c/Users/vladi/vagrant/k8s/localdns.yaml",
-            "file:///home/vlad/vagrant.d/k8s/localdns.yaml",
-            "file:///home/vlad/vagrant.d/k8s/provision/localdns.yaml",
-            "file:///home/vlad/vagrant.d/k8s/ha-master.yaml"
-        ]
-    },
-    "ansible.python.interpreterPath": "/bin/python3"
+        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json": "file:///home/vlad/vagrant.d/k8s/provision/roles/master-config/tasks/network-config.yaml"
+    }
 }

@@ -1,0 +1,8 @@
+# Calico 
+network_operator: https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/tigera-operator.yaml
+calico: "kube-calico-cdr.j2"
+calico_enable_metrics: "calico-enable-metric.sh"
+
+# localdns
+localdns_config: "localdns.j2"
+

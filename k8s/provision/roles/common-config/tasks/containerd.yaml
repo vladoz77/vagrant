@@ -1,0 +1,62 @@
+- name: add repo for containerd
+  ansible.builtin.yum_repository:
+    name: containerd
+    description: soft for CRI
+    baseurl:
+    - "{{ docker_repo }}"
+    gpgkey:
+    - "{{ docker_gpg_key }}"
+    enabled: true
+    gpgcheck: true
+    state: present
+    
+- name: Install containerd 
+  ansible.builtin.dnf:
+    name:
+      - containerd
+    state: present  
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Create folder certs.d for custom registry
+  ansible.builtin.file:
+    path: /etc/containerd/certs.d
+    state: directory
+    mode: u=rw,g=r,o=r
+
+- name: Enable dockerhub mirror on containerd 
+  when: dockerhubMirror is true
+  ansible.builtin.file:
+    path: /etc/containerd/certs.d/docker.io
+    state: directory
+    mode: u=rw,g=r,o=r
+
+- name: Enable dockerhub mirror on containerd [file hosts.toml]
+  when: dockerhubMirror is true
+  ansible.builtin.template:
+    src: hosts.toml.j2
+    dest: /etc/containerd/certs.d/docker.io/hosts.toml
+    owner: root
+    mode: u=rw,g=r,o=r
+
+- name: Create containerd config.toml
+  ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
+
+- name: Add cgroup v2 [config.toml]
+  ansible.builtin.shell: |
+    sed -i 's|SystemdCgroup = false|SystemdCgroup = true|' /etc/containerd/config.toml
+
+- name: Add conf dir /etc/containerd/certs.d [config.toml]
+  ansible.builtin.shell: |
+    sudo grep -A1 -lZR registry] /etc/containerd/config.toml | xargs -0 -l sudo sed  -i 's/config_path \= ""/config_path = "\/etc\/containerd\/certs.d"/g'
+
+- name: Add change Sandbox Image [config.toml]
+  when: sandbox_image is defined
+  ansible.builtin.shell: |
+    sed -i 's|sandbox_image = ".*"|sandbox_image = "{{ sandbox_image }}"|' /etc/containerd/config.toml
+
+- name: restart containerd
+  ansible.builtin.service:
+    name: containerd
+    state: restarted
+    daemon_reload: true
+    enabled: true

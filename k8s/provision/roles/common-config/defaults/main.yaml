@@ -1,0 +1,77 @@
+# Default Username and password 
+username: user
+password: password
+
+# Default kubernetes version
+kubernetesVersion: '1.33'
+kubernetesSubversion: '2'
+
+
+packages:
+- wget
+- nano
+- curl
+- iproute-tc
+- vim
+- git
+- bash-completion
+- nfs-utils
+- python3
+# - containerd.io
+- kubectl.x86_64
+- kubelet.x86_64
+- kubeadm.x86_64
+- ipvsadm
+- python3-pip
+- sysstat
+- jq
+- net-tools
+- tree
+- traceroute
+- iscsi-initiator-utils
+- nfs-utils
+- nfs4-acl-tools
+- tcpdump
+- unzip
+
+#Req pip module
+pip_modules:
+- kubernetes
+
+# modules list
+modules:
+- overlay
+- br_netfilter
+- nf_nat
+- xt_REDIRECT
+- xt_owner
+- iptable_nat
+- iptable_mangle
+- iptable_filter
+- iscsi_tcp
+
+# systemctl parameters
+sysctl_params:
+  - key: net.bridge.bridge-nf-call-ip6tables
+    value: 1
+  - key: net.bridge.bridge-nf-call-iptables
+    value: 1
+  - key: net.ipv4.ip_forward
+    value: 1
+  - key: vm.max_map_count
+    value: 262144
+  - key: fs.inotify.max_user_instances
+    value: 512
+  - key: fs.inotify.max_user_watches
+    value: 1000
+
+# Enable dockerhub mirror
+dockerhubMirror: false
+dockerhubMirrorURLs: 
+  - "https://mirror.gcr.io/v2"
+  - "https://cr.yandex/mirror"
+
+
+# Sanbox image
+# k8s v3.11 -> registry.k8s.io/pause:3.10
+sandbox_image: "registry.k8s.io/pause:3.10"

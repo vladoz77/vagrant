@@ -1,0 +1,26 @@
+kubernetesVersion: '1.33'
+kubernetesSubversion: '2'
+calico_version: v3.29.2
+
+username: vlad
+password: '8231'
+
+# Enabeled HA kubernetes master (true or false)
+ha_enabled: false
+vip_address: 192.168.1.250
+vip_port: 8443
+
+# network config
+podSubnet: 10.100.0.0/16
+serviceSubnet: 10.200.0.0/16
+
+# Select kube-proxy mode, enable ipvs or iptable (True or false)
+kubeproxy_mode_ipvs: false
+
+# Enable nodelocaldns (true or false)
+nodelocaldns: true
+nodelocaldns_address: 169.254.20.10
+
+dockerhubMirror: true
+dockerhubMirrorURLs:
+- "https://mirror.gcr.io/v2"

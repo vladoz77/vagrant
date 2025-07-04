@@ -1,0 +1,17 @@
+- name: set timezone
+  community.general.timezone:
+    name: Europe/Moscow
+
+- name: create user
+  ansible.builtin.user:
+    name: "{{ username }}"
+    groups: wheel
+    password: "{{ password | password_hash('sha512') }}"
+    shell: /bin/bash
+    state: present
+
+- name: add ssh keys
+  authorized_key:
+    user: "{{ username }}"
+    state: present
+    key: "{{ lookup('file', '/home/vlad/.ssh/id_rsa.pub') }}"

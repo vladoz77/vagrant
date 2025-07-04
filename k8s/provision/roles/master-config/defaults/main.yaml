@@ -1,0 +1,35 @@
+# kubernetes domain name
+kube_domain_name: cluster.local
+
+# kube dir default
+base_kube_conf_dir: /etc/kubernetes/admin.conf
+home_kube_dir: /home/{{ username }}/.kube
+
+# Enabeled HA kubernetes master (true or false)
+ha_enabled: false
+vip_address: 192.168.1.222
+vip_port: 8443
+
+# network config
+podSubnet: 10.244.0.0/16
+serviceSubnet: 10.243.0.0/16
+
+# Select kube-proxy mode, enable ipvs or iptable (True or false)
+kubeproxy_mode_ipvs: false
+
+#kubelet configuration
+system_reserved: true
+system_memory: 512Mi
+system_cpu: 500m
+system_ephemeral_storage: 5Gi
+container_log_max_size: 1Mi
+container_log_max_file: 3
+
+# Calico 
+calico_version: v3.29.2
+network_plugin: calico
+
+# Enable nodelocaldns (true or false)
+nodelocaldns: false
+nodelocaldns_address: 169.254.20.10
+nodelocaldns_image: "registry.k8s.io/dns/k8s-dns-node-cache:1.23.1"

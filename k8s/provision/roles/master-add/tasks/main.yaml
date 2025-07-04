@@ -1,0 +1,7 @@
+- name: get token and certificate from master1
+  ansible.builtin.include_tasks: prepare-master.yaml
+  when: inventory_hostname == groups['master'][0]
+
+- name: add another master node
+  ansible.builtin.include_tasks: master-join.yaml
+  when: inventory_hostname != groups['master'][0]
