@@ -1,5 +1,4 @@
 ---
-
 - name: check if cluster are running
   ansible.builtin.shell:
     ps -aux | grep kube-api | grep -v grep 2>/dev/null

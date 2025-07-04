@@ -55,12 +55,6 @@ modules:
 - iptable_filter
 - iscsi_tcp
 
-#sysctl param
-# sysctl_param:
-# - net.bridge.bridge-nf-call-ip6tables
-# - net.bridge.bridge-nf-call-iptables
-# - net.ipv4.ip_forward
-
 #Req pip module
 pip_modules:
 - kubernetes

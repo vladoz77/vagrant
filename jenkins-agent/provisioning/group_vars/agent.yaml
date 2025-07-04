@@ -4,31 +4,30 @@ password: "jenkins"
 # gpg keys 
 gpg_keys:
 # gpg key for docker
- - https://download.docker.com/linux/{{ ansible_facts.distribution | lower }}/gpg
+- https://download.docker.com/linux/{{ ansible_facts.distribution | lower }}/gpg
 
 # repo
 repo:
 # repo for docker
- - deb https://download.docker.com/linux/{{ ansible_facts.distribution | lower }} {{ ansible_facts.distribution_release }} stable
+- deb https://download.docker.com/linux/{{ ansible_facts.distribution | lower }} {{ ansible_facts.distribution_release }} stable
 
 # soft for install
 soft:
-  - curl
-  - nmap
-  - ca-certificates
-  - gnupg
-  - lsb-release
-  - rsync
-  - docker-ce
-  - docker-ce-cli
-  - python3-docker
-  - git
-  - openjdk-17-jdk
-  - openjdk-17-jre
-  
+- curl
+- nmap
+- ca-certificates
+- gnupg
+- lsb-release
+- rsync
+- docker-ce
+- docker-ce-cli
+- python3-docker
+- git
+- openjdk-17-jdk
+- openjdk-17-jre
+
 # Trivi install
 trivi_url: https://github.com/aquasecurity/trivy/releases/download/v0.18.3/trivy_0.18.3_Linux-64bit.deb
 # service
 service_name:
-  - docker
-
+- docker

@@ -1,4 +1,15 @@
-# kubeadm template file
-kubeadm_temlate: "kubeadm-config.j2"
-# home_kube_dir: /home/{{ username }}/.kube
-base_kube_conf_dir: /etc/kubernetes/admin.conf
+# kubernetes version
+kubernetesVersion: '1.33'
+kubernetesSubversion: '2'
+# network config
+podSubnet: 10.244.0.0/16
+serviceSubnet: 10.243.0.0/16
+# Select kube-proxy mode, enable ipvs or iptable (True or false)
+kubeproxy_mode_ipvs: false
+# Enable nodelocaldns (true or false)
+nodelocaldns: false
+nodelocaldns_address: 169.254.20.10
+# Enabeled HA kubernetes master (true or false)
+ha_enabled: false
+vip_address: 192.168.59.200
+vip_port: 8443

@@ -4,7 +4,7 @@ password: '8231'
 # Calico version
 calico_version: v3.29.2
 # kubernetes version
-kubernetesVersion: '1.32'
+kubernetesVersion: '1.33'
 kubernetesSubversion: '2'
 home_kube_dir: /home/{{ username }}/.kube
 # network config

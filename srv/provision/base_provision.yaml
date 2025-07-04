@@ -31,6 +31,9 @@
         path: "/dev/{{ disk }}"
       register: disk_stat
 
+    - ansible.builtin.debug:
+        var: disk_stat
+
     - name: create new partition on disk {{ disk }}
       community.general.parted:
         device: "/dev/{{ disk }}"
@@ -86,4 +89,5 @@
         src: "LABEL={{ label_disk }}"
         fstype: "{{ filesystem }}"
         state: present
+        backup: true
       when: fstab_result.rc != 0
