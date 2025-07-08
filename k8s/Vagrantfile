@@ -1,6 +1,6 @@
 ENV["VAGRANT_EXPERIMENTAL"] = "disks"
-Node = 3
-Master = 1
+Node = 1
+Master = 3
 
 
 Vagrant.configure("2") do |config|

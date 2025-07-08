@@ -1,125 +1,110 @@
-# Ansible Role: `ha-master-config`
+# HA Master Config Ansible Role
 
-## Описание
+This role configures High Availability (HA) for Kubernetes master nodes using HAProxy for load balancing and Keepalived for VIP management.
 
-Эта роль обеспечивает настройку High Availability (HA) мастер-нод в Kubernetes кластере. Она устанавливает и конфигурирует `haproxy` как TCP-прокси для балансировки нагрузки между мастерами и `keepalived` для управления виртуальным IP-адресом (`VIP`) и отказоустойчивостью.
-
-Роль подходит для использования в тестовых или учебных окружениях, где необходимо быстро развернуть HA-архитектуру Kubernetes без внешних Load Balancer'ов.
-
----
-
-## Функционал
-
-- Установка `haproxy` и `keepalived`
-- Создание конфигурационных файлов для:
-  - `haproxy.cfg` — балансировка между всеми master-узлами
-  - `keepalived.conf` — управление виртуальным IP-адресом (VIP)
-- Настройка автоматического переключения между мастер-узлами при падении одного из них
-- Привязка VIP к интерфейсу `eth1` (настраивается)
-- Настройка разных состояний VRRP (MASTER/BACKUP) на первичной и резервной нодах
-
----
-
-## Структура роли
+## Directory Structure
 
 ```
 ha-master-config/
-├── defaults
-│   └── main.yaml         # Дефолтные переменные
-├── handlers
-│   └── main.yaml         # Обработчики (рестарт служб)
-├── tasks
-│   ├── ha-config.yaml    # Логика установки и конфигурации
-│   └── main.yaml         # Точка входа
-├── templates
-│   ├── haproxy.cfg.j2    # Шаблон конфига haproxy
-│   └── keepalived.conf.j2# Шаблон конфига keepalived
-└── vars
-    └── main.yaml         # Внутренние параметры шаблонов
+├── defaults/            - Default variables
+│   └── main.yaml
+├── handlers/           - Handlers for service management
+│   └── main.yaml
+├── tasks/              - Task files
+│   ├── ha-config.yaml  - HA configuration tasks
+│   └── main.yaml       - Main task file
+├── templates/          - Configuration templates
+│   ├── haproxy.cfg.j2  - HAProxy configuration template
+│   └── keepalived.conf.j2 - Keepalived configuration template
+└── vars/               - Role variables
+    └── main.yaml
 ```
 
----
+## Features
 
-## Переменные
+### High Availability Setup
+- Configures HAProxy as TCP load balancer for Kubernetes API server
+- Implements Keepalived for Virtual IP (VIP) failover
+- Automatic configuration based on master node inventory
+- Supports multiple master nodes in round-robin load balancing
 
-### Дефолтные переменные (`defaults/main.yaml`)
+### Configuration Management
+- Conditional installation (only if not already configured)
+- Idempotent configuration deployment
+- Automatic service restart on configuration changes
+- Proper file permissions enforcement
 
-| Переменная        | Значение по умолчанию / Описание |
-|------------------|-------------------------------|
-| `ha_enabled`     | `false` — включить HA-режим |
-| `vip_address`    | `192.168.1.222` — виртуальный IP |
-| `vip_port`       | `8443` — порт для доступа через VIP |
-| `ha_packages`    | Пакеты: `haproxy`, `keepalived` |
+## Variables
 
-### Константы путей (задаются внутри роли):
+### Default Variables (defaults/main.yaml)
 
-| Переменная                     | По умолчанию |
-|-------------------------------|--------------|
-| `haproxy_config_dir`         | `/etc/haproxy/haproxy.cfg` |
-| `keepalived_config_dir`      | `/etc/keepalived/keepalived.conf` |
-| `haproxy_config_template`    | `templates/haproxy.cfg.j2` |
-| `keepalived_config_template` | `templates/keepalived.conf.j2` |
+**HA Configuration:**
+- `ha_enabled`: Enable HA setup (default: false)
+- `vip_address`: Virtual IP address (default: 192.168.1.222)
+- `vip_port`: Virtual IP port (default: 8443)
 
----
+**Packages:**
+- `ha_packages`: List of required packages (haproxy, keepalived)
 
-## Требования
+### Role Variables (vars/main.yaml)
+- `haproxy_config_template`: HAProxy template file
+- `haproxy_config_dir`: HAProxy config destination path
+- `keepalived_config_template`: Keepalived template file
+- `keepalived_config_dir`: Keepalived config destination path
+- `keepalived_check_script_template`: Health check script template
+- `keepalived_check_script_dir`: Health check script destination path
 
-- CentOS 7/8/9
-- Ansible >= 2.10
-- Несколько хостов в группе `master` в инвентаре
-- Доступ к интернету для установки пакетов
-- Интерфейс `eth1` должен быть настроен на всех мастерах
+## Usage
 
----
-
-## Пример использования
+1. Include this role in your playbook:
 
 ```yaml
 - hosts: master
   roles:
-    - role: ha-master-config
-      vars:
-        ha_enabled: true
-        vip_address: 192.168.1.222
-        vip_port: 8443
+    - ha-master-config
 ```
 
-**Примечание:** Роль должна применяться ко всем мастер-нодам (`hosts: master`). Первый хост будет назначен MASTER, остальные — BACKUP.
+2. Set `ha_enabled: true` to activate HA configuration
 
----
-
-## Инвентарь (пример)
+3. Customize VIP settings in your inventory:
 
 ```yaml
-all:
-  hosts:
-    master1:
-      ansible_host: 192.168.56.101
-    master2:
-      ansible_host: 192.168.56.102
-    master3:
-      ansible_host: 192.168.56.103
-  groups:
-    master:
-      - master1
-      - master2
-      - master3
+vars:
+  vip_address: 10.10.10.100
+  vip_port: 6443
 ```
 
----
+## Configuration Details
 
-## Что происходит после применения:
+### HAProxy
+- Listens on VIP port (default: 8443)
+- Balances traffic across all master nodes on port 6443
+- Uses TCP mode for Kubernetes API traffic
+- Round-robin load balancing algorithm
 
-- Устанавливаются `haproxy` и `keepalived`
-- Генерируются конфиги на основе шаблонов
-- Сервисы запускаются и добавляются в автозапуск
-- VIP (`vip_address`) назначается на интерфейсе `eth1`
-- Все запросы на `{{ vip_address }}:{{ vip_port }}` проксируются на `6443` порт каждого из мастеров
+### Keepalived
+- Implements VRRP protocol for VIP failover
+- First master node in inventory becomes MASTER (priority 101)
+- Other master nodes become BACKUP (priority 100)
+- Includes HAProxy process health checking
+- Automatic failover if MASTER node fails
 
----
+## Requirements
 
-## Важно
+- Ansible 2.9+
+- RHEL/CentOS 7/8/9
+- Existing Kubernetes master nodes
+- Network interface configured for VRRP (default: eth1)
 
-- Эта роль не настраивает сам Kubernetes, только инфраструктуру вокруг него.
-- Убедитесь, что все мастера имеют статические IP и корректно настроенный сетевой интерфейс (`eth1`).
+## Handlers
 
+- `restart_haproxy`: Restarts and enables HAProxy service
+- `restart_keepalived`: Restarts and enables Keepalived service
+
+## Notes
+
+- Ensure proper network configuration for VRRP traffic
+- VIP must be in the same subnet as master nodes
+- Firewall must allow VRRP protocol (IP protocol 112)
+- For production use, customize health checks and timeouts
+- Role is idempotent - won't reconfigure existing installations unless forced

@@ -1,0 +1,11 @@
+- name: Get credentials from master1
+  ansible.builtin.include_tasks: get-credentials.yaml
+  when: inventory_hostname == groups['master'][0]
+
+- name: join master
+  ansible.builtin.include_tasks: join-master.yaml
+  when: 
+   - inventory_hostname in groups['master'] 
+   - inventory_hostname != groups['master'][0]
+   - ha_enabled 
+

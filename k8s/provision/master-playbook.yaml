@@ -1,15 +1,11 @@
 - name: master config
   hosts: master
   become: true
-
   roles:
     - role: common-config
-    
     - role: ha-master-config
-      when: ha_enabled == true
-    
+      when: ha_enabled 
     - role: master-config
       when: inventory_hostname == groups['master'][0]
-
-    - role: master-add
-      when: ha_enabled == true
+    - role: join-master
+      when: ha_enabled 

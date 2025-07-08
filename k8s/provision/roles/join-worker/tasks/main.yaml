@@ -1,0 +1,7 @@
+- name: Get credentials from master1
+  ansible.builtin.include_tasks: get-credentials.yaml
+
+- name: join worker
+  ansible.builtin.include_tasks: join-worker.yaml
+  when: inventory_hostname in groups['node']
+

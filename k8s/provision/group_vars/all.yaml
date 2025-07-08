@@ -6,7 +6,7 @@ username: vlad
 password: '8231'
 
 # Enabeled HA kubernetes master (true or false)
-ha_enabled: false
+ha_enabled: true
 vip_address: 192.168.1.250
 vip_port: 8443
 
@@ -18,7 +18,7 @@ serviceSubnet: 10.200.0.0/16
 kubeproxy_mode_ipvs: false
 
 # Enable nodelocaldns (true or false)
-nodelocaldns: true
+nodelocaldns: false
 nodelocaldns_address: 169.254.20.10
 
 dockerhubMirror: true

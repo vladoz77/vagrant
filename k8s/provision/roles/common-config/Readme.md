@@ -1,93 +1,115 @@
-# Ansible Role: `common-config`
+# Common Config Ansible Role
 
-## Описание
+This role provides common configuration for Kubernetes nodes including system setup, package installation, and container runtime configuration.
 
-Эта роль предназначена для базовой настройки виртуальных машин (или хостов) перед установкой и запуском Kubernetes кластера. Она устанавливает необходимое ПО, настраивает ядро, параметры sysctl, отключает ненужные сервисы безопасности и обеспечивает предварительную подготовку окружения для корректной работы Kubernetes.
-
----
-
-## Функционал
-
-- Создание пользователя с правами sudo
-- Добавление SSH-ключа для пользователя
-- Установка системных пакетов, необходимых для Kubernetes и контейнеров
-- Настройка времени (часовой пояс)
-- Отключение SELinux и Firewalld
-- Загрузка и сохранение модулей ядра
-- Настройка параметров ядра через `sysctl`
-- Отключение swap
-- Настройка `containerd` для работы с systemd cgroups
-- Настройка bash-алиасов и автодополнения для `kubectl`
-
----
-
-## Структура роли
+## Directory Structure
 
 ```
 common-config/
-├── defaults
-│   └── main.yaml         # Дефолтные переменные
-├── handlers
-│   └── main.yaml         # Обработчики (рестарт служб)
-├── tasks
-│   ├── common.yaml       # Базовая настройка системы
-│   ├── config-node.yaml  # Конфигурация узла (репозитории, пакеты, kernel)
-│   └── main.yaml         # Основная точка входа
-└── vars
-    └── main.yaml         # Внутренние переменные (URL репозиториев и т.п.)
+├── defaults/            - Default variables
+│   └── main.yaml
+├── handlers/           - Handlers for service management
+│   └── main.yaml
+├── tasks/              - Task files
+│   ├── common.yaml     - Base system configuration
+│   ├── config-node.yaml - Node-specific configuration
+│   ├── containerd.yaml - ContainerD configuration
+│   └── main.yaml       - Main task file
+├── templates/          - Configuration templates
+│   └── hosts.toml.j2   - ContainerD mirror config template
+└── vars/               - Role variables
+    └── main.yaml
 ```
 
----
+## Features
 
-## 🔧 Переменные
+### System Configuration
+- Creates default user with SSH access
+- Installs required system packages
+- Configures kernel modules and sysctl parameters
+- Disables swap, firewalld and SELinux
+- Sets up bash completion for kubectl
 
-### Дефолтные переменные (`defaults/main.yaml`)
+### Kubernetes Preparation
+- Adds Kubernetes repositories
+- Installs Kubernetes components (kubelet, kubectl, kubeadm)
+- Installs Python Kubernetes client
 
-| Переменная             | Описание |
-|------------------------|----------|
-| `username`             | Имя пользователя, которое будет создано |
-| `password`             | Пароль пользователя (в виде plain text) |
-| `kubernetesVersion`    | Версия Kubernetes |
-| `packages`             | Список пакетов для установки |
-| `pip_modules`          | Python-модули, устанавливаемые через pip |
-| `modules`              | Модули ядра, которые необходимо загрузить |
-| `sysctl_params`        | Параметры sysctl для настройки сети и производительности |
+### ContainerD Configuration
+- Installs and configures ContainerD
+- Supports Docker Hub mirror configuration
+- Configures:
+  - Systemd cgroups
+  - Sandbox image
+  - Certificate directories
+  - Registry mirrors
 
-### Внутренние переменные (`vars/main.yaml`)
+## Variables
 
-| Переменная               | Описание |
-|--------------------------|----------|
-| `docker_repo`            | URL репозитория Docker |
-| `docker_gpg_key`         | GPG-ключ для репозитория Docker |
-| `kubernetes_repo`        | URL репозитория Kubernetes |
-| `kubernetes_gpg_key`     | GPG-ключ для репозитория Kubernetes |
+### Default Variables (defaults/main.yaml)
 
----
+**User Configuration:**
+- `username`: Default system user (default: 'user')
+- `password`: User password (default: 'password')
 
-## Требования
+**Kubernetes:**
+- `kubernetesVersion`: Kubernetes major version (default: '1.33')
+- `kubernetesSubversion`: Kubernetes minor version (default: '2')
 
-- CentOS 7/8/9
-- Ansible >= 2.10
-- Root-доступ или возможность sudo
+**Packages:**
+- `packages`: List of system packages to install
+- `pip_modules`: Python packages to install via pip
 
----
+**System Configuration:**
+- `modules`: Kernel modules to load
+- `sysctl_params`: Kernel parameters to configure
 
-## Пример использования
+**ContainerD:**
+- `dockerhubMirror`: Enable Docker Hub mirror (default: false)
+- `dockerhubMirrorURLs`: List of mirror URLs
+- `sandbox_image`: Kubernetes pause image (default: 'registry.k8s.io/pause:3.10')
+
+### Role Variables (vars/main.yaml)
+- Repository URLs and GPG keys for Docker and Kubernetes packages
+
+## Usage
+
+Include this role in your playbook:
 
 ```yaml
 - hosts: all
   roles:
-    - role: common-config
+    - common-config
 ```
 
-Также можно переопределить любые переменные при вызове:
+## Customization
+
+Override default variables in your playbook or inventory:
 
 ```yaml
-- hosts: all
-  vars:
-    username: admin
-    password: secure_password
-    kubernetesVersion: '1.33'
-  roles:
-    - role: common-config
+vars:
+  username: admin
+  kubernetesVersion: '1.29'
+  packages:
+    - wget
+    - vim
+    - kubectl
 ```
+
+## Requirements
+
+- Ansible 2.9+
+- RHEL/CentOS 7/8/9
+- Python 3
+
+## Handlers
+
+- `start iscsid`: Starts and enables iscsid service
+- `restart kubelet`: Restarts kubelet service
+- `restart containerd`: Restarts and enables containerd service
+
+## Notes
+
+- Role will automatically flush handlers after package installation
+- For production use, override default credentials and versions
+- ContainerD configuration supports both direct and mirrored registry access

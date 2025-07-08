@@ -19,5 +19,3 @@
     dest: "{{ home_kube_dir }}/config"
     state: link
     owner: "{{ username }}"
-
-

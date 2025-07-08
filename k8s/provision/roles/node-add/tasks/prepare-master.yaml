@@ -1,9 +1,0 @@
-- name: get token for joinnig pod
-  ansible.builtin.shell:
-    kubeadm token create --print-join-command
-  register: node_join_token
-  delegate_to: "{{ groups['master'][0] }}"
-
-- name: set token fact
-  ansible.builtin.set_fact:
-    token: "{{ node_join_token.stdout }}"

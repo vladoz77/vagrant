@@ -10,18 +10,6 @@
     gpgcheck: true
     state: present
 
-# - name: add repo for containerd
-#   ansible.builtin.yum_repository:
-#     name: containerd
-#     description: soft for CRI
-#     baseurl:
-#     - "{{ docker_repo }}"
-#     gpgkey:
-#     - "{{ docker_gpg_key }}"
-#     enabled: true
-#     gpgcheck: true
-#     state: present
-
 - name: install packages
   ansible.builtin.yum:
     name: "{{ packages }}"
@@ -77,17 +65,6 @@
     dest: /etc/fstab
     regexp: swap
     state: absent
-
-# - name: update config containerd
-#   ansible.builtin.shell: |
-#     containerd config default | sudo tee /etc/containerd/config.toml
-#     sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
-#     grep -A1 -lZR registry] /etc/containerd/config.toml | xargs -0 -l  sed  -i 's/config_path \= ""/config_path = "\/etc\/containerd\/certs.d"/g'
-#   notify:
-#   - restart containerd
-
-# - name: start handler force
-#   meta: flush_handlers
 
 - name: bashrc edit
   ansible.builtin.blockinfile:
