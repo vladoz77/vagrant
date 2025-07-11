@@ -11,11 +11,11 @@
 
 - name: Init cluster
   ansible.builtin.include_tasks: tasks/cluster-init.yaml
-  when: cluster_is_running.rc == 1  
+  when: cluster_is_running.rc == 1  and ebpf_enabled == false
 
-- name: install calico network plugin
-  ansible.builtin.include_tasks: tasks/network-config.yaml
-  when: cluster_is_running.rc == 1  
+- name: Init cluster with ebpf mode
+  ansible.builtin.include_tasks: tasks/cluster-init-ebpf.yaml
+  when: cluster_is_running.rc == 1  and ebpf_enabled == true
 
 - name: install localdns
   ansible.builtin.include_tasks: tasks/nodelocaldns.yaml

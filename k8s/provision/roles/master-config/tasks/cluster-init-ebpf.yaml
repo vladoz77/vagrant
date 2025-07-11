@@ -4,7 +4,7 @@
     dest: "/tmp/kubeadm-config.yaml"
 
 - name: kubeadm init
-  ansible.builtin.shell: kubeadm init --config /tmp/kubeadm-config.yaml
+  ansible.builtin.shell: kubeadm init --config /tmp/kubeadm-config.yaml --skip-phases=addon/kube-proxy
 
 - name: create `.kube` directory
   ansible.builtin.file:
@@ -32,9 +32,15 @@
     state: present
     kubeconfig: "{{ base_kube_conf_dir }}"
 
+- name: Install kubernetes-service-endpoint.yaml
+  kubernetes.core.k8s:
+    template: "{{ kubernetes_service_endpoint }}"
+    state: present
+    kubeconfig: "{{ base_kube_conf_dir }}"
+
 - name: install calico custom resources
   kubernetes.core.k8s:
-    template: "{{ calico_custom_resources }}"
+    template: "{{ calico_custom_resources_ebpf }}"
     state: present
     kubeconfig: "{{ base_kube_conf_dir }}"
 
@@ -83,6 +89,3 @@
         ports:
         - port: 9093
           targetPort: 9093
-
-
-

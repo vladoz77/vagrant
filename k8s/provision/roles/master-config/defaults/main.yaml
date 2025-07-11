@@ -17,6 +17,9 @@ serviceSubnet: 10.243.0.0/16
 # Select kube-proxy mode, enable ipvs or iptable (True or false)
 kubeproxy_mode_ipvs: false
 
+# Ebpf mode
+ebpf_enabled: false
+
 #kubelet configuration
 system_reserved: true
 system_memory: 512Mi
@@ -33,3 +36,4 @@ network_plugin: calico
 nodelocaldns: false
 nodelocaldns_address: 169.254.20.10
 nodelocaldns_image: "registry.k8s.io/dns/k8s-dns-node-cache:1.23.1"
+

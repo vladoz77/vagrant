@@ -8,25 +8,15 @@ spec:
   typhaMetricsPort: 9093
   # Configures Calico networking.
   calicoNetwork:
-    bgp: Disabled
+    linuxDataplane: BPF
     ipPools:
-    - name: ipv4-ippool
+    - name: default-ipv4-ippool
       blockSize: 26
-      cidr: "{{ podSubnet }}"
+      cidr: {{ podSubnet }}
       encapsulation: VXLANCrossSubnet
       natOutgoing: Enabled
       nodeSelector: all()
-
----
-# This section enable prometheus metrics in Felix.
-# For more information, see: https://docs.tigera.io/calico/latest/reference/felix/configuration
-apiVersion: crd.projectcalico.org/v1
-kind: FelixConfiguration
-metadata:
-  name: default
-spec:
-  prometheusMetricsEnabled: true
-  prometheusMetricsPort: 9091
+  
 
 ---
 # This section configures the Calico API server.
@@ -36,3 +26,14 @@ kind: APIServer
 metadata:
   name: default
 spec: {}
+
+
+---
+# This section enable prometheus metrics in Felix.
+apiVersion: crd.projectcalico.org/v1
+kind: FelixConfiguration
+metadata:
+  name: default
+spec:
+  prometheusMetricsEnabled: true
+  prometheusMetricsPort: 9091
