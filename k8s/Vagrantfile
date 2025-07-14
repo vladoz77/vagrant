@@ -1,5 +1,5 @@
 ENV["VAGRANT_EXPERIMENTAL"] = "disks"
-Node = 3
+Node = 2
 Master = 1
 
 

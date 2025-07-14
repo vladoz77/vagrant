@@ -1,0 +1,18 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: JoinConfiguration
+nodeRegistration:
+  name: {{ ansible_hostname }}
+  criSocket: "unix:///run/containerd/containerd.sock"
+  kubeletExtraArgs:
+    node-ip: {{ ansible_facts.eth1.ipv4.address}}
+discovery:
+  bootstrapToken:
+    token: {{ hostvars[groups['master'][0]].token }}
+    apiServerEndpoint: {{ hostvars[groups['master'][0]].api_endpoint }}
+    caCertHashes:
+      - "sha256:{{ hostvars[groups['master'][0]].ca_cert_hash }}"
+controlPlane:
+  certificateKey: {{ hostvars[groups['master'][0]].certificate }}
+  localAPIEndpoint:
+    advertiseAddress: {{ ansible_facts.eth1.ipv4.address }}
+    bindPort: 6443

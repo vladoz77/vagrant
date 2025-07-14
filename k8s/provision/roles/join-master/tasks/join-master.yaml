@@ -7,10 +7,35 @@
     msg: "{{ inventory_hostname  }} is already master"
   when: kubeadm_ca.stat.exists
 
-- name: add  master node
-  ansible.builtin.shell: 
-    "{{ hostvars[groups['master'][0]].master_token }} \
-    --control-plane \
-    --certificate-key {{ hostvars[groups['master'][0]].certificate }} \
-    --apiserver-advertise-address {{ansible_facts.eth1.ipv4.address}}"
+# - name: add  master node
+#   ansible.builtin.shell: 
+#     "{{ hostvars[groups['master'][0]].master_token }} \
+#     --control-plane \
+#     --certificate-key {{ hostvars[groups['master'][0]].certificate }} \
+#     --apiserver-advertise-address {{ansible_facts.eth1.ipv4.address}}"
+#   when: not kubeadm_ca.stat.exists
+
+- name: Add another master node {{ inventory_hostname }}
+  block:
+  - name: copy template kubeadm-join
+    ansible.builtin.template:
+      src: kubeadm-join-master.yaml.j2
+      dest: "/tmp/kubeadm-join-master.yaml"
+
+  - name: join master {{ inventory_hostname }}
+    ansible.builtin.shell: kubeadm join --config /tmp/kubeadm-join-master.yaml
   when: not kubeadm_ca.stat.exists
+
+- name: create `.kube` directory
+  ansible.builtin.file:
+    path: "{{ home_kube_dir }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+
+- name: create link to configuration
+  ansible.builtin.file:
+    src: "{{ base_kube_conf_dir }}"
+    dest: "{{ home_kube_dir }}/config"
+    state: link
+    owner: "{{ username }}"
