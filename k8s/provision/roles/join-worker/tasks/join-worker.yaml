@@ -22,10 +22,3 @@
   when: not kubelet_conf.stat.exists
 
 
-
-  # - ansible.builtin.debug:
-#     var: master_token
-
-# - name: add node to cluster
-#   ansible.builtin.shell: "{{  master_token }} "
-#   when: not kubelet_conf.stat.exists
