@@ -1,7 +1,10 @@
+# Kubernetes versions
 kubernetesVersion: '1.33'
 kubernetesSubversion: '2'
+# Calico version
 calico_version: v3.30.2
 
+# Username
 username: vlad
 password: '8231'
 
@@ -9,6 +12,9 @@ password: '8231'
 ha_enabled: false
 vip_address: 192.168.1.250
 vip_port: 8443
+
+# Ebpf mode
+ebpf_enabled: false
 
 # network config
 podSubnet: 10.100.0.0/16
@@ -18,12 +24,10 @@ serviceSubnet: 10.200.0.0/16
 kubeproxy_mode_ipvs: true
 
 # Enable nodelocaldns (true or false)
-nodelocaldns: false
+nodelocaldns: true
 nodelocaldns_address: 169.254.20.10
 
+# Config container runntime
 dockerhubMirror: true
 dockerhubMirrorURLs:
 - "https://mirror.gcr.io/v2"
-
-# Ebpf mode
-ebpf_enabled: true
