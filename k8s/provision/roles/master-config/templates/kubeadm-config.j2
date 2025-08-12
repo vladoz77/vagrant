@@ -9,7 +9,7 @@ bootstrapTokens:
   - signing
   - authentication
 localAPIEndpoint:
-  advertiseAddress: {{ hostvars[groups['master'][0]].ansible_facts.eth1.ipv4.address }}
+  advertiseAddress: {{ hostvars[groups['master'][0]].ansible_facts[interface_name].ipv4.address }}
   bindPort: 6443
 nodeRegistration:
   criSocket: unix:///var/run/containerd/containerd.sock
@@ -18,7 +18,7 @@ nodeRegistration:
   taints: null
   kubeletExtraArgs:
     - name: node-ip
-      value: {{ ansible_facts.eth1.ipv4.address}}
+      value: {{ ansible_facts[interface_name].ipv4.address}}
 timeouts:
   controlPlaneComponentHealthCheck: 4m0s
   discovery: 5m0s
@@ -48,7 +48,7 @@ kubernetesVersion: v{{ kubernetesVersion }}.{{ kubernetesSubversion }}
 {% if ha_enabled == true %}
 controlPlaneEndpoint: {{ vip_address }}:{{ vip_port}}
 {% else %}
-controlPlaneEndpoint: {{ ansible_facts.eth1.ipv4.address}}:6443
+controlPlaneEndpoint: {{ ansible_facts[interface_name].ipv4.address}}:6443
 {% endif %}
 networking:
   dnsDomain: {{ kube_domain_name}}

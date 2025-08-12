@@ -8,6 +8,6 @@ data:
   KUBERNETES_SERVICE_HOST: "{{ vip_address }}"
   KUBERNETES_SERVICE_PORT: "{{ vip_port }}"
 {% else %}
-  KUBERNETES_SERVICE_HOST: "{{ hostvars[groups['master'][0]].ansible_facts.eth1.ipv4.address }}"
+  KUBERNETES_SERVICE_HOST: "{{ hostvars[groups['master'][0]].ansible_facts[interface_name].ipv4.address }}"
   KUBERNETES_SERVICE_PORT: "6443"
 {% endif %}

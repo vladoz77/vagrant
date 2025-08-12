@@ -19,9 +19,11 @@
   - start iscsid
   - restart kubelet
 
+
 - name: Install kubernetes python package
   ansible.builtin.pip:
     name: "{{ pip_modules }}"
+    state: present
 
 - name: start handler force
   meta: flush_handlers

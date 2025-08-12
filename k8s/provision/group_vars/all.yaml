@@ -1,6 +1,7 @@
 # Kubernetes versions
 kubernetesVersion: '1.33'
 kubernetesSubversion: '2'
+interface_name: enp5s0
 # Calico version
 calico_version: v3.30.2
 
@@ -24,7 +25,7 @@ serviceSubnet: 10.200.0.0/16
 kubeproxy_mode_ipvs: true
 
 # Enable nodelocaldns (true or false)
-nodelocaldns: true
+nodelocaldns: false
 nodelocaldns_address: 169.254.20.10
 
 # Config container runntime

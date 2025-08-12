@@ -1,6 +1,6 @@
 # Base provision for node, create user, add ssh key ant etc
-- name: node-baseprovision
-  ansible.builtin.include_tasks: tasks/common.yaml
+# - name: node-baseprovision
+#   ansible.builtin.include_tasks: tasks/common.yaml
 
 # Config-node
 - name: Config nodes
