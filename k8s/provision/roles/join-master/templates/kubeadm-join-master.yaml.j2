@@ -4,7 +4,7 @@ nodeRegistration:
   name: {{ ansible_hostname }}
   criSocket: "unix:///run/containerd/containerd.sock"
   kubeletExtraArgs:
-    node-ip: {{ ansible_facts.eth1.ipv4.address}}
+    node-ip: {{ ansible_facts[interface_name].ipv4.address}}
 discovery:
   bootstrapToken:
     token: {{ hostvars[groups['master'][0]].token }}
@@ -14,5 +14,5 @@ discovery:
 controlPlane:
   certificateKey: {{ hostvars[groups['master'][0]].certificate }}
   localAPIEndpoint:
-    advertiseAddress: {{ ansible_facts.eth1.ipv4.address }}
+    advertiseAddress: {{ ansible_facts[interface_name].ipv4.address }}
     bindPort: 6443
